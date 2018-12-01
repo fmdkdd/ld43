@@ -5,10 +5,21 @@ STATES.Main = {
     this.pointer = {x:0, y:0};
     // let music = this.app.music.play('happy-clouds', true);
     // this.app.music.setVolume(music, 0.2);
+
+    // Init ECS
+    this.ecs = new ECS();
+
+    this.renderingSystem = new RenderingSystem();
+    this.ecs.addSystem(this.renderingSystem);
+
+    const e = new ECS.Entity(null, [Position, Model]);
+    this.ecs.addEntity(e);
   },
 
   render(dt) {
     // this.gameController.render(dt);
+    this.ecs.update();
+    this.renderingSystem.render();
   },
 
   pointermove(event) {
@@ -98,30 +109,15 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     ready() {
-      if (Detector.webgl) {
-        // Init WebGL renderer
-        this.renderer = new THREE.WebGLRenderer({
-          antialias: this.smoothing,
-          alpha: true,
-        });
-        this.renderer.setClearColor(0x6dc2ca);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.setSize(this.width, this.height, false);
-        this.renderer.domElement.style.width = this.width * this.scale + 'px';
-        this.renderer.domElement.style.height = this.height * this.scale + 'px';
-        this.renderer.domElement.id = 'canvas';
 
-        this.container = document.getElementById('container');
-        this.container.appendChild(this.renderer.domElement);
-        this.container.style.width = this.width * this.scale + 'px';
-        this.container.style.height = this.height * this.scale + 'px';
-
-        // Go to default state
-        this.setState(STATES.Main);
-      } else {
+      if (!Detector.webgl) {
         // WebGL not supported: abort and report error
         this.container.appendChild(Detector.getWebGLErrorMessage());
+        return;
       }
+
+      // Go to default state
+      this.setState(STATES.Main);
     },
 
     // Record FPS through the prerender and postrender events
