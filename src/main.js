@@ -9,11 +9,24 @@ STATES.Main = {
     // Init ECS
     this.ecs = new ECS();
 
-    this.renderingSystem = new RenderingSystem();
-    this.ecs.addSystem(this.renderingSystem);
+    this.ecs.addSystem(this.controlsSystem = new ControlsSystem());
+    this.ecs.addSystem(this.renderingSystem = new RenderingSystem());
 
-    const e = new ECS.Entity(null, [Position, Model]);
-    this.ecs.addEntity(e);
+    const player = new ECS.Entity(null, [Position, Model, Controllable]);
+    player.components.model.color = 0;
+    this.ecs.addEntity(player);
+
+    for (let y = 0; y < 5; ++y)
+    {
+      for (let x = 0; x < 3; ++x)
+      {
+        const guy = new ECS.Entity(null, [Position, Model, Offering]);
+        guy.components.pos.x = x;
+        guy.components.pos.y = y;
+        player.components.model.color = 1;
+        this.ecs.addEntity(guy);
+      }
+    }
   },
 
   render(dt) {
@@ -38,6 +51,10 @@ STATES.Main = {
       // this.gameController.rightclick();
     }
   },
+
+  keyup(event) {
+    this.controlsSystem.input(event.key);
+  }
 };
 
 // const MODELS = [

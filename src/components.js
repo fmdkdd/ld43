@@ -5,7 +5,8 @@ const Position =
   name: 'pos',
   defaults:
   {
-    x: 0, y: 0, z: 0
+    x: 0,
+    y: 0
   }
 };
 
@@ -14,6 +15,21 @@ const Model =
   name: 'model',
   defaults:
   {
-    path: 'cube.obj'
+    path: 'cube.obj',
+    color: 0 // temp
+  }
+};
+
+const Controllable =
+{
+  name: 'controllable'
+};
+
+const Offering =
+{
+  name: 'offering',
+  defaults:
+  {
+    color: 0
   }
 };

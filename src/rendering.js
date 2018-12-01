@@ -33,12 +33,14 @@ class RenderingSystem extends ECS.System
 
   test(entity)
   {
-    return !!entity.components.pos && entity.components.model
+    return !!entity.components.pos && !!entity.components.model;
   }
 
   enter(entity) {
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    console.log('RenderingSystem: new entity', entity);
+
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: entity.components.color === 0 ? 0x00ff00 : 0xff0000 } );
     const cube = new THREE.Mesh( geometry, material );
     this.scene.add(cube);
 
@@ -51,9 +53,11 @@ class RenderingSystem extends ECS.System
 
   update(entity)
   {
-    this.t = (this.t || 0) + 0.01;
-    entity.components.pos.x = Math.sin(this.t);
-    this.objects[entity.id].position.setX(entity.components.pos.x);
+    //this.t = (this.t || 0) + 0.01;
+    //entity.components.pos.x = Math.sin(this.t);
+    this.objects[entity.id].position.setX(entity.components.pos.x * 3);
+    this.objects[entity.id].position.setY(entity.components.pos.y * 3);
+    this.objects[entity.id].position.setZ(0);
   }
 
   render() {
