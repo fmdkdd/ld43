@@ -7,18 +7,29 @@ class GameController {
     this.game = new Game(this.app);
 
     this.selectedColumn = 0;
-    this.timer = 10;
-    this.timer_max = 10;
+    this.timer = 30;
+    this.timer_max = 30;
   }
 
   step(dt) {
     this.timer -= dt;
     this.timer = Math.max(0, this.timer);
+
+    if (this.timer === 0) {
+      this.app.setState(STATES.GameOver);
+    }
   }
 
   // Push current column down
   pushDown() {
-    this.game.pushDown(this.selectedColumn);
+    const out = this.game.pushDown(this.selectedColumn);
+
+    if (out === RED) {
+      this.timer += 1;
+    } else {
+      this.timer -= 1;
+    }
+
     this.checkForMatches();
   }
 

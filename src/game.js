@@ -59,7 +59,7 @@ class Game {
   }
 
   pushDown(column) {
-    this.grid.pushColumn(column, this.randomColor(), 0);
+    return this.grid.pushColumn(column, this.randomColor(), 0);
   }
 
   removeCell(cell) {

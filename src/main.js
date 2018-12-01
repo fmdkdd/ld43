@@ -56,6 +56,18 @@ STATES.Main = {
   // },
 };
 
+STATES.GameOver = {
+  render(dt) {
+    this.app.renderer.clearRect(0,0, this.app.canvas.width, this.app.canvas.height);
+    this.app.gameController.render(dt);
+
+    const ctx = this.app.renderer;
+    ctx.fillStyle = '#fff';
+    ctx.font = '50px serif';
+    ctx.fillText('Game Over!', this.app.canvas.width/2, this.app.canvas.height/2);
+  }
+}
+
 STATES.PreHighlightMatchCells = {
   enter() {
     this.delay = 0.2;
