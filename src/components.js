@@ -33,3 +33,22 @@ const Offering =
     color: 0
   }
 };
+
+const CrowdAgent =
+{
+  name: 'crowdAgent',
+  defaults:
+  {
+    goal: new THREE.Vector3(),
+    //dir: new THREE.Vector3()
+  }
+};
+
+const CrowdObstacle =
+{
+  name: 'crowdObstacle',
+  defaults:
+  {
+    size: 1
+  }
+};

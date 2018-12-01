@@ -9,8 +9,30 @@ STATES.Main = {
     // Init ECS
     this.ecs = new ECS();
 
+    this.ecs.addSystem(new CrowdSystem());
     this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this.app));
     this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this.app));
+
+    for (let x = 0; x < 5; ++x)
+    {
+      const guy = new ECS.Entity(null, [Position, Model, Offering, CrowdAgent]);
+      guy.components.pos.x = x;
+      guy.components.pos.y = 0;
+      guy.components.model.path = 'box';
+      guy.components.model.color = 1;
+      guy.components.crowdAgent.goal = new THREE.Vector3(3, 5, 0);
+      this.ecs.addEntity(guy);
+    }
+
+    const guy = new ECS.Entity(null, [Position, Model, Offering, CrowdObstacle]);
+    guy.components.pos.x = 3;
+    guy.components.pos.y = 3;
+    guy.components.model.path = 'box';
+    guy.components.model.color = 1;
+    guy.components.crowdObstacle.size = 2;
+    this.ecs.addEntity(guy);
+
+return;
 
     const player = new ECS.Entity(null, [Position, Model, Controllable]);
     player.components.model.path = 'box';
@@ -25,7 +47,7 @@ STATES.Main = {
         guy.components.pos.x = x;
         guy.components.pos.y = y;
         guy.components.model.path = 'box';
-        player.components.model.color = 1;
+        guy.components.model.color = 1;
         this.ecs.addEntity(guy);
       }
     }
