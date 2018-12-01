@@ -1,9 +1,10 @@
 class RenderingSystem extends ECS.System
 {
-  constructor(ctx)
+  constructor(app)
   {
     super();
 
+    this.app = app;
     this.objects = {};
 
     // Init WebGL renderer
@@ -27,6 +28,7 @@ class RenderingSystem extends ECS.System
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
     this.camera.position.z = 5;
+    this.camera.position.y = 2;
 
     console.log('Renderer initialized');
   }
@@ -39,8 +41,11 @@ class RenderingSystem extends ECS.System
   enter(entity) {
     console.log('RenderingSystem: new entity', entity);
 
+    const assets = this.app.data['..']['assets'];
+    const box = new THREE.ObjectLoader().parse(assets[entity.components.model.path]);
+
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: entity.components.color === 0 ? 0x00ff00 : 0xff0000 } );
+    const material = new THREE.MeshBasicMaterial({ color: entity.components.model.color === 0 ? 0x00ff00 : 0xff0000 } );
     const cube = new THREE.Mesh( geometry, material );
     this.scene.add(cube);
 
