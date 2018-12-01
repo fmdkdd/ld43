@@ -14,15 +14,15 @@ class RenderingSystem extends ECS.System
     });
     this.renderer.setClearColor(0x6dc2ca);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.setSize(320, 180, false);//(this.width, this.height, false);
-    this.renderer.domElement.style.width = '320px';//this.width * this.scale + 'px';
-    this.renderer.domElement.style.height = '180px';//this.height * this.scale + 'px';
+    this.renderer.setSize(this.app.width, this.app.height, false);
+    this.renderer.domElement.style.width = this.app.width * this.app.scale + 'px';
+    this.renderer.domElement.style.height = this.app.height * this.app.scale + 'px';
     this.renderer.domElement.id = 'canvas';
 
     this.container = document.getElementById('container');
     this.container.appendChild(this.renderer.domElement);
-    this.container.style.width = '320px';//this.width * this.scale + 'px';
-    this.container.style.height = '180px';//this.height * this.scale + 'px';
+    this.container.style.width = this.app.width * this.app.scale + 'px';
+    this.container.style.height = this.app.height * this.app.scale + 'px';
 
     // Init scene
     this.scene = new THREE.Scene();

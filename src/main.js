@@ -17,7 +17,7 @@ STATES.Main = {
     {
       const guy = new ECS.Entity(null, [Position, Model, Offering, CrowdAgent]);
       guy.components.pos.x = x;
-      guy.components.pos.y = 0;
+      guy.components.pos.y = -5;
       guy.components.model.path = 'box';
       guy.components.model.color = 1;
       guy.components.crowdAgent.goal = new THREE.Vector3(3, 5, 0);
