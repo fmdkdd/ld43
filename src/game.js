@@ -1,3 +1,5 @@
+const DEBUG = false;
+
 const RED = {};
 const BLUE = {};
 const YELLOW = {};
@@ -56,41 +58,6 @@ class Game {
     return matches;
   }
 
-  // Return coordinate of cells that are in a match, after COLUMN was pushed
-  // down, starting at ROW.
-  checkMatchesInColumn(column, row = 0) {
-    const matches = [];
-
-    for (let y=row; y < this.height; ++y) {
-      const m = this.checkMatchesInRow(column, y);
-      if (m) {
-        matches.push(m);
-      }
-    }
-
-    return matches;
-  }
-
-  checkMatchesInRow(column, row) {
-    const y = row;
-    const cells = [y * this.width + column];
-    const color = this.grid.get(column, y);
-
-    // Look on the same row for cells of same color
-    for (let x=column-1; x >= 0 && this.grid.get(x, y) == color; --x) {
-      cells.push(y * this.width + x);
-    }
-    for (let x=column+1; x < this.width && this.grid.get(x, y) == color; ++x) {
-      cells.push(y * this.width + x);
-    }
-
-    if (cells.length > 2) {
-      return cells;
-    } else {
-      return undefined;
-    }
-  }
-
   pushDown(column) {
     this.grid.pushColumn(column, this.randomColor(), 0);
   }
@@ -136,13 +103,14 @@ class Game {
           ctx.strokeRect(px+4, py+4, pw-8, ph-8);
         }
 
-        // @Debug:
-        ctx.save();
-        ctx.translate(px, py);
-        ctx.scale(1, -1);
-        ctx.fillStyle = '#333';
-        ctx.fillText(xy, pw/2, -ph/2);
-        ctx.restore();
+        if (DEBUG) {
+          ctx.save();
+          ctx.translate(px, py);
+          ctx.scale(1, -1);
+          ctx.fillStyle = '#333';
+          ctx.fillText(xy, pw/2, -ph/2);
+          ctx.restore();
+        }
       }
     }
   }
