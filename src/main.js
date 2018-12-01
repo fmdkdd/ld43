@@ -9,7 +9,6 @@ STATES.Main = {
   },
 
   enter() {
-    console.log('main');
   },
 
   keyup(event) {
@@ -59,7 +58,6 @@ STATES.Main = {
 
 STATES.PreHighlightMatchCells = {
   enter() {
-    console.log('pre-highlight cells');
     this.delay = 0.2;
   },
 

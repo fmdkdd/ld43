@@ -7,10 +7,13 @@ class GameController {
     this.game = new Game(this.app);
 
     this.selectedColumn = 0;
+    this.timer = 10;
+    this.timer_max = 10;
   }
 
   step(dt) {
-
+    this.timer -= dt;
+    this.timer = Math.max(0, this.timer);
   }
 
   // Push current column down
@@ -52,9 +55,11 @@ class GameController {
     const ctx = this.app.renderer;
 
     ctx.save();
+    // Flip Y to have it as a standard origin
     ctx.scale(1, -1);
     ctx.translate(0, -(this.app.height * this.app.scale));
 
+    // Draw priest
     ctx.fillStyle = '#fff';
     ctx.save();
     ctx.translate(this.selectedColumn * cell_width, 450);
@@ -64,7 +69,33 @@ class GameController {
     ctx.lineTo(35, 0);
     ctx.fill();
     ctx.restore();
+
+    // Draw grid
     this.game.render(ctx, dt, selected);
+
+    // Draw timer background
+    const timer_width = 300;
+    ctx.strokeStyle = '#533';
+    ctx.lineWidth = 20;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(400, 100);
+    ctx.lineTo(400 + timer_width, 100);
+    ctx.stroke();
+
+    // Draw timer fill
+    const t = this.timer / this.timer_max;
+
+    if (t > 0) {
+      ctx.strokeStyle = '#a00';
+      ctx.lineWidth = 12;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(400, 100);
+      ctx.lineTo(400 + timer_width * t, 100);
+      ctx.stroke();
+    }
+
     ctx.restore();
   }
 }
