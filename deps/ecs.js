@@ -255,7 +255,7 @@ var System = (function () {
 
       if (index !== -1) {
         entity.removeSystem(this);
-        (0, _utils.fastSplice)(this.entities, index, 1);
+        (0, fastSplice)(this.entities, index, 1);
 
         this.exit(entity);
       }
@@ -533,7 +533,7 @@ var Entity = (function () {
       var index = this.systems.indexOf(system);
 
       if (index !== -1) {
-        (0, _utils.fastSplice)(this.systems, index, 1);
+        (0, fastSplice)(this.systems, index, 1);
       }
     }
 
@@ -745,7 +745,7 @@ var ECS = (function () {
         entity.dispose();
         this.removeEntityIfDirty(entityRemoved);
 
-        (0, _utils.fastSplice)(this.entities, index, 1);
+        (0, fastSplice)(this.entities, index, 1);
       }
 
       return entityRemoved;
@@ -766,7 +766,7 @@ var ECS = (function () {
           entity.dispose();
           this.removeEntityIfDirty(entity);
 
-          (0, _utils.fastSplice)(this.entities, i, 1);
+          (0, fastSplice)(this.entities, i, 1);
 
           return entity;
         }
@@ -786,7 +786,7 @@ var ECS = (function () {
       var index = this.entitiesSystemsDirty.indexOf(entity);
 
       if (index !== -1) {
-        (0, _utils.fastSplice)(this.entities, index, 1);
+        (0, fastSplice)(this.entities, index, 1);
       }
     }
 
@@ -821,7 +821,7 @@ var ECS = (function () {
       var index = this.systems.indexOf(system);
 
       if (index !== -1) {
-        (0, _utils.fastSplice)(this.systems, index, 1);
+        (0, fastSplice)(this.systems, index, 1);
         system.dispose();
       }
     }

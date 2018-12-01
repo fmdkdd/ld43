@@ -25,12 +25,13 @@ const Controllable =
   name: 'controllable'
 };
 
-const Offering =
+const People =
 {
-  name: 'offering',
+  name: 'people',
   defaults:
   {
-    color: 0
+    color: 0, // temp
+    state: 'idle' // 'arriving', 'idle', 'stepping', fleeing'
   }
 };
 
@@ -39,8 +40,8 @@ const CrowdAgent =
   name: 'crowdAgent',
   defaults:
   {
-    goal: new THREE.Vector3(),
-    //dir: new THREE.Vector3()
+    goalx: 0,
+    goaly: 0
   }
 };
 

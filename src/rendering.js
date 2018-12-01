@@ -1,3 +1,8 @@
+function gridtoWorld(gridCoord)
+{
+  return {x: gridCoord.x * 3, y: gridCoord.y * 3};
+}
+
 class RenderingSystem extends ECS.System
 {
   constructor(app)
@@ -27,8 +32,9 @@ class RenderingSystem extends ECS.System
     // Init scene
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    this.camera.position.z = 5;
-    this.camera.position.y = 2;
+    this.camera.position.z = 15;
+    this.camera.position.x = 5;
+    this.camera.position.y = 5;
 
     console.log('Renderer initialized');
   }
@@ -38,28 +44,28 @@ class RenderingSystem extends ECS.System
     return !!entity.components.pos && !!entity.components.model;
   }
 
-  enter(entity) {
+  enter(entity)
+  {
     console.log('RenderingSystem: new entity', entity);
 
     const assets = this.app.data['..']['assets'];
     const box = new THREE.ObjectLoader().parse(assets[entity.components.model.path]);
-
-    //const geometry = new THREE.BoxGeometry(1, 1, 1);
-    //const material = new THREE.MeshBasicMaterial({ color: entity.components.model.color === 0 ? 0x00ff00 : 0xff0000 } );
-    //const cube = new THREE.Mesh( geometry, material );
     this.scene.add(box);
 
     // Register in the system
     this.objects[entity.id] = box;
   }
 
-  exit(entity) {
+  exit(entity)
+  {
   }
 
   update(entity)
   {
-    this.objects[entity.id].position.setX(entity.components.pos.x);
-    this.objects[entity.id].position.setY(entity.components.pos.y);
+    const worldPos = gridtoWorld(entity.components.pos);
+    this.objects[entity.id].position.setX(worldPos.x);
+    this.objects[entity.id].position.setY(worldPos.y);
+    this.objects[entity.id].position.setZ(0);
   }
 
   render() {

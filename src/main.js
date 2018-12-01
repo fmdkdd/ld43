@@ -9,13 +9,15 @@ STATES.Main = {
     // Init ECS
     this.ecs = new ECS();
 
-    this.ecs.addSystem(new CrowdSystem());
+    this.ecs.addSystem(new CrowdSystem(this.app));
+    this.ecs.addSystem(new PeopleSystem(this.app));
     this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this.app));
     this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this.app));
 
+    /*
     for (let x = 0; x < 5; ++x)
     {
-      const guy = new ECS.Entity(null, [Position, Model, Offering, CrowdAgent]);
+      const guy = new ECS.Entity(null, [Position, Model, People, CrowdAgent]);
       guy.components.pos.x = x;
       guy.components.pos.y = -5;
       guy.components.model.path = 'box';
@@ -24,31 +26,24 @@ STATES.Main = {
       this.ecs.addEntity(guy);
     }
 
-    const guy = new ECS.Entity(null, [Position, Model, Offering, CrowdObstacle]);
+    const guy = new ECS.Entity(null, [Position, Model, People, CrowdObstacle]);
     guy.components.pos.x = 3;
     guy.components.pos.y = 3;
     guy.components.model.path = 'box';
     guy.components.model.color = 1;
     guy.components.crowdObstacle.size = 2;
-    this.ecs.addEntity(guy);
+    this.ecs.addEntity(guy);*/
 
-return;
-
-    const player = new ECS.Entity(null, [Position, Model, Controllable]);
-    player.components.model.path = 'box';
-    player.components.model.color = 0;
+    const player = createPlayer(0);
     this.ecs.addEntity(player);
 
-    for (let y = 0; y < 3; ++y)
+    const size = 5;
+    for (let y = 0; y < size; ++y)
     {
-      for (let x = 0; x < 3; ++x)
+      for (let x = 0; x < size; ++x)
       {
-        const guy = new ECS.Entity(null, [Position, Model, Offering]);
-        guy.components.pos.x = x;
-        guy.components.pos.y = y;
-        guy.components.model.path = 'box';
-        guy.components.model.color = 1;
-        this.ecs.addEntity(guy);
+        const e = createSpawningPeople(Math.random() * 10 - 5, 10, x, y);
+        this.ecs.addEntity(e);
       }
     }
   },
@@ -57,15 +52,6 @@ return;
     // this.gameController.render(dt);
     this.ecs.update();
     this.renderingSystem.render();
-  },
-
-  pointermove(event) {
-
-    // Update position relative to the canvas
-    this.pointer.x = window.pageXOffset + event.original.clientX - this.app.container.offsetLeft;
-    this.pointer.y = window.pageYOffset + event.original.clientY - this.app.container.offsetTop;
-
-    // this.gameController.pointermove(this.pointer);
   },
 
   pointerdown(event) {
@@ -78,6 +64,13 @@ return;
 
   keyup(event) {
     this.controlsSystem.input(event.key);
+
+    // temp
+    if (event.key === 'space')
+    {
+      for (let i = 1; i < 25; i += 3)
+        this.ecs.entities[i].components.people.state = 'fleeing';
+    }
   }
 };
 

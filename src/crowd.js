@@ -1,9 +1,10 @@
 class CrowdSystem extends ECS.System
 {
-  constructor()
+  constructor(app)
   {
     super();
 
+    this.app = app;
     this.agents = {};
     this.obstacles = {};
 
@@ -12,12 +13,12 @@ class CrowdSystem extends ECS.System
 
   test(entity)
   {
-    return !!entity.components.crowdAgent || !!entity.components.crowdObstacle;
+    return !!entity.components.pos && (!!entity.components.crowdAgent || !!entity.components.crowdObstacle);
   }
 
   enter(entity)
   {
-    console.log('CrowdSystem: new entity', entity);
+    console.log('CrowdSystem: entity entered', entity);
 
     // Agent
     if (!!entity.components.crowdAgent)
@@ -33,6 +34,8 @@ class CrowdSystem extends ECS.System
 
   exit(entity)
   {
+    console.log('CrowdSystem: entity exited', entity);
+
     if (!!entity.components.crowdAgent)
     {
       delete this.agents[entity.id];
@@ -63,7 +66,7 @@ class CrowdSystem extends ECS.System
         const agentPosition = new THREE.Vector3(agent.components.pos.x, agent.components.pos.y, 0);
         const diff = position.clone().sub(agentPosition);
 
-        if (diff.length() < 1)
+        if (diff.length() < 0.5)
         {
           const inf = position.clone().sub(agentPosition).normalize();
           agentInfluence.add(inf);
@@ -89,13 +92,13 @@ class CrowdSystem extends ECS.System
 
       // Goal influence
 
-      const goalPosition = new THREE.Vector3(entity.components.crowdAgent.goal.x, entity.components.crowdAgent.goal.y, 0);
+      const goalPosition = new THREE.Vector3(entity.components.crowdAgent.goalx, entity.components.crowdAgent.goaly, 0);
       const goalInfluence = goalPosition.clone().sub(position).normalize();
 
       // Combine and apply
 
       const influence = new THREE.Vector3()
-        .add(agentInfluence.multiplyScalar(0.5))
+        .add(agentInfluence.multiplyScalar(0.25))
         .add(obstacleInfluence.multiplyScalar(0.75))
         .add(goalInfluence.multiplyScalar(0.7));
 
