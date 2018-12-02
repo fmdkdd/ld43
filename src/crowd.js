@@ -105,6 +105,10 @@ class CrowdSystem extends ECS.System
       position.add(influence.multiplyScalar(0.1));
       entity.components.pos.x = position.x;
       entity.components.pos.y = position.y;
+
+      influence.normalize();
+      entity.components.crowdAgent.dirx = influence.x;
+      entity.components.crowdAgent.diry = influence.y;
     }
   }
 }

@@ -13,8 +13,8 @@
             "matrix":[-1,0,0,0,0,0,1,0,0,1,0,0,0.275785,0.0465881,0,1],
             "visible":true,
             "type":"Mesh",
-            "castShadow":false,
-            "receiveShadow":false,
+            "castShadow":true,
+            "receiveShadow":true,
             "geometry":"6654A3B3-FBD9-41DD-85E5-FC714A6D6F2C"
         }],
         "uuid":"DC0E0875-5FBB-4559-9BC7-10A7C22684FE",

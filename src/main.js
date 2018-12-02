@@ -81,10 +81,10 @@ delete PLAYGROUND.LoadingScreen
 window.addEventListener('DOMContentLoaded', function main() {
   new PLAYGROUND.Application({
     // dimensions of the WebGL buffer
-    width: 320,
-    height: 180,
+    width: 800,
+    height: 600,
     // scaled to screen dimensions
-    scale: 3,
+    //scale: 3,
 
     smoothing: false,
 
@@ -101,6 +101,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       // document.body.appendChild(this.stats.dom);
 
       this.loadData('../assets/box.json');
+      this.loadData('../assets/guy.json');
     },
 
     create() {

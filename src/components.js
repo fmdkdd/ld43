@@ -15,7 +15,7 @@ const Model =
   name: 'model',
   defaults:
   {
-    path: 'cube.obj',
+    path: 'box',
     color: 0 // temp
   }
 };
