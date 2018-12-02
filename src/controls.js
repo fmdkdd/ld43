@@ -37,7 +37,7 @@ class ControlsSystem extends ECS.System
     case 'ArrowUp'    : this.keys.up = true; break;
     case 'ArrowDown'  : this.keys.down = true; break;
     case 'KeyZ'       : this.keys.rotateLeft = true; break;
-    case 'KeyX'       : this.keys.rotateLeft = true; break;
+    case 'KeyX'       : this.keys.rotateRight = true; break;
     }
   }
 }
