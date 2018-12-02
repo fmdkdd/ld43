@@ -77,7 +77,7 @@ STATES.RotateLeft = {
   step(dt) {
     this.delay -= dt;
     if (this.delay < 0) {
-      this.app.setState(STATES.Main);
+      this.app.setState(STATES.CheckForCombos);
     }
   },
 
@@ -102,7 +102,7 @@ STATES.RotateRight = {
   step(dt) {
     this.delay -= dt;
     if (this.delay < 0) {
-      this.app.setState(STATES.Main);
+      this.app.setState(STATES.CheckForCombos);
     }
   },
 

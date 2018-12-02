@@ -20,6 +20,25 @@ class Game {
 
     this.grid = new Grid(this.width, this.height);
     this.randomizeGrid();
+
+    this.patterns = [
+      "0000\n"+
+      "0..0\n"+
+      "0000",
+
+      "000\n"+
+      ".0.",
+
+      "11\n"+
+      "1.\n"+
+      "1.",
+
+      ".22\n"+
+      "22.",
+
+      "33.\n"+
+      "3.3",
+    ].map(p => p.split('\n').reverse());
   }
 
   // Put random colors in grid
@@ -35,29 +54,59 @@ class Game {
     const matches = [];
 
     for (let y=0; y < this.height; ++y) {
-      let color = this.grid.getUnchecked(0, y);
-      let cur = [y * this.width];
-
-      for (let x=1; x < this.width; ++x) {
-        const xy = y * this.width + x;
-        const c = this.grid.getUnchecked(x,y);
-
-        if (c === color) {
-          cur.push(xy);
-        } else {
-          if (cur.length > MIN_MATCHES) {
-            matches.push(cur);
+      for (let x=0; x < this.width; ++x) {
+        for (let p of this.patterns) {
+          const m = this.matchPatternAt(p, x, y);
+          if (m.length > 0) {
+            matches.push(m);
           }
-          cur = [xy];
-          color = c;
         }
-      }
-      if (cur.length > MIN_MATCHES) {
-        matches.push(cur);
       }
     }
 
     return matches;
+  }
+
+  // Whether a single PATTERN match starting at lower-left corner X,Y.
+  // Return matching cells.
+  matchPatternAt(pattern, x, y) {
+    const h = pattern.length;
+    const w = pattern[0].length;
+    const match = [];
+
+    // Bail if the pattern is too large to fit
+    if (x + w > this.width || y + h > this.height) {
+      return [];
+    }
+
+    for (let yy=0; yy < h; ++yy) {
+      for (let xx=0; xx < w; ++xx) {
+        const c = this.grid.getUnchecked(x + xx, y + yy);
+        const m = this.matchPatternChar(pattern[yy][xx], c);
+        switch (m) {
+          // no match
+        case 0: return [];
+          // include in match
+        case 1: match.push((y + yy) * this.width + x + xx); break;
+          // don't include in match
+        case 2: break;
+        }
+      }
+    }
+
+    return match;
+  }
+
+  // Whether COLOR matches pattern CHAR.
+  matchPatternChar(char, color) {
+    switch (char) {
+    case '0': return color === RED  ? 1 : 0;
+    case '1': return color === BLUE ? 1 : 0;
+    case '2': return color === YELLOW ? 1 : 0;
+    case '3': return color === GREEN ? 1 : 0;
+    case '.': return 2;
+    default:  return 0;
+    }
   }
 
   pushDown(column) {
@@ -86,9 +135,9 @@ class Game {
 
         switch (this.grid.getUnchecked(x, y)) {
         case RED    : ctx.fillStyle = '#f00'; break;
-        case BLUE   : ctx.fillStyle = '#0f0'; break;
+        case BLUE   : ctx.fillStyle = '#00f'; break;
         case YELLOW : ctx.fillStyle = '#ff0'; break;
-        case GREEN  : ctx.fillStyle = '#00f'; break;
+        case GREEN  : ctx.fillStyle = '#0f0'; break;
         default     : ctx.fillStyle = '#000'; break;
         }
 
