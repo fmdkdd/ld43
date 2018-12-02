@@ -14,7 +14,6 @@ class GameSystem extends ECS.System {
         const e = createPeople(x, y);
         this.app.ecs.addEntity(e);
         this.grid[y * this.gridWidth + x] = e.id;
-        console.log(e.id);
       }
     }
   }
@@ -42,6 +41,10 @@ class GameSystem extends ECS.System {
       entity.components.pos.y++;
     if (entity.components.player.moveDown)
       entity.components.pos.y--;
+
+    // Clamp position
+    entity.components.pos.x = clamp(entity.components.pos.x, 1, this.gridWidth - 1);
+    entity.components.pos.y = clamp(entity.components.pos.y, 1, this.gridHeight - 1);
 
     if (entity.components.player.rotateLeft)
       this.rotateLeft(entity);
@@ -81,4 +84,11 @@ class GameSystem extends ECS.System {
   rotateRight(entity) {
 
   }
+}
+
+// Return X clamped to [A,B].
+function clamp(x, a, b) {
+  if (x < a) return a;
+  if (x > b) return b;
+  return x;
 }
