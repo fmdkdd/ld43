@@ -57,12 +57,12 @@ window.addEventListener('DOMContentLoaded', function main() {
       console.info('If you find any bugs, please report them to https://github.com/fmdkdd/ld39/issue');
       console.info('---------------------------- Thanks! ------------------------------');
       // Put FPS counter to bottom right
-      // this.stats = new Stats();
-      // this.stats.dom.style.left = '';
-      // this.stats.dom.style.top = '';
-      // this.stats.dom.style.right = 0;
-      // this.stats.dom.style.bottom = 0;
-      // document.body.appendChild(this.stats.dom);
+      this.stats = new Stats();
+      this.stats.dom.style.left = '';
+      this.stats.dom.style.top = '';
+      this.stats.dom.style.right = 0;
+      this.stats.dom.style.bottom = 0;
+      document.body.appendChild(this.stats.dom);
 
       //this.loadData('../assets/box.json');
       //this.loadData('../assets/guy.json');
@@ -106,7 +106,7 @@ window.addEventListener('DOMContentLoaded', function main() {
         function(){},
         function ( xhr ) {
           console.log(`Error loading texture ${path}: ${xhr}`);
-	      }
+	}
       );
     },
 
@@ -135,6 +135,6 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     // Record FPS through the prerender and postrender events
-    // postrender() { this.stats.update(); }
+    postrender() { this.stats.update(); }
   })
 })
