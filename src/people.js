@@ -17,8 +17,6 @@ class PeopleSystem extends ECS.System
 
   enter(entity)
   {
-    console.log('PeopleSystem: new entity', entity);
-
     this.prevStates[entity.id] = entity.components.people.state;
   }
 

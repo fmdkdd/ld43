@@ -34,7 +34,6 @@ class RenderingSystem extends ECS.System
     // Init scene
 
     this.scene = new THREE.Scene();
-console.log(this.app.width / this.app.height,this.app.width, this.app.height)
     this.camera = new THREE.PerspectiveCamera(110, window.innerWidth / window.innerHeight, 0.1, 1000);
     const camw = 24;
     const camh = camw * this.app.height / this.app.width;
@@ -133,7 +132,6 @@ console.log(this.app.width / this.app.height,this.app.width, this.app.height)
     //this.bgLight.castShadow = true;
     this.scene.add(this.bgLight);
 
-    console.log('Renderer initialized');
   }
 
   test(entity)
@@ -143,7 +141,6 @@ console.log(this.app.width / this.app.height,this.app.width, this.app.height)
 
   enter(entity)
   {
-    console.log('RenderingSystem: new entity', entity);
 
     const loader = new THREE.GLTFLoader();
     loader.load('../assets/guy.glb', model =>

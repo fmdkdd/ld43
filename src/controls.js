@@ -14,7 +14,6 @@ class ControlsSystem extends ECS.System
 
   enter(entity)
   {
-    console.log('ControlsSystem: new entity', entity);
   }
 
   update(entity)

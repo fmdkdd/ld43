@@ -7,8 +7,6 @@ class CrowdSystem extends ECS.System
     this.app = app;
     this.agents = {};
     this.obstacles = {};
-
-    console.log('Crowd system initialized');
   }
 
   test(entity)
@@ -18,7 +16,6 @@ class CrowdSystem extends ECS.System
 
   enter(entity)
   {
-    console.log('CrowdSystem: entity entered', entity);
 
     // Agent
     if (!!entity.components.crowdAgent)
@@ -34,7 +31,6 @@ class CrowdSystem extends ECS.System
 
   exit(entity)
   {
-    console.log('CrowdSystem: entity exited', entity);
 
     if (!!entity.components.crowdAgent)
     {
