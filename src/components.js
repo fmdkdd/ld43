@@ -16,13 +16,20 @@ const Model =
   defaults:
   {
     path: 'box',
-    color: 0 // temp
   }
 };
 
-const Controllable =
+const Player =
 {
-  name: 'controllable'
+  name: 'player',
+  defaults: {
+    moveLeft    : false,
+    moveRight   : false,
+    moveUp      : false,
+    moveDown    : false,
+    rotateLeft  : false,
+    rotateRight : false,
+  },
 };
 
 const People =
@@ -30,7 +37,7 @@ const People =
   name: 'people',
   defaults:
   {
-    color: 0, // temp
+    color: 0, // 1, 2, 3
     state: 'idle' // 'arriving', 'idle', 'stepping', fleeing'
   }
 };

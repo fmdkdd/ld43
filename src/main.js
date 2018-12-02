@@ -1,6 +1,10 @@
 const STATES = {};
 
 STATES.Main = {
+  create() {
+    this.app.ecs.addSystem(new GameSystem(this.app));
+  },
+
   enter() {
     // let music = this.app.music.play('happy-clouds', true);
     // this.app.music.setVolume(music, 0.2);
@@ -44,7 +48,7 @@ window.addEventListener('DOMContentLoaded', function main() {
     width: 800,
     height: 600,
     // scaled to screen dimensions
-    //scale: 3,
+    scale: 1,
 
     smoothing: false,
 
@@ -91,21 +95,6 @@ window.addEventListener('DOMContentLoaded', function main() {
       //this.ecs.addSystem(new PeopleSystem(this.app));
       this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this));
       this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this));
-
-      const player = createPlayer(0);
-      this.ecs.addEntity(player);
-
-      this.gridHeight = 10;
-      this.gridWidth = 7;
-      for (let y = 0; y < this.gridHeight; ++y)
-      {
-        for (let x = 0; x < this.gridWidth; ++x)
-        {
-          const e = createPeople(x, y);
-          this.ecs.addEntity(e);
-        }
-      }
-
     },
 
     loadTexture(path) {

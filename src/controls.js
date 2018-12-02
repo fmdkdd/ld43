@@ -10,7 +10,7 @@ class ControlsSystem extends ECS.System
 
   test(entity)
   {
-    return !!entity.components.pos && entity.components.controllable;
+    return entity.components.player;
   }
 
   enter(entity)
@@ -19,14 +19,12 @@ class ControlsSystem extends ECS.System
 
   update(entity)
   {
-    if (this.keys.left)
-      entity.components.pos.x++;
-    else if (this.keys.right)
-      entity.components.pos.x--;
-    else if (this.keys.down)
-      entity.components.pos.y--;
-    else if (this.keys.up)
-      entity.components.pos.y++;
+    entity.components.player.moveLeft    = this.keys.left;
+    entity.components.player.moveRight   = this.keys.right;
+    entity.components.player.moveUp      = this.keys.up;
+    entity.components.player.moveDown    = this.keys.down;
+    entity.components.player.rotateLeft  = this.keys.rotateLeft;
+    entity.components.player.rotateRight = this.keys.rotateRight;
 
     this.keys = {};
   }
@@ -35,15 +33,15 @@ class ControlsSystem extends ECS.System
   {
     if (keyboard.keys.down)
       this.keys.down = true;
-    else if (keyboard.keys.up)
+    if (keyboard.keys.up)
       this.keys.up = true;
-    else if (keyboard.keys.left)
+    if (keyboard.keys.left)
       this.keys.left = true;
-    else if (keyboard.keys.right)
+    if (keyboard.keys.right)
       this.keys.right = true;
-    else if (keyboard.keys.z)
+    if (keyboard.keys.z)
       this.keys.rotateLeft = true;
-    else if (keyboard.keys.x)
+    if (keyboard.keys.x)
       this.keys.rotateRight = true;
   }
 }

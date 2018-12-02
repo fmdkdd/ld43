@@ -4,7 +4,8 @@ function createPeople(x, y)
   e.components.pos.x = x;
   e.components.pos.y = y;
   e.components.model.path = 'guy';
-  e.components.model.color = 1;
+  e.components.people.color = Math.floor(Math.random()*4);
+
   return e;
 }
 
@@ -26,12 +27,12 @@ function createSpawningPeople(x, y, gx, gy)
   return e;
 }
 
-function createPlayer(x)
+function createPlayer(x, y)
 {
-  const e = new ECS.Entity(null, [Position, Model, Controllable]);
-  e.components.pos.x = x + 0.5;
-  e.components.pos.y = 0 + 0.5;
+  const e = new ECS.Entity(null, [Position, Model, Player]);
+  e.components.pos.x = x;
+  e.components.pos.y = y;
   e.components.model.path = 'guy';
-  e.components.model.color = 0;
+
   return e;
 }

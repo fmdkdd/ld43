@@ -149,12 +149,19 @@ class RenderingSystem extends ECS.System
       this.scene.add(model.scene);
       this.objects[entity.id] = model.scene;
 
-      const colors = [ 0xff0000, 0x00ff00, 0x0000FF, 0xFFFF00];
-      const c = colors[Math.floor(Math.random()*4)];
+      let color = 0;
+      if (entity.components.people) {
+        switch (entity.components.people.color) {
+        case 0: color = 0xFF0000; break;
+        case 1: color = 0x00FF00; break;
+        case 2: color = 0x0000FF; break;
+        case 3: color = 0xFFFF00; break;
+        }
+      }
 
       model.scene.traverse(o =>
       {
-        o.material = new THREE.MeshLambertMaterial({color: c, side: THREE.DoubleSide});
+        o.material = new THREE.MeshLambertMaterial({color, side: THREE.DoubleSide});
         o.material.skinning = true;
         o.castShadow = true;
       })
@@ -196,7 +203,13 @@ class RenderingSystem extends ECS.System
 
     const prevPosition = obj.position.clone();
 
-    const worldPos = gridtoWorld(entity.components.pos);
+    let {x, y} = entity.components.pos;
+    if (entity.components.player) {
+      x -= 0.5;
+      y -= 0.5;
+    }
+
+    const worldPos = gridtoWorld({x,y});
     obj.position.setX(worldPos.x);
     obj.position.setZ(worldPos.y);
     obj.position.setY(0);
