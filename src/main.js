@@ -2,76 +2,36 @@ const STATES = {};
 
 STATES.Main = {
   enter() {
-    this.pointer = {x:0, y:0};
     // let music = this.app.music.play('happy-clouds', true);
     // this.app.music.setVolume(music, 0.2);
-
-    // Init ECS
-    this.ecs = new ECS();
-
-    this.ecs.addSystem(new CrowdSystem(this.app));
-    this.ecs.addSystem(new PeopleSystem(this.app));
-    this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this.app));
-    this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this.app));
-
-    /*
-    for (let x = 0; x < 5; ++x)
-    {
-      const guy = new ECS.Entity(null, [Position, Model, People, CrowdAgent]);
-      guy.components.pos.x = x;
-      guy.components.pos.y = -5;
-      guy.components.model.path = 'box';
-      guy.components.model.color = 1;
-      guy.components.crowdAgent.goal = new THREE.Vector3(3, 5, 0);
-      this.ecs.addEntity(guy);
-    }
-
-    const guy = new ECS.Entity(null, [Position, Model, People, CrowdObstacle]);
-    guy.components.pos.x = 3;
-    guy.components.pos.y = 3;
-    guy.components.model.path = 'box';
-    guy.components.model.color = 1;
-    guy.components.crowdObstacle.size = 2;
-    this.ecs.addEntity(guy);*/
-
-    const player = createPlayer(0);
-    this.ecs.addEntity(player);
-
-    const size = 5;
-    for (let y = 0; y < 10; ++y)
-    {
-      for (let x = 0; x < 7; ++x)
-      {
-        const e = createSpawningPeople(Math.random() * 10 - 5, 10, x, y);
-        this.ecs.addEntity(e);
-      }
-    }
   },
 
   render(dt) {
-    // this.gameController.render(dt);
-    this.ecs.update();
-    this.renderingSystem.render(dt);
   },
 
-  pointerdown(event) {
-    if (event.button == 'left') {
-      // this.gameController.leftclick();
-    } else if (event.button == 'right') {
-      // this.gameController.rightclick();
-    }
-  },
+  keydown(event) {
+    this.app.controlsSystem.input(this.app.keyboard);
 
-  keyup(event) {
-    this.controlsSystem.input(event.key);
-
-    // temp
-    if (event.key === 'space')
-    {
-      for (let i = 1; i < 25; i += 3)
-        this.ecs.entities[i].components.people.state = 'fleeing';
+    if (event.key === 'enter') {
+      this.app.setState(STATES.Pause);
     }
   }
+};
+
+STATES.Pause = {
+  enter() {
+    console.log('pause!');
+  },
+
+  leave() {
+    console.log('unpause!');
+  },
+
+  keydown(event) {
+    if (event.key === 'enter') {
+      this.app.setState(STATES.Main);
+    }
+  },
 };
 
 // Skip the loading screen.  It always lasts at least 500ms, even without
@@ -122,6 +82,30 @@ window.addEventListener('DOMContentLoaded', function main() {
       // this.loadTexture('data/dust.png');
       // this.loadTexture('data/smoke.png');
       // this.loadTexture('data/stars.png');
+
+
+      // Init ECS
+      this.ecs = new ECS();
+
+      //this.ecs.addSystem(new CrowdSystem(this.app));
+      //this.ecs.addSystem(new PeopleSystem(this.app));
+      this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this));
+      this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this));
+
+      const player = createPlayer(0);
+      this.ecs.addEntity(player);
+
+      this.gridHeight = 10;
+      this.gridWidth = 7;
+      for (let y = 0; y < this.gridHeight; ++y)
+      {
+        for (let x = 0; x < this.gridWidth; ++x)
+        {
+          const e = createPeople(x, y);
+          this.ecs.addEntity(e);
+        }
+      }
+
     },
 
     loadTexture(path) {
@@ -137,6 +121,15 @@ window.addEventListener('DOMContentLoaded', function main() {
       );
     },
 
+    step(dt) {
+      this.ecs.update();
+    },
+
+    render(dt) {
+      this.dt = dt;
+      this.renderingSystem.render(dt);
+    },
+
     ready() {
 
       if (!Detector.webgl) {
@@ -144,6 +137,9 @@ window.addEventListener('DOMContentLoaded', function main() {
         this.container.appendChild(Detector.getWebGLErrorMessage());
         return;
       }
+
+      // Prevent default scrolling
+      window.addEventListener('keydown', ev => ev.preventDefault());
 
       // Go to default state
       this.setState(STATES.Main);

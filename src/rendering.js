@@ -34,7 +34,6 @@ class RenderingSystem extends ECS.System
     // Init scene
 
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(110, window.innerWidth / window.innerHeight, 0.1, 1000);
     const camw = 24;
     const camh = camw * this.app.height / this.app.width;
     this.camera = new THREE.OrthographicCamera( -camw, camw, camh, -camh, 1, 1000);

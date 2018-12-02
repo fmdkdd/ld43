@@ -5,6 +5,7 @@ class ControlsSystem extends ECS.System
     super();
 
     this.app = app;
+    this.keys = {};
   }
 
   test(entity)
@@ -18,20 +19,31 @@ class ControlsSystem extends ECS.System
 
   update(entity)
   {
-    if (this.next === 'left')
-      entity.components.pos.x--;
-    else if (this.next === 'right')
+    if (this.keys.left)
       entity.components.pos.x++;
-    else if (this.next === 'down')
+    else if (this.keys.right)
+      entity.components.pos.x--;
+    else if (this.keys.down)
       entity.components.pos.y--;
-    else if (this.next === 'up')
+    else if (this.keys.up)
       entity.components.pos.y++;
 
-    this.next = null;
+    this.keys = {};
   }
 
-  input(key)
+  input(keyboard)
   {
-    this.next = key;
+    if (keyboard.keys.down)
+      this.keys.down = true;
+    else if (keyboard.keys.up)
+      this.keys.up = true;
+    else if (keyboard.keys.left)
+      this.keys.left = true;
+    else if (keyboard.keys.right)
+      this.keys.right = true;
+    else if (keyboard.keys.z)
+      this.keys.rotateLeft = true;
+    else if (keyboard.keys.x)
+      this.keys.rotateRight = true;
   }
 }

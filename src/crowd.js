@@ -44,6 +44,8 @@ class CrowdSystem extends ECS.System
 
   update(entity)
   {
+    const dt = this.app.dt;
+
     // Move agents away from other agents and obstacles
     if (!!entity.components.crowdAgent)
     {
@@ -98,7 +100,7 @@ class CrowdSystem extends ECS.System
         .add(obstacleInfluence.multiplyScalar(0.75))
         .add(goalInfluence.multiplyScalar(0.7));
 
-      position.add(influence.multiplyScalar(0.1));
+      position.add(influence.multiplyScalar(4 * dt));
       entity.components.pos.x = position.x;
       entity.components.pos.y = position.y;
 
