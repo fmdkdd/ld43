@@ -1,6 +1,9 @@
+const worldScale = 3;
+
 function gridtoWorld(gridCoord)
 {
-  return {x: gridCoord.x * 3, y: gridCoord.y * 3};
+  // Right: minus X!
+  return {x: -worldScale * gridCoord.x, y: worldScale * gridCoord.y};
 }
 
 class RenderingSystem extends ECS.System
@@ -34,34 +37,46 @@ class RenderingSystem extends ECS.System
     // Init scene
 
     this.scene = new THREE.Scene();
-    const camw = 24;
-    const camh = camw * this.app.height / this.app.width;
-    this.camera = new THREE.OrthographicCamera( -camw, camw, camh, -camh, 1, 1000);
-    //this.camera.up.set(0, 1, 0);
-    //this.camera.lookAt(0, 0, 0);
-
-    this.camera.position.set(0,5,5*3);
-    this.camera.up = new THREE.Vector3(0,0,1);
-    this.camera.lookAt(new THREE.Vector3(0,0,5*3));
 
     //var axes = new THREE.AxesHelper();
     //this.scene.add( axes );
 
+/*
+const _mesh0 = new THREE.Mesh(
+     new THREE.BoxGeometry(4, 4, 4),
+     new THREE.MeshLambertMaterial({color: 0xffffff}));
+   _mesh0.position.set(0,0,0);
+   this.scene.add(_mesh0);
 
-   /*const _geometry = new THREE.BoxGeometry(4, 4, 4);
-   const _geometry2 = new THREE.BoxGeometry(2, 2, 2);
-   const _material = new THREE.MeshLambertMaterial({color: 0xff0000});
-   const _material2 = new THREE.MeshLambertMaterial({color: 0x00ff00});
-   const _mesh = new THREE.Mesh(_geometry, _material);
-   const _mesh2 = new THREE.Mesh(_geometry2, _material2);
-    _mesh2.position.set(0,2,0);
-    this.scene.add(_mesh);
-    this.scene.add(_mesh2);*/
+   const _mesh1 = new THREE.Mesh(
+     new THREE.BoxGeometry(4, 4, 4),
+     new THREE.MeshLambertMaterial({color: 0xff0000}));
+   _mesh1.position.set(5,0,0);
+   this.scene.add(_mesh1);
+
+   const _mesh2 = new THREE.Mesh(
+     new THREE.BoxGeometry(4, 4, 4),
+     new THREE.MeshLambertMaterial({color: 0x00ff00}));
+   _mesh2.position.set(0,-5,0);
+   this.scene.add(_mesh2);
+
+   const _mesh3 = new THREE.Mesh(
+     new THREE.BoxGeometry(4, 4, 4),
+     new THREE.MeshLambertMaterial({color: 0xff}));
+   _mesh3.position.set(0,0,5);
+   this.scene.add(_mesh3);
+*/
+    const camw = 24;
+    const camh = camw * this.app.height / this.app.width;
+    this.camera = new THREE.OrthographicCamera(-camw, camw, camh, -camh, 1, 1000);
+    this.camera.position.set(-20, 10, 5 * worldScale);
+    this.camera.up = new THREE.Vector3(0, 0, 1);
+    this.camera.lookAt(new THREE.Vector3(-20, 0, 5*worldScale));
 
     // Lighting
 
     const light = new THREE.PointLight(0xffffff, 0.5);
-    light.position.set(0, 10, 0);
+    light.position.set(0, -10, 0);
     //light.target.position.set(5, 0, 5);
     //light.castShadow = true;
     //light.shadowCameraVisible = true;
@@ -70,13 +85,6 @@ class RenderingSystem extends ECS.System
     //const skyLight = new THREE.HemisphereLight( 0x303655, 0x010c41, 1);
     const skyLight = new THREE.HemisphereLight( 0xFFFFFF, 0x333333, 1);
     this.scene.add(skyLight);
-
-    /*var ground = new THREE.PlaneGeometry(50, 50, 32);
-    var material = new THREE.MeshLambertMaterial();
-    var plane = new THREE.Mesh( ground, material );
-    plane.position.set(0, 0, 0)
-    plane.receiveShadow = true;
-    this.scene.add(plane);*/
 
     // Ground
 
@@ -89,7 +97,7 @@ class RenderingSystem extends ECS.System
         const box = new THREE.BoxGeometry(3, 0.5, 3);
         const material = new THREE.MeshLambertMaterial({map: tileTexture});
         const tile = new THREE.Mesh(box, material);
-        tile.position.set(x * 3, -0.25, y * 3)
+        tile.position.set(-x * 3, -0.25, y * 3)
         tile.receiveShadow = true;
         this.scene.add(tile);
       }
@@ -113,19 +121,7 @@ class RenderingSystem extends ECS.System
     bg.position.set(1000, 0, 0);
     bg.receiveShadow = true;
     this.scene.add(bg);
-/*
-    const box2 = new THREE.BoxGeometry(1000, 1000, 0.1);
-    const material2 = new THREE.MeshPhongMaterial( {
-      map: bgTexture,
-      specular: 0xFF00FF,
-      shininess: 5,
-      normalMap: bgNormalTexture
-    });
-    const bg2 = new THREE.Mesh(box2, material2);
-    bg2.position.set(1000, 0, -0.01);
-    bg2.receiveShadow = true;
-    this.scene.add(bg2);
-*/
+
     this.bgLight = new THREE.PointLight(0x00ff00, 1);
     this.bgLight.position.set(1000, 0, 5);
     //this.bgLight.castShadow = true;
@@ -140,7 +136,6 @@ class RenderingSystem extends ECS.System
 
   enter(entity)
   {
-
     const loader = new THREE.GLTFLoader();
     loader.load('../assets/guy.glb', model =>
     {
@@ -181,9 +176,6 @@ class RenderingSystem extends ECS.System
       //action.play();
 
       this.objects[entity.id].animSpeed = Math.random() * 0.016;
-
-      //var axes = new THREE.AxesHelper();
-      //model.scene.add( axes );
     });
 
 

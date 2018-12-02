@@ -34,9 +34,9 @@ class GameSystem extends ECS.System {
 
   updatePlayer(entity) {
     if (entity.components.player.moveLeft)
-      entity.components.pos.x++;
-    if (entity.components.player.moveRight)
       entity.components.pos.x--;
+    if (entity.components.player.moveRight)
+      entity.components.pos.x++;
     if (entity.components.player.moveUp)
       entity.components.pos.y++;
     if (entity.components.player.moveDown)
