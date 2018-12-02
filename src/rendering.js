@@ -77,7 +77,7 @@ const _mesh0 = new THREE.Mesh(
 
     const light = new THREE.PointLight(0xffffff, 0.5);
     light.position.set(0, -10, 0);
-    //light.target.position.set(5, 0, 5);
+    light.distance = 100;
     //light.castShadow = true;
     //light.shadowCameraVisible = true;
     this.scene.add(light);
@@ -104,13 +104,14 @@ const _mesh0 = new THREE.Mesh(
 
     // Background
 
-    this.bgCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.bgCamera.position.set(1000-10, 0, 10);
+    this.bgCamera = new THREE.OrthographicCamera(-camw, camw, camh, -camh, 1, 1000);
+    this.bgCamera.position.set(1000, -5, 100);
 
     const bgTexture = new THREE.TextureLoader().load('../assets/bg.png');
     const bgNormalTexture = new THREE.TextureLoader().load('../assets/bg_normal.png');
+    const bgNormalTexture2 = new THREE.TextureLoader().load('../assets/wall_normal.jpg');
 
-    const box = new THREE.BoxGeometry(10, 10, 0.1);
+    /*const box = new THREE.BoxGeometry(10, 10, 0.1);
     const material = new THREE.MeshPhongMaterial( {
       map: bgTexture,
       specular: 0xFF00FF,
@@ -120,13 +121,32 @@ const _mesh0 = new THREE.Mesh(
     const bg = new THREE.Mesh(box, material);
     bg.position.set(1000, 0, 0);
     bg.receiveShadow = true;
-    this.scene.add(bg);
+    this.scene.add(bg);*/
 
-    this.bgLight = new THREE.PointLight(0x00ff00, 1);
-    this.bgLight.position.set(1000, 0, 5);
+    const loader = new THREE.GLTFLoader();
+    loader.load('../assets/wall.glb', model =>
+    {
+      model.scene.position.set(1000, 0, 0);
+      model.scene.rotation.x = 90;
+
+      model.scene.traverse(o =>
+      {
+        o.material = new THREE.MeshPhongMaterial( {
+          color: 0xFFFFFF,
+          specular: 0xaaaaaa,
+          shininess: 10,
+          normalMap: bgNormalTexture2,
+          normalScale: new THREE.Vector2(0.5, 0.5)
+        });
+      });
+
+      this.scene.add(model.scene);
+    });
+
+    this.bgLight = new THREE.PointLight(0xffffff, 0.25);
+    this.bgLight.position.set(1000, 10, 10);
     //this.bgLight.castShadow = true;
     this.scene.add(this.bgLight);
-
   }
 
   test(entity)
@@ -177,8 +197,6 @@ const _mesh0 = new THREE.Mesh(
 
       this.objects[entity.id].animSpeed = Math.random() * 0.016;
     });
-
-
   }
 
   exit(entity)
@@ -221,12 +239,13 @@ const _mesh0 = new THREE.Mesh(
     this.t += dt;
 
     this.bgLight.position.setX(1000 + Math.sin(this.t)*6 - 3);
-    this.bgLight.position.setY(0 + Math.cos(this.t)*4-2);
+    this.bgLight.position.setY(10);
+    this.bgLight.position.setZ(100);//10 + Math.cos(this.t)*4-2);
 
     this.renderer.autoClear = false;
     this.renderer.clear();
-    this.renderer.render(this.scene, this.bgCamera);
-    this.renderer.clearDepth();
     this.renderer.render(this.scene, this.camera);
+    this.renderer.clearDepth();
+    this.renderer.render(this.scene, this.bgCamera);
   }
 }
