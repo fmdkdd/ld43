@@ -18,7 +18,7 @@ class RenderingSystem extends ECS.System
       //antialias: this.smoothing,
       alpha: true,
     });
-    this.renderer.setClearColor(0x6dc2ca);
+    this.renderer.setClearColor(0);
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(this.app.width, this.app.height, false);
     this.renderer.domElement.style.width = this.app.width * this.app.scale + 'px';
@@ -34,26 +34,63 @@ class RenderingSystem extends ECS.System
 
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    this.camera.position.set(0, 0, 10);
-    //this.camera.lookAt(0, 1, 0);
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera.position.set(0, 10, 2);
+    //this.camera.up.set(0, 1, 0);
+    //this.camera.lookAt(0, 0, 0);
 
-    var axes = new THREE.AxisHelper();
-    this.scene.add( axes );
+    this.camera.position.set(0,12,-5);
+    this.camera.up = new THREE.Vector3(0,0,1);
+    this.camera.lookAt(new THREE.Vector3(0,5,0));
 
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(5, 5, 5);
-    light.target.position.set(0, 0, 0);
+    //var axes = new THREE.AxesHelper();
+    //this.scene.add( axes );
+
+
+   /*const _geometry = new THREE.BoxGeometry(4, 4, 4);
+   const _geometry2 = new THREE.BoxGeometry(2, 2, 2);
+   const _material = new THREE.MeshLambertMaterial({color: 0xff0000});
+   const _material2 = new THREE.MeshLambertMaterial({color: 0x00ff00});
+   const _mesh = new THREE.Mesh(_geometry, _material);
+   const _mesh2 = new THREE.Mesh(_geometry2, _material2);
+    _mesh2.position.set(0,2,0);
+    this.scene.add(_mesh);
+    this.scene.add(_mesh2);*/
+
+    // Lighting
+
+    const light = new THREE.PointLight(0xffffff, 0.5);
+    light.position.set(0, 10, 0);
+    //light.target.position.set(5, 0, 5);
     light.castShadow = true;
-    light.shadowCameraVisible = true;console.log(light);
+    //light.shadowCameraVisible = true;
     this.scene.add(light);
 
-    var ground = new THREE.PlaneGeometry(50, 50, 32);
+    const skyLight = new THREE.HemisphereLight( 0x303655, 0x010c41, 1);
+    this.scene.add(skyLight);
+
+    /*var ground = new THREE.PlaneGeometry(50, 50, 32);
     var material = new THREE.MeshLambertMaterial();
     var plane = new THREE.Mesh( ground, material );
     plane.position.set(0, 0, 0)
     plane.receiveShadow = true;
-    //this.scene.add(plane);
+    this.scene.add(plane);*/
+
+    // Ground
+
+    const tileTexture = new THREE.TextureLoader().load('../assets/tile.png');
+
+    const size = 5;
+    for (let y = 0; y < size; ++y)
+      for (let x = 0; x < size; ++x)
+      {
+        const box = new THREE.BoxGeometry(3, 0.5, 3);
+        const material = new THREE.MeshLambertMaterial({map: tileTexture});
+        const tile = new THREE.Mesh(box, material);
+        tile.position.set(x * 3, -0.25, y * 3)
+        tile.receiveShadow = true;
+        this.scene.add(tile);
+      }
 
     console.log('Renderer initialized');
   }
@@ -67,17 +104,45 @@ class RenderingSystem extends ECS.System
   {
     console.log('RenderingSystem: new entity', entity);
 
-    const assets = this.app.data['..']['assets'];
-    const box = new THREE.ObjectLoader().parse(assets[entity.components.model.path]);
-
-    box.traverse(o =>
+    const loader = new THREE.GLTFLoader();
+    loader.load('../assets/guy.glb', model =>
     {
-      o.material = new THREE.MeshLambertMaterial({color: 0xFF0000, side: THREE.DoubleSide});
-      o.castShadow = true;
-    });
-    this.scene.add(box);
+      console.log('GLTF', model);
 
-    this.objects[entity.id] = box;
+      // Add to scene
+
+      this.scene.add(model.scene);
+      this.objects[entity.id] = model.scene;
+
+      model.scene.traverse(o =>
+      {
+        o.material = new THREE.MeshLambertMaterial({color: 0xFF0000, side: THREE.DoubleSide});
+        o.material.skinning = true;
+        o.castShadow = true;
+        console.log(o.material)
+      })
+
+      // Setup anims
+
+      const clips = model.animations;
+      clips.forEach((clip) => {
+        if (clip.validate()) clip.optimize();
+      });
+
+      const mixer = new THREE.AnimationMixer( model.scene );
+      this.objects[entity.id].mixer = mixer;
+
+      var clip = THREE.AnimationClip.findByName( model.animations, 'idle' );
+      var action = mixer.clipAction( clip );
+      action.play();
+
+      this.objects[entity.id].animSpeed = Math.random() * 0.016;
+
+      //var axes = new THREE.AxesHelper();
+      //model.scene.add( axes );
+    });
+
+
   }
 
   exit(entity)
@@ -86,20 +151,27 @@ class RenderingSystem extends ECS.System
 
   update(entity)
   {
-    const prevPosition = this.objects[entity.id].position.clone();
+    const obj = this.objects[entity.id];
+
+    // In case the model is not loaded yet
+    if (!obj)
+      return;
+
+    const prevPosition = obj.position.clone();
 
     const worldPos = gridtoWorld(entity.components.pos);
-    this.objects[entity.id].position.setX(worldPos.x);
-    this.objects[entity.id].position.setZ(worldPos.y);
-    this.objects[entity.id].position.setY(0);
+    obj.position.setX(worldPos.x);
+    obj.position.setZ(worldPos.y);
+    obj.position.setY(0);
 
     // Look forward
-    if (this.objects[entity.id].position.distanceTo(prevPosition) > 0.5)
+    if (obj.position.distanceTo(prevPosition) > 0.5)
     {
-      const dir = this.objects[entity.id].position.clone().sub(prevPosition).normalize();
-      //this.objects[entity.id].up.set(0, 0, 1);
-      this.objects[entity.id].lookAt(this.objects[entity.id].position.clone().add(dir))
+      const dir = obj.position.clone().sub(prevPosition).normalize();
+      obj.lookAt(obj.position.clone().add(dir))
     }
+
+    obj.mixer.update(obj.animSpeed);
   }
 
   render() {

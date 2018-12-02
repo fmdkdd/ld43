@@ -100,8 +100,8 @@ window.addEventListener('DOMContentLoaded', function main() {
       // this.stats.dom.style.bottom = 0;
       // document.body.appendChild(this.stats.dom);
 
-      this.loadData('../assets/box.json');
-      this.loadData('../assets/guy.json');
+      //this.loadData('../assets/box.json');
+      //this.loadData('../assets/guy.json');
     },
 
     create() {
