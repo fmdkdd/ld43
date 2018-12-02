@@ -15,13 +15,6 @@ STATES.Main = {
     this.upkey = event.key;
   },
 
-  keydown(event) {
-    this.upkey = undefined;
-    if (event.original) {
-      event.original.preventDefault();
-    }
-  },
-
   step(dt) {
     switch (this.upkey) {
     case 'up': this.app.gameController.moveUp(); break;
