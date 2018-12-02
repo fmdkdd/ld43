@@ -1,10 +1,10 @@
-function createPeople(x, y)
+function createPeople(x, y, color = randomColor())
 {
   const e = new ECS.Entity(null, [Position, Model, People]);
   e.components.pos.x = x;
   e.components.pos.y = y;
   e.components.model.path = 'guy';
-  e.components.people.color = Math.floor(Math.random()*4);
+  e.components.people.color = color;
 
   return e;
 }

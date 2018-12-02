@@ -1,8 +1,9 @@
+const DEBUG = false;
 const STATES = {};
 
 STATES.Main = {
   create() {
-    this.app.ecs.addSystem(new GameSystem(this.app));
+    this.app.ecs.addSystem(this.app.game = new GameSystem(this.app));
   },
 
   enter() {
@@ -45,17 +46,103 @@ STATES.Rotating = {
   enter() {
     this.delay = 0.06;
     this.delay_init = this.delay;
-  },
-
-  leave() {
-
+    this.app.rotationTheta = 0;
   },
 
   step(dt) {
     this.delay = Math.max(0, this.delay - dt);
     this.app.rotationTheta = 1 - (this.delay / this.delay_init);
     if (this.delay === 0) {
-      this.app.setState(STATES.CheckForCombos);
+      this.app.setState(STATES.CheckMatches);
+    }
+  },
+};
+
+STATES.CheckMatches = {
+  enter() {
+    this.app.game.checkMatches();
+  },
+
+  step(dt) {
+    // Go back to Main state on first occasion (checkMatches will put
+    // us in the highlighting animation if there is any match)
+    this.app.setState(STATES.Main);
+
+    switch (this.app.game.currentCombo) {
+    case 0: case 1: break;
+    case 2: console.log("Double combo"); break;
+    case 3: console.log("Triple combo!"); break;
+    case 4: console.log("Quadruple combo!!"); break;
+    default: console.log("Combo master!!!"); break;
+    }
+
+    this.app.game.currentCombo = 0;
+  },
+};
+
+STATES.PreHighlightMatchCells = {
+  enter() {
+    this.delay = 0.2;
+  },
+
+  step(dt) {
+    this.delay = Math.max(0, this.delay - dt);
+    if (this.delay <= 0) {
+      this.app.setState(STATES.HighlightMatchCells);
+    }
+  },
+}
+
+STATES.HighlightMatchCells = {
+  enter() {
+    this.delay = 0.3;
+  },
+
+  step(dt) {
+    this.delay = Math.max(0, this.delay - dt);
+    if (this.delay <= 0) {
+      this.app.setState(STATES.RemoveMatchCells);
+    }
+  },
+
+  render(dt) {
+    // TODO: highlighting
+  },
+};
+
+STATES.RemoveMatchCells = {
+  enter() {
+    this.app.game.removeMatchCells();
+    this.delay = 0.1;
+  },
+
+  step(dt) {
+    this.delay = Math.max(0, this.delay - dt);
+    if (this.delay <= 0) {
+      this.app.setState(STATES.FillHoles);
+    }
+  },
+};
+
+STATES.FillHoles = {
+  enter() {
+    this.delay = 0.05;
+    this.delay_init = this.delay;
+  },
+
+  step(dt) {
+    this.delay = Math.max(0, this.delay - dt);
+    if (this.delay <= 0) {
+      // Actually fill holes by one unit down in the game
+      this.app.game.fillHoles();
+      // This updates the number of columns with holes left
+      // Continue in FillHoles state if there are holes
+      if (this.app.game.columnsWithHoles.length > 0) {
+        this.delay = this.delay_init;
+      } else {
+        // Otherwise go to CheckMatches
+        this.app.setState(STATES.CheckMatches);
+      }
     }
   },
 };
@@ -114,7 +201,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.ecs = new ECS();
 
       //this.ecs.addSystem(new CrowdSystem(this.app));
-      this.ecs.addSystem(new PeopleSystem(this));
+      // this.ecs.addSystem(new PeopleSystem(this));
       this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this));
       this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this));
     },
@@ -133,6 +220,8 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     step(dt) {
+      this.renderingSystem.clearOverlay();
+
       this.ecs.update();
     },
 

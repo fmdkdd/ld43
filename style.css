@@ -20,6 +20,11 @@ body {
   background-color: #6dc2ca;
 }
 
+#overlay {
+  position: absolute;
+  top: 0;
+}
+
 #title {
   position: absolute;
   z-index: 100;

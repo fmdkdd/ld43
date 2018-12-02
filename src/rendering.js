@@ -34,6 +34,11 @@ class RenderingSystem extends ECS.System
     this.container.style.width = this.app.width * this.app.scale + 'px';
     this.container.style.height = this.app.height * this.app.scale + 'px';
 
+    const overlay = document.getElementById('overlay');
+    overlay.width = this.app.width * this.app.scale;
+    overlay.height = this.app.height * this.app.scale;
+    this.overlay = overlay.getContext('2d');
+
     // Init scene
 
     this.scene = new THREE.Scene();
@@ -155,14 +160,8 @@ class RenderingSystem extends ECS.System
       this.scene.add(model.scene);
       this.objects[entity.id] = model.scene;
 
-      let color = 0;
       if (entity.components.people) {
-        switch (entity.components.people.color) {
-        case 0: color = 0xFF0000; break;
-        case 1: color = 0x00FF00; break;
-        case 2: color = 0x0000FF; break;
-        case 3: color = 0xFFFF00; break;
-        }
+        this.updateColor(entity);
       }
 
       // Give a torch to the player
@@ -170,14 +169,13 @@ class RenderingSystem extends ECS.System
       {
         this.playerTorch = new THREE.PointLight(0xffffff, 5, 5);
         model.scene.add(this.playerTorch);
-      }
 
-      model.scene.traverse(o =>
-      {
-        o.material = new THREE.MeshLambertMaterial({color, side: THREE.DoubleSide});
-        o.material.skinning = true;
-        o.castShadow = true;
-      })
+        model.scene.traverse(o => {
+          o.material = new THREE.MeshLambertMaterial({color: 0, side: THREE.DoubleSide});
+          o.material.skinning = true;
+          o.castShadow = true;
+        });
+      }
 
       // Setup anims
 
@@ -199,6 +197,8 @@ class RenderingSystem extends ECS.System
 
   exit(entity)
   {
+    this.scene.remove(this.objects[entity.id]);
+    delete this.objects[entity.id];
   }
 
   update(entity)
@@ -212,6 +212,27 @@ class RenderingSystem extends ECS.System
     const prevPosition = obj.position.clone();
 
     let {x, y} = entity.components.pos;
+
+    if (DEBUG && !entity.components.player) {
+      this.overlay.fillStyle = '#555';
+      this.overlay.font = '20px sans-serif';
+      const px = 70 + x * 56;
+      const py = 585 - y * 56;
+      const xy = y * this.app.game.gridWidth + x;
+      this.overlay.fillText(xy, px, py);
+    }
+
+    // Rotating people use an interpolated coordinate between
+    // their old place and the new one
+    if (entity.components.people && entity.components.people.state === 'rotating') {
+      const t = this.app.rotationTheta;
+      const prev_x = entity.components.people.old_x;
+      const dx = x - prev_x;
+      x = prev_x + (x - prev_x) * t;
+      const prev_y = entity.components.people.old_y;
+      const dy = y - prev_y;
+      y = prev_y + (y - prev_y) * t;
+    }
 
     // Offset player who moves between the grid cells
     if (entity.components.player) {
@@ -232,6 +253,28 @@ class RenderingSystem extends ECS.System
     }
 
     obj.mixer.update(obj.animSpeed);
+
+    if (entity.components.people && entity.components.people.color_changed) {
+      this.updateColor(entity);
+      entity.components.people.color_changed = false;
+    }
+  }
+
+  updateColor(entity) {
+    let rgb = 0;
+    switch (entity.components.people.color) {
+    case RED    : rgb = 0xFF0000; break;
+    case BLUE   : rgb = 0x0000FF; break;
+    case YELLOW : rgb = 0xFFFF00; break;
+    case GREEN  : rgb = 0x00FF00; break;
+    }
+
+    this.objects[entity.id]
+      .traverse(o => {
+        o.material = new THREE.MeshLambertMaterial({color: rgb, side: THREE.DoubleSide});
+        o.material.skinning = true;
+        o.castShadow = true;
+      });
   }
 
   render(dt)
@@ -260,5 +303,11 @@ class RenderingSystem extends ECS.System
     this.renderer.render(this.scene, this.camera);
     this.renderer.clearDepth();
     this.renderer.render(this.bgScene, this.bgCamera);
+  }
+
+  clearOverlay() {
+    this.overlay.clearRect(0, 0,
+                           this.app.width * this.app.scale,
+                           this.app.height * this.app.scale);
   }
 }
