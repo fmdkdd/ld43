@@ -209,6 +209,14 @@ STATES.CheckForCombos = {
 
   step(dt) {
     this.app.setState(STATES.Main);
+    switch (this.app.gameController.currentCombo) {
+    case 0: case 1: break;
+    case 2: console.log("Double combo"); break;
+    case 3: console.log("Triple combo!"); break;
+    case 4: console.log("Quadruple combo!!"); break;
+    default: console.log("Combo master!!!"); break;
+    }
+    this.app.gameController.currentCombo = 0;
   },
 };
 

@@ -21,7 +21,7 @@ class Game {
   constructor(app) {
     this.app = app;
     this.width = 7;
-    this.height = 7;
+    this.height = 10;
 
     this.grid = new Grid(this.width, this.height);
     this.randomizeGrid();
@@ -56,10 +56,10 @@ class Game {
 
     for (let y=0; y < this.height; ++y) {
       for (let x=0; x < this.width; ++x) {
-        for (let p of this.patterns) {
-          const m = this.matchPatternAt(p, x, y);
+        for (let p=0; p < this.patterns.length; ++p) {
+          const m = this.matchPatternAt(this.patterns[p], x, y);
           if (m.length > 0) {
-            matches.push(m);
+            matches.push({pattern: p, cells: m});
           }
         }
       }

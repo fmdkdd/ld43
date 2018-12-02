@@ -11,6 +11,8 @@ class GameController {
     this.timer_max = 30;
 
     this.selectedPoint = [1,3];
+
+    this.currentCombo = 0;
   }
 
   step(dt) {
@@ -39,16 +41,17 @@ class GameController {
     // Check for matches
     // If there is one, empty the cells,
     // then move all columns to fill holes after a pause
-    const matches = this.game.checkAllMatches();
-    if (matches.length > 0) {
+    this.currentMatches = this.game.checkAllMatches();
+    if (this.currentMatches.length > 0) {
 
-      // Check for RED matches
-      matches
-        .filter(m => this.game.grid.cells[m[0]] === RED)
-        .forEach(m => this.timer += m.length * 2);
-      this.timer = Math.min(this.timer, this.timer_max);
+      // Check for RED matches to refill timer
+      // this.currentMatches
+      //   .filter(m => this.game.grid.cells[m[0]] === RED)
+      //   .forEach(m => this.timer += m.length * 2);
+      // this.timer = Math.min(this.timer, this.timer_max);
 
-      this.cellsInMatch = matches.reduce((acc, val) => acc.concat(val), []);
+      this.cellsInMatch = this.currentMatches
+        .reduce((acc, m) => acc.concat(m.cells), []);
       this.app.setState(STATES.PreHighlightMatchCells);
     }
   }
@@ -130,6 +133,28 @@ class GameController {
       }
 
       this.cellsInMatch = undefined;
+
+      // Look at matches and determine their type
+      const m = groupSame(this.currentMatches
+                          .map(m => m.pattern));
+
+      if (Object.keys(m).length > 1) {
+        console.log("Multi-match!");
+      }
+
+      for (let a in m) {
+        switch (m[a]) {
+        case 1: break;
+        case 2: console.log("Double"); break;
+        case 3: console.log("Triple!"); break;
+        case 4: console.log("Quadruple!!"); break;
+        default: console.log("Amazing!!!"); break;
+        }
+      }
+
+      this.currentCombo++;
+
+      this.currentMatches = undefined;
     }
   }
 
@@ -206,4 +231,21 @@ class GameController {
 
     ctx.restore();
   }
+}
+
+
+// Group identical values of ARRAY.
+function groupSame(array) {
+  const bins = {};
+
+  for (let i=0; i < array.length; ++i) {
+    const x = array[i];
+    if (bins[x] == null) {
+      bins[x] = 1;
+    } else {
+      bins[x]++;
+    }
+  }
+
+  return bins;
 }
