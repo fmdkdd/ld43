@@ -1,16 +1,27 @@
-const DEBUG = true;
+// TODO: detection of matches for scoring
+// - Single match
+// - Double match same pattern, (etc, 2, 3, 4...)
+// - Two patterns, three, ...
+// - Combos
+
+const DEBUG = false;
 
 const RED = {};
 const BLUE = {};
 const YELLOW = {};
 const GREEN = {};
+const EMPTY = {};
 const COLORS = [RED, BLUE, YELLOW, GREEN];
 
 const MIN_MATCHES = 4;
 
-const cell_width = 40;
-const cell_height = 60;
+const cell_width = 50;
+const cell_height = 50;
 const margin = 2;
+
+const pattern_cell_width = 25;
+const pattern_cell_height = 25;
+const pattern_margin = 50;
 
 class Game {
   constructor(app) {
@@ -22,10 +33,6 @@ class Game {
     this.randomizeGrid();
 
     this.patterns = [
-      "0000\n"+
-      "0..0\n"+
-      "0000",
-
       "000\n"+
       ".0.",
 
@@ -36,8 +43,8 @@ class Game {
       ".22\n"+
       "22.",
 
-      "33.\n"+
-      "3.3",
+      "33\n"+
+      "33",
     ].map(p => p.split('\n').reverse());
   }
 
@@ -109,37 +116,75 @@ class Game {
     }
   }
 
-  pushDown(column) {
-    return this.grid.pushColumn(column, this.randomColor(), 0);
+  pushDown(column, row) {
+    return this.grid.pushColumn(column, this.randomColor(), row);
   }
 
   removeCell(cell) {
     const row = Math.floor(cell / this.width);
     const column = cell % this.width;
-    this.grid.pushColumn(column, this.randomColor(), row);
+    this.grid.putAtUnchecked(EMPTY, column, row);
   }
 
   randomColor() {
     return COLORS[Math.floor(Math.random() * 4)];
   }
 
-  render(ctx, dt, options = {}) {
-    for (let x=0; x < this.width; ++x) {
-      for (let y=0; y < this.height; ++y) {
-        // Pixel coordinates of lower left corner
-        const px = x * cell_width + margin;
-        const py = y * cell_height + margin;
-        // Pixel width and height of cell
-        const pw = cell_width - margin*2;
-        const ph = cell_height - margin*2;
+  drawPattern(pattern, ctx, dt) {
+    const h = pattern.length;
+    const w = pattern[0].length;
 
+    for (let y=0; y < h; ++y) {
+      for (let x=0; x < w; ++x) {
+        if (pattern[y][x] === '.') {
+          continue;
+        }
+
+        const px = x * pattern_cell_width;
+        const py = y * pattern_cell_height;
+
+        switch (pattern[y][x]) {
+        case '0': ctx.fillStyle = '#f00'; break;
+        case '1': ctx.fillStyle = '#00f'; break;
+        case '2': ctx.fillStyle = '#ff0'; break;
+        case '3': ctx.fillStyle = '#0f0'; break;
+        }
+
+        ctx.fillRect(px, py, pattern_cell_width, pattern_cell_height);
+      }
+    }
+  }
+
+  render(ctx, dt, options = {}) {
+    // Draw patterns
+    let pattern_x = 0;
+    for (let p of this.patterns) {
+      const w = p[0].length;
+      ctx.save();
+      ctx.translate(400 + pattern_x, 200);
+      pattern_x += pattern_cell_width * w + pattern_margin;
+      this.drawPattern(p, ctx, dt);
+      ctx.restore();
+    }
+
+    for (let x=0; x < this.width; ++x) {
+      let hole_found = false;
+      for (let y=0; y < this.height; ++y) {
         switch (this.grid.getUnchecked(x, y)) {
+        case EMPTY  : hole_found = true; continue;
         case RED    : ctx.fillStyle = '#f00'; break;
         case BLUE   : ctx.fillStyle = '#00f'; break;
         case YELLOW : ctx.fillStyle = '#ff0'; break;
         case GREEN  : ctx.fillStyle = '#0f0'; break;
         default     : ctx.fillStyle = '#000'; break;
         }
+
+        // Pixel coordinates of lower left corner
+        const px = x * cell_width + margin;
+        const py = y * cell_height + margin;
+        // Pixel width and height of cell
+        const pw = cell_width - margin*2;
+        const ph = cell_height - margin*2;
 
         const xy = y * this.grid.width + x;
         if (options.skip && options.skip.indexOf(xy) > -1) {
@@ -166,6 +211,10 @@ class Game {
           }
         }
 
+        if (options.downward && options.downward.indexOf(x) > -1 && hole_found) {
+          off_y = -options.offset_value * cell_height;
+        }
+
         ctx.fillRect(px + off_x, py + off_y, pw, ph);
 
         if (options.highlight && options.highlight.indexOf(xy) > -1) {
@@ -180,6 +229,7 @@ class Game {
           ctx.scale(1, -1);
           ctx.fillStyle = '#333';
           ctx.fillText(xy, pw/2, -ph/2);
+          ctx.fillText(x + "," + y, pw/2, -ph/2 + 10);
           ctx.restore();
         }
       }

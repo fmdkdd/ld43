@@ -119,12 +119,42 @@ class GameController {
 
   removeMatchCells() {
     if (this.cellsInMatch) {
+      this.columnsWithHoles = [];
+
       for (let c of this.cellsInMatch) {
         this.game.removeCell(c);
+        const col = c % this.game.width;
+        if (this.columnsWithHoles.indexOf(col) === -1) {
+          this.columnsWithHoles.push(col);
+        }
       }
 
       this.cellsInMatch = undefined;
     }
+  }
+
+  fillHoles() {
+    for (let c of this.columnsWithHoles) {
+      // Find first hole going up
+      for (let y=0; y < this.game.height; ++y) {
+        if (this.game.grid.get(c, y) === EMPTY) {
+          this.game.pushDown(c, y);
+          break;
+        }
+      }
+    }
+
+    // Are there any holes left?
+    this.columnsWithHoles =
+      this.columnsWithHoles
+      .filter(c => {
+        for (let y=0; y < this.game.height; ++y) {
+          if (this.game.grid.get(c, y) === EMPTY) {
+            return true;
+          }
+        }
+        return false;
+      });
   }
 
   render(dt, selected) {

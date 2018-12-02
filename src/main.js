@@ -148,30 +148,57 @@ STATES.HighlightMatchCells = {
     this.app.renderer.clearRect(0,0, this.app.canvas.width, this.app.canvas.height);
     const cells = this.app.gameController.cellsInMatch;
     this.app.gameController.render(dt, {highlight: cells});
-  }
+  },
 };
 
 STATES.RemoveMatchCells = {
   enter() {
-    this.delay = 0.3;
-  },
-
-  leave() {
     this.app.gameController.removeMatchCells();
+    this.delay = 0.1;
   },
 
   step(dt) {
     this.delay -= dt;
     if (this.delay < 0) {
-      this.app.setState(STATES.CheckForCombos);
+      this.app.setState(STATES.FillHoles);
     }
   },
 
   render(dt) {
     this.app.renderer.clearRect(0,0, this.app.canvas.width, this.app.canvas.height);
     const cells = this.app.gameController.cellsInMatch;
-    this.app.gameController.render(dt, {skip: cells});
-  }
+    this.app.gameController.render(dt);
+  },
+};
+
+STATES.FillHoles = {
+  enter() {
+    this.delay = 0.05;
+    this.delay_init = this.delay;
+  },
+
+  step(dt) {
+    this.delay -= dt;
+    if (this.delay < 0) {
+      // Actually fill holes by one unit down in the game
+      this.app.gameController.fillHoles();
+      // This updates the number of columns with holes left
+      // Continue in FillHoles state if there are holes
+      if (this.app.gameController.columnsWithHoles.length > 0) {
+        this.delay = this.delay_init;
+      } else {
+        // Otherwise go to CheckForCombos
+        this.app.setState(STATES.CheckForCombos);
+      }
+    }
+  },
+
+  render(dt) {
+    this.app.renderer.clearRect(0,0, this.app.canvas.width, this.app.canvas.height);
+    const cols = this.app.gameController.columnsWithHoles;
+    const t = this.delay / this.delay_init;
+    this.app.gameController.render(dt, {downward: cols, offset_value: 1-t});
+  },
 };
 
 STATES.CheckForCombos = {
