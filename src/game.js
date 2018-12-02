@@ -1,9 +1,3 @@
-// TODO: detection of matches for scoring
-// - Single match
-// - Double match same pattern, (etc, 2, 3, 4...)
-// - Two patterns, three, ...
-// - Combos
-
 const DEBUG = false;
 
 const RED = {};

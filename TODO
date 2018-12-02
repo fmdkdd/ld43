@@ -1,0 +1,15 @@
+@florent:
+
+- detection of matches for scoring
+  - Single match
+  - Double match same pattern, (etc, 2, 3, 4...)
+  - Two patterns, three, ...
+  - Combos
+
+- detect input on mouse down, but ignore repeats
+  (faster feedback this way)
+
+- Do a first check for combos on start
+  free points!
+
+- Add a couple of rows above grid to see what pieces are coming down
