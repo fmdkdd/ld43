@@ -29,19 +29,15 @@ class ControlsSystem extends ECS.System
     this.keys = {};
   }
 
-  input(keyboard)
+  input(keycode)
   {
-    if (keyboard.keys.down)
-      this.keys.down = true;
-    if (keyboard.keys.up)
-      this.keys.up = true;
-    if (keyboard.keys.left)
-      this.keys.left = true;
-    if (keyboard.keys.right)
-      this.keys.right = true;
-    if (keyboard.keys.z)
-      this.keys.rotateLeft = true;
-    if (keyboard.keys.x)
-      this.keys.rotateRight = true;
+    switch (keycode) {
+    case 'ArrowLeft'  : this.keys.left = true; break;
+    case 'ArrowRight' : this.keys.right = true; break;
+    case 'ArrowUp'    : this.keys.up = true; break;
+    case 'ArrowDown'  : this.keys.down = true; break;
+    case 'KeyZ'       : this.keys.rotateLeft = true; break;
+    case 'KeyX'       : this.keys.rotateLeft = true; break;
+    }
   }
 }

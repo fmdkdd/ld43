@@ -14,7 +14,10 @@ STATES.Main = {
   },
 
   keydown(event) {
-    this.app.controlsSystem.input(this.app.keyboard);
+    // Use keycode for the key placement independent of user layout
+    if (event.original) {
+      this.app.controlsSystem.input(event.original.code);
+    }
 
     if (event.key === 'enter') {
       this.app.setState(STATES.Pause);
