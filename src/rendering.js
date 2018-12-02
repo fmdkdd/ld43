@@ -10,6 +10,7 @@ class RenderingSystem extends ECS.System
     super();
 
     this.app = app;
+    this.t = 0;
     this.objects = {};
     this.objectPositions = {};
 
@@ -33,15 +34,17 @@ class RenderingSystem extends ECS.System
     // Init scene
 
     this.scene = new THREE.Scene();
-
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.set(0, 10, 2);
+console.log(this.app.width / this.app.height,this.app.width, this.app.height)
+    this.camera = new THREE.PerspectiveCamera(110, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camw = 24;
+    const camh = camw * this.app.height / this.app.width;
+    this.camera = new THREE.OrthographicCamera( -camw, camw, camh, -camh, 1, 1000);
     //this.camera.up.set(0, 1, 0);
     //this.camera.lookAt(0, 0, 0);
 
-    this.camera.position.set(0,12,-5);
+    this.camera.position.set(0,5,5*3);
     this.camera.up = new THREE.Vector3(0,0,1);
-    this.camera.lookAt(new THREE.Vector3(0,5,0));
+    this.camera.lookAt(new THREE.Vector3(0,0,5*3));
 
     //var axes = new THREE.AxesHelper();
     //this.scene.add( axes );
@@ -62,11 +65,12 @@ class RenderingSystem extends ECS.System
     const light = new THREE.PointLight(0xffffff, 0.5);
     light.position.set(0, 10, 0);
     //light.target.position.set(5, 0, 5);
-    light.castShadow = true;
+    //light.castShadow = true;
     //light.shadowCameraVisible = true;
     this.scene.add(light);
 
-    const skyLight = new THREE.HemisphereLight( 0x303655, 0x010c41, 1);
+    //const skyLight = new THREE.HemisphereLight( 0x303655, 0x010c41, 1);
+    const skyLight = new THREE.HemisphereLight( 0xFFFFFF, 0x333333, 1);
     this.scene.add(skyLight);
 
     /*var ground = new THREE.PlaneGeometry(50, 50, 32);
@@ -81,8 +85,8 @@ class RenderingSystem extends ECS.System
     const tileTexture = new THREE.TextureLoader().load('../assets/tile.png');
 
     const size = 5;
-    for (let y = 0; y < size; ++y)
-      for (let x = 0; x < size; ++x)
+    for (let y = 0; y < 10; ++y)
+      for (let x = 0; x < 7; ++x)
       {
         const box = new THREE.BoxGeometry(3, 0.5, 3);
         const material = new THREE.MeshLambertMaterial({map: tileTexture});
@@ -91,6 +95,43 @@ class RenderingSystem extends ECS.System
         tile.receiveShadow = true;
         this.scene.add(tile);
       }
+
+    // Background
+
+    this.bgCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.bgCamera.position.set(1000-10, 0, 10);
+
+    const bgTexture = new THREE.TextureLoader().load('../assets/bg.png');
+    const bgNormalTexture = new THREE.TextureLoader().load('../assets/bg_normal.png');
+
+    const box = new THREE.BoxGeometry(10, 10, 0.1);
+    const material = new THREE.MeshPhongMaterial( {
+      map: bgTexture,
+      specular: 0xFF00FF,
+      shininess: 5,
+      normalMap: bgNormalTexture
+    });
+    const bg = new THREE.Mesh(box, material);
+    bg.position.set(1000, 0, 0);
+    bg.receiveShadow = true;
+    this.scene.add(bg);
+/*
+    const box2 = new THREE.BoxGeometry(1000, 1000, 0.1);
+    const material2 = new THREE.MeshPhongMaterial( {
+      map: bgTexture,
+      specular: 0xFF00FF,
+      shininess: 5,
+      normalMap: bgNormalTexture
+    });
+    const bg2 = new THREE.Mesh(box2, material2);
+    bg2.position.set(1000, 0, -0.01);
+    bg2.receiveShadow = true;
+    this.scene.add(bg2);
+*/
+    this.bgLight = new THREE.PointLight(0x00ff00, 1);
+    this.bgLight.position.set(1000, 0, 5);
+    //this.bgLight.castShadow = true;
+    this.scene.add(this.bgLight);
 
     console.log('Renderer initialized');
   }
@@ -107,19 +148,19 @@ class RenderingSystem extends ECS.System
     const loader = new THREE.GLTFLoader();
     loader.load('../assets/guy.glb', model =>
     {
-      console.log('GLTF', model);
-
       // Add to scene
 
       this.scene.add(model.scene);
       this.objects[entity.id] = model.scene;
 
+      const colors = [ 0xff0000, 0x00ff00, 0x0000FF, 0xFFFF00];
+      const c = colors[Math.floor(Math.random()*4)];
+
       model.scene.traverse(o =>
       {
-        o.material = new THREE.MeshLambertMaterial({color: 0xFF0000, side: THREE.DoubleSide});
+        o.material = new THREE.MeshLambertMaterial({color: c, side: THREE.DoubleSide});
         o.material.skinning = true;
         o.castShadow = true;
-        console.log(o.material)
       })
 
       // Setup anims
@@ -174,7 +215,17 @@ class RenderingSystem extends ECS.System
     obj.mixer.update(obj.animSpeed);
   }
 
-  render() {
+  render(dt)
+  {
+    this.t += dt;
+
+    this.bgLight.position.setX(1000 + Math.sin(this.t)*6 - 3);
+    this.bgLight.position.setY(0 + Math.cos(this.t)*4-2);
+
+    this.renderer.autoClear = false;
+    this.renderer.clear();
+    this.renderer.render(this.scene, this.bgCamera);
+    this.renderer.clearDepth();
     this.renderer.render(this.scene, this.camera);
   }
 }

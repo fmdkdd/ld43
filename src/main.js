@@ -38,9 +38,9 @@ STATES.Main = {
     this.ecs.addEntity(player);
 
     const size = 5;
-    for (let y = 0; y < size; ++y)
+    for (let y = 0; y < 10; ++y)
     {
-      for (let x = 0; x < size; ++x)
+      for (let x = 0; x < 7; ++x)
       {
         const e = createSpawningPeople(Math.random() * 10 - 5, 10, x, y);
         this.ecs.addEntity(e);
@@ -51,7 +51,7 @@ STATES.Main = {
   render(dt) {
     // this.gameController.render(dt);
     this.ecs.update();
-    this.renderingSystem.render();
+    this.renderingSystem.render(dt);
   },
 
   pointerdown(event) {
