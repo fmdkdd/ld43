@@ -173,9 +173,9 @@ console.log(this.app.width / this.app.height,this.app.width, this.app.height)
       const mixer = new THREE.AnimationMixer( model.scene );
       this.objects[entity.id].mixer = mixer;
 
-      var clip = THREE.AnimationClip.findByName( model.animations, 'idle' );
-      var action = mixer.clipAction( clip );
-      action.play();
+      //var clip = THREE.AnimationClip.findByName( model.animations, 'idle' );
+      //var action = mixer.clipAction( clip );
+      //action.play();
 
       this.objects[entity.id].animSpeed = Math.random() * 0.016;
 
