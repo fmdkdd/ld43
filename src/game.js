@@ -1,10 +1,12 @@
-const DEBUG = false;
+const DEBUG = true;
 
 const RED = {};
 const BLUE = {};
 const YELLOW = {};
 const GREEN = {};
 const COLORS = [RED, BLUE, YELLOW, GREEN];
+
+const MIN_MATCHES = 4;
 
 const cell_width = 40;
 const cell_height = 60;
@@ -43,14 +45,14 @@ class Game {
         if (c === color) {
           cur.push(xy);
         } else {
-          if (cur.length > 2) {
+          if (cur.length > MIN_MATCHES) {
             matches.push(cur);
           }
           cur = [xy];
           color = c;
         }
       }
-      if (cur.length > 2) {
+      if (cur.length > MIN_MATCHES) {
         matches.push(cur);
       }
     }
@@ -95,7 +97,27 @@ class Game {
           continue;
         }
 
-        ctx.fillRect(px, py, pw, ph);
+        let off_x = 0;
+        let off_y = 0;
+        if (options.offset) {
+          if (options.offset_rev) {
+            switch (options.offset.indexOf(xy)) {
+            case 0: off_y = -options.offset_value * cell_height; break;
+            case 1: off_x =  options.offset_value * cell_width; break;
+            case 2: off_y =  options.offset_value * cell_height; break;
+            case 3: off_x = -options.offset_value * cell_width; break;
+            }
+          } else {
+            switch (options.offset.indexOf(xy)) {
+            case 0: off_x = -options.offset_value * cell_width; break;
+            case 1: off_y = -options.offset_value * cell_height; break;
+            case 2: off_x =  options.offset_value * cell_width; break;
+            case 3: off_y =  options.offset_value * cell_height; break;
+            }
+          }
+        }
+
+        ctx.fillRect(px + off_x, py + off_y, pw, ph);
 
         if (options.highlight && options.highlight.indexOf(xy) > -1) {
           ctx.lineWidth = 8;

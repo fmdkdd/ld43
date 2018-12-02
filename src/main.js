@@ -24,9 +24,12 @@ STATES.Main = {
 
   step(dt) {
     switch (this.upkey) {
-    case 'down': this.app.gameController.pushDown(); break;
+    case 'up': this.app.gameController.moveUp(); break;
+    case 'down': this.app.gameController.moveDown(); break;
     case 'left': this.app.gameController.moveLeft(); break;
     case 'right': this.app.gameController.moveRight(); break;
+    case 'z': this.app.gameController.rotateLeft(); break;
+    case 'x': this.app.gameController.rotateRight(); break;
     }
     this.upkey = undefined;
 
@@ -67,6 +70,56 @@ STATES.GameOver = {
     ctx.fillText('Game Over!', this.app.canvas.width/2, this.app.canvas.height/2);
   }
 }
+
+STATES.RotateLeft = {
+  enter() {
+    this.delay = 0.06;
+    this.delay_init = this.delay;
+  },
+
+  leave() {
+    this.app.gameController.rotateCellsLeft();
+  },
+
+  step(dt) {
+    this.delay -= dt;
+    if (this.delay < 0) {
+      this.app.setState(STATES.Main);
+    }
+  },
+
+  render(dt) {
+    this.app.renderer.clearRect(0,0, this.app.canvas.width, this.app.canvas.height);
+    const cells = this.app.gameController.cellsInRotation;
+    const t = this.delay / this.delay_init;
+    this.app.gameController.render(dt, {offset: cells, offset_value: 1-t});
+  },
+};
+
+STATES.RotateRight = {
+  enter() {
+    this.delay = 0.06;
+    this.delay_init = this.delay;
+  },
+
+  leave() {
+    this.app.gameController.rotateCellsRight();
+  },
+
+  step(dt) {
+    this.delay -= dt;
+    if (this.delay < 0) {
+      this.app.setState(STATES.Main);
+    }
+  },
+
+  render(dt) {
+    this.app.renderer.clearRect(0,0, this.app.canvas.width, this.app.canvas.height);
+    const cells = this.app.gameController.cellsInRotation;
+    const t = this.delay / this.delay_init;
+    this.app.gameController.render(dt, {offset: cells, offset_value: 1-t, offset_rev: true});
+  },
+};
 
 STATES.PreHighlightMatchCells = {
   enter() {

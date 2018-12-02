@@ -9,10 +9,12 @@ class GameController {
     this.selectedColumn = 0;
     this.timer = 30;
     this.timer_max = 30;
+
+    this.selectedPoint = [1,3];
   }
 
   step(dt) {
-    this.timer -= dt;
+    // this.timer -= 2 * dt;
     this.timer = Math.max(0, this.timer);
 
     if (this.timer === 0) {
@@ -24,11 +26,11 @@ class GameController {
   pushDown() {
     const out = this.game.pushDown(this.selectedColumn);
 
-    if (out === RED) {
-      this.timer += 1;
-    } else {
-      this.timer -= 1;
-    }
+    // if (out === RED) {
+    //   this.timer += 1;
+    // } else {
+    //   this.timer -= 1;
+    // }
 
     this.checkForMatches();
   }
@@ -39,17 +41,80 @@ class GameController {
     // then move all columns to fill holes after a pause
     const matches = this.game.checkAllMatches();
     if (matches.length > 0) {
+
+      // Check for RED matches
+      matches
+        .filter(m => this.game.grid.cells[m[0]] === RED)
+        .forEach(m => this.timer += m.length * 2);
+      this.timer = Math.min(this.timer, this.timer_max);
+
       this.cellsInMatch = matches.reduce((acc, val) => acc.concat(val), []);
       this.app.setState(STATES.PreHighlightMatchCells);
     }
   }
 
+  moveUp() {
+    this.selectedPoint[1] = Math.min(this.game.height - 1, this.selectedPoint[1] + 1);
+  }
+
+  moveDown() {
+    this.selectedPoint[1] = Math.max(1, this.selectedPoint[1] - 1);
+  }
+
   moveLeft() {
-    this.selectedColumn = Math.max(0, this.selectedColumn - 1);
+    this.selectedPoint[0] = Math.max(1, this.selectedPoint[0] - 1);
   }
 
   moveRight() {
-    this.selectedColumn = Math.min(this.game.width-1, this.selectedColumn + 1);
+    this.selectedPoint[0] = Math.min(this.game.width - 1, this.selectedPoint[0] + 1);
+  }
+
+  rotateLeft() {
+    const [x,y] = this.selectedPoint;
+    this.cellsInRotation = [
+      [x, y],
+      [x-1, y],
+      [x-1, y-1],
+      [x, y-1]
+    ].map(([x,y]) => y * this.game.width + x);
+    this.app.setState(STATES.RotateLeft);
+  }
+
+  rotateCellsLeft() {
+    if (this.cellsInRotation) {
+      const grid = this.game.grid.cells;
+      const c = this.cellsInRotation;
+      const bak = grid[c[0]];
+      grid[c[0]] = grid[c[3]];
+      grid[c[3]] = grid[c[2]];
+      grid[c[2]] = grid[c[1]];
+      grid[c[1]] = bak;
+      this.cellsInRotation = undefined;
+    }
+  }
+
+  rotateRight() {
+    const [x,y] = this.selectedPoint;
+    this.cellsInRotation = [
+      [x, y],
+      [x-1, y],
+      [x-1, y-1],
+      [x, y-1]
+    ].map(([x,y]) => y * this.game.width + x);
+    this.app.setState(STATES.RotateRight);
+  }
+
+  rotateCellsRight() {
+    if (this.cellsInRotation) {
+      const grid = this.game.grid.cells;
+      const c = this.cellsInRotation;
+      const bak = grid[c[0]];
+      grid[c[0]] = grid[c[1]];
+      grid[c[1]] = grid[c[2]];
+      grid[c[2]] = grid[c[3]];
+      grid[c[3]] = bak;
+      this.cellsInRotation = undefined;
+    }
   }
 
   removeMatchCells() {
@@ -73,11 +138,13 @@ class GameController {
     // Draw priest
     ctx.fillStyle = '#fff';
     ctx.save();
-    ctx.translate(this.selectedColumn * cell_width, 450);
+    ctx.translate(this.selectedPoint[0] * cell_width,
+                  this.selectedPoint[1] * cell_height);
     ctx.beginPath();
-    ctx.moveTo(5, 0);
-    ctx.lineTo(20, -20);
-    ctx.lineTo(35, 0);
+    ctx.moveTo(-10,  0);
+    ctx.lineTo(  0, 10);
+    ctx.lineTo( 10,  0);
+    ctx.lineTo(  0,-10);
     ctx.fill();
     ctx.restore();
 
