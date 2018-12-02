@@ -41,6 +41,25 @@ STATES.Pause = {
   },
 };
 
+STATES.Rotating = {
+  enter() {
+    this.delay = 0.06;
+    this.delay_init = this.delay;
+  },
+
+  leave() {
+
+  },
+
+  step(dt) {
+    this.delay = Math.max(0, this.delay - dt);
+    this.app.rotationTheta = 1 - (this.delay / this.delay_init);
+    if (this.delay === 0) {
+      this.app.setState(STATES.CheckForCombos);
+    }
+  },
+};
+
 // Skip the loading screen.  It always lasts at least 500ms, even without
 // assets.
 delete PLAYGROUND.LoadingScreen
@@ -95,7 +114,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.ecs = new ECS();
 
       //this.ecs.addSystem(new CrowdSystem(this.app));
-      //this.ecs.addSystem(new PeopleSystem(this.app));
+      this.ecs.addSystem(new PeopleSystem(this));
       this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this));
       this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this));
     },

@@ -71,6 +71,8 @@ class GameSystem extends ECS.System {
     for (let i=0; i < 4; ++i) {
       this.updateEntityPos(grid[c[i]], c[i]);
     }
+
+    this.app.setState(STATES.Rotating);
   }
 
   rotateRight(entity) {
@@ -92,14 +94,19 @@ class GameSystem extends ECS.System {
     for (let i=0; i < 4; ++i) {
       this.updateEntityPos(grid[c[i]], c[i]);
     }
+
+    this.app.setState(STATES.Rotating);
   }
 
   updateEntityPos(entity_id, grid_xy) {
     const e = this.app.ecs.getEntityById(this.grid[grid_xy]);
     const px = grid_xy % this.gridWidth;
     const py = Math.floor(grid_xy / this.gridWidth);
-    e.components.pos.x = px;
-    e.components.pos.y = py;
+    e.components.people.new_x = px;
+    e.components.people.new_y = py;
+    e.components.people.old_x = e.components.pos.x;
+    e.components.people.old_y = e.components.pos.y;
+    e.components.people.state = 'rotating';
   }
 }
 

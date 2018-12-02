@@ -212,6 +212,8 @@ class RenderingSystem extends ECS.System
     const prevPosition = obj.position.clone();
 
     let {x, y} = entity.components.pos;
+
+    // Offset player who moves between the grid cells
     if (entity.components.player) {
       x -= 0.5;
       y -= 0.5;
