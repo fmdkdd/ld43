@@ -11,11 +11,13 @@ class GameSystem extends ECS.System {
     super();
     this.app = app;
 
-    this.player = createPlayer(1,1);
-    this.app.ecs.addEntity(this.player);
-
     this.gridHeight = 10;
     this.gridWidth = 7;
+
+    this.player = createPlayer(Math.floor(this.gridWidth / 2),
+                               Math.floor(this.gridHeight / 2));
+    this.app.ecs.addEntity(this.player);
+
     this.grid = new Array(this.gridWidth * this.gridHeight);
     for (let y = 0; y < this.gridHeight; ++y) {
       for (let x = 0; x < this.gridWidth; ++x) {
@@ -67,7 +69,7 @@ class GameSystem extends ECS.System {
 
   step(dt) {
     if (this.timer === 0) {
-      this.app.setState(STATES.RemoveBottomRow);
+      this.app.setState(STATES.WrathOfGod);
       this.timer = 1;
       return;
     }

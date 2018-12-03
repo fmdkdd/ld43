@@ -5,9 +5,13 @@
 - New game screen with game rules
   (press start to begin)
 
+- Start screen choose between timed mode and infinite (no timer)
+
 - Fade in/out pause and gameover screens
 
 - Animate player movement
+
+- Drop all tiles behind game over screen
 
 - Flash timer when nearly out
 
