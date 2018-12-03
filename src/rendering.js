@@ -241,18 +241,21 @@ class RenderingSystem extends ECS.System
         head.rotation.x = Math.PI*2;
         head.position.y += 0.75;
 
-        head.material = new THREE.MeshLambertMaterial({color: 0xf0cd93});
+        const skinColors = [0x5b452d, 0x7e6620, 0xfed253, 0xfff0d1];
+        head.material = new THREE.MeshLambertMaterial({color: skinColors[Math.floor(Math.random()*4)]});
       }
 
       const hair = model.scene.getObjectByName('hair');
       if (hair)
       {
-        hair.material = new THREE.MeshLambertMaterial({color: 0x663F26});
+        const hairColors = [0x201600, 0x663F26, 0xffe600, 0xffae00];
+        hair.material = new THREE.MeshLambertMaterial({color: hairColors[Math.floor(Math.random()*4)]});
       }
 
       // Setup anims
 
       const clips = model.animations;
+      console.log(clips)
       clips.forEach((clip) => {
         if (clip.validate()) clip.optimize();
       });
