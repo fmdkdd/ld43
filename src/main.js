@@ -50,11 +50,12 @@ STATES.Rotating = {
   },
 
   step(dt) {
-    this.delay = Math.max(0, this.delay - dt);
-    this.app.rotationTheta = 1 - (this.delay / this.delay_init);
     if (this.delay === 0) {
       this.app.setState(STATES.CheckMatches);
     }
+
+    this.delay = Math.max(0, this.delay - dt);
+    this.app.rotationTheta = 1 - (this.delay / this.delay_init);
   },
 };
 
@@ -70,9 +71,9 @@ STATES.CheckMatches = {
 
     switch (this.app.game.currentCombo) {
     case 0: case 1: break;
-    case 2: console.log("Double combo"); break;
-    case 3: console.log("Triple combo!"); break;
-    case 4: console.log("Quadruple combo!!"); break;
+    case 2: console.log("Combo"); break;
+    case 3: console.log("Double combo!"); break;
+    case 4: console.log("Triple combo!!"); break;
     default: console.log("Combo master!!!"); break;
     }
 
@@ -86,10 +87,10 @@ STATES.PreHighlightMatchCells = {
   },
 
   step(dt) {
-    this.delay = Math.max(0, this.delay - dt);
-    if (this.delay <= 0) {
+    if (this.delay === 0) {
       this.app.setState(STATES.HighlightMatchCells);
     }
+    this.delay = Math.max(0, this.delay - dt);
   },
 }
 
@@ -99,10 +100,10 @@ STATES.HighlightMatchCells = {
   },
 
   step(dt) {
-    this.delay = Math.max(0, this.delay - dt);
-    if (this.delay <= 0) {
+    if (this.delay === 0) {
       this.app.setState(STATES.RemoveMatchCells);
     }
+    this.delay = Math.max(0, this.delay - dt);
   },
 
   render(dt) {
@@ -117,10 +118,11 @@ STATES.RemoveMatchCells = {
   },
 
   step(dt) {
-    this.delay = Math.max(0, this.delay - dt);
-    if (this.delay <= 0) {
+    if (this.delay === 0) {
       this.app.setState(STATES.FillHoles);
     }
+
+    this.delay = Math.max(0, this.delay - dt);
   },
 };
 
@@ -128,22 +130,23 @@ STATES.FillHoles = {
   enter() {
     this.delay = 0.05;
     this.delay_init = this.delay;
+    this.app.rotationTheta = 0;
+    this.app.game.fillHoles();
   },
 
   step(dt) {
-    this.delay = Math.max(0, this.delay - dt);
-    if (this.delay <= 0) {
-      // Actually fill holes by one unit down in the game
-      this.app.game.fillHoles();
-      // This updates the number of columns with holes left
+    if (this.delay === 0) {
       // Continue in FillHoles state if there are holes
       if (this.app.game.columnsWithHoles.length > 0) {
-        this.delay = this.delay_init;
+        this.app.setState(STATES.FillHoles);
       } else {
         // Otherwise go to CheckMatches
         this.app.setState(STATES.CheckMatches);
       }
     }
+
+    this.delay = Math.max(0, this.delay - dt);
+    this.app.rotationTheta = 1 - (this.delay / this.delay_init);
   },
 };
 

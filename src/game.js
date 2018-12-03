@@ -94,7 +94,7 @@ class GameSystem extends ECS.System {
     grid[c[1]] = bak;
 
     for (let i=0; i < 4; ++i) {
-      this.updateEntityPos(grid[c[i]], c[i]);
+      this.moveEntityTo(grid[c[i]], c[i]);
     }
 
     this.app.setState(STATES.Rotating);
@@ -117,14 +117,14 @@ class GameSystem extends ECS.System {
     grid[c[3]] = bak;
 
     for (let i=0; i < 4; ++i) {
-      this.updateEntityPos(grid[c[i]], c[i]);
+      this.moveEntityTo(grid[c[i]], c[i]);
     }
 
     this.app.setState(STATES.Rotating);
   }
 
-  updateEntityPos(entity_id, grid_xy) {
-    const e = this.app.ecs.getEntityById(this.grid[grid_xy]);
+  moveEntityTo(entity_id, grid_xy) {
+    const e = this.app.ecs.getEntityById(entity_id);
     const px = grid_xy % this.gridWidth;
     const py = Math.floor(grid_xy / this.gridWidth);
     e.components.people.old_x = e.components.pos.x;
@@ -241,9 +241,9 @@ class GameSystem extends ECS.System {
       for (let a in m) {
         switch (m[a]) {
         case 1: break;
-        case 2: console.log("Double"); break;
-        case 3: console.log("Triple!"); break;
-        case 4: console.log("Quadruple!!"); break;
+        case 2: console.log("Double match"); break;
+        case 3: console.log("Triple match!"); break;
+        case 4: console.log("Quadruple match!!"); break;
         default: console.log("Amazing!!!"); break;
         }
       }
@@ -257,7 +257,7 @@ class GameSystem extends ECS.System {
   removeCell(cell) {
     const y = Math.floor(cell / this.gridWidth);
     const x = cell % this.gridWidth;
-    this.setXY(x, y, EMPTY);
+    this.removeXY(x, y);
   }
 
   fillHoles() {
@@ -288,9 +288,9 @@ class GameSystem extends ECS.System {
     const out = this.getXY(x, y);
 
     for (; y < this.gridHeight - 1; ++y) {
-      this.setXY(x, y, this.getXY(x, y + 1));
+      this.moveXYDown(x, y + 1);
     }
-    this.setXY(x, y, randomColor());
+    this.addXY(x, y, randomColor());
 
     return out;
   }
@@ -305,23 +305,35 @@ class GameSystem extends ECS.System {
     }
   }
 
-  setXY(x, y, color) {
+  removeXY(x, y) {
     const xy = y * this.gridWidth + x;
     const id = this.grid[xy];
+    this.app.ecs.removeEntityById(id);
+    this.grid[xy] = EMPTY;
+  }
 
-    if (id === EMPTY) {
-      const e = createPeople(x, y, color);
-      this.app.ecs.addEntity(e);
-      this.grid[xy] = e.id;
-    } else {
-      const e = this.app.ecs.getEntityById(id);
-      if (color === EMPTY) {
-        this.app.ecs.removeEntity(e);
-        this.grid[xy] = EMPTY;
-      } else {
-        e.components.people.color = color;
-        e.components.people.color_changed = true;
-      }
+  addXY(x, y, color) {
+    const xy = y * this.gridWidth + x;
+    const e = createPeople(x, y+1, color);
+    this.app.ecs.addEntity(e);
+    this.grid[xy] = e.id;
+    this.moveEntityTo(e.id, xy);
+  }
+
+  moveXYDown(x, y) {
+    // const from = (y+1) * this.gridWidth + x;
+    // const up = this.grid[from];
+
+    const xy = y * this.gridWidth + x;
+    const down = xy - this.gridWidth;
+    const id = this.grid[xy];
+
+    if (id !== EMPTY) {
+      this.grid[down] = id;
+      //const e = this.app.ecs.getEntityById(id);
+      // e.components.people.color = color;
+      // e.components.people.color_changed = true;
+      this.moveEntityTo(id, down);
     }
   }
 }
