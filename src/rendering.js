@@ -165,6 +165,10 @@ class RenderingSystem extends ECS.System
             .start(this.t);
         }
 
+        // God head
+
+        this.godHead = model.scene.getObjectByName('head002');
+
         // God light
 
         this.godPivot = model.scene.getObjectByName('head_pivot');
@@ -176,8 +180,6 @@ class RenderingSystem extends ECS.System
         godLight2.add(new THREE.PointLight(0x7c5d00, 0.3));
 
         // God anims
-
-        //console.log('animations', model.animations);
 
         this.godClips = model.animations;
         this.godClips.forEach((clip) => {
@@ -251,7 +253,6 @@ class RenderingSystem extends ECS.System
       });
       this.objects[entity.id].clips = clips;
 
-      console.log(clips);
       const mixer = new THREE.AnimationMixer(model.scene);
       this.objects[entity.id].mixer = mixer;
 
@@ -303,11 +304,14 @@ class RenderingSystem extends ECS.System
     obj.position.setY(0);
 
     // Look forward
-    if (obj.position.distanceTo(prevPosition) > 0.5)
+    /*if (obj.position.distanceTo(prevPosition) > 0.5)
     {
       const dir = obj.position.clone().sub(prevPosition).normalize();
       obj.lookAt(obj.position.clone().add(dir))
-    }
+    }*/
+
+    // Face the god
+    obj.lookAt(new THREE.Vector3(-50, 0, 30));
 
     obj.mixer.update(obj.animSpeed);
 
