@@ -100,12 +100,26 @@ STATES.Main = {
 };
 
 STATES.Pause = {
-  enter() {
-    console.log('pause!');
-  },
+  render(dt) {
+    const ctx = this.app.renderingSystem.overlay;
+    const w = this.app.width * this.app.scale;
+    const h = this.app.height * this.app.scale;
 
-  leave() {
-    console.log('unpause!');
+    // Fill overlay background
+    ctx.fillStyle = 'rgba(0,0,0,0.8)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = '46px sans-serif';
+    ctx.fillStyle = '#fff';
+
+    let text = 'PAUSE';
+    let m = ctx.measureText(text);
+    ctx.fillText(text, this.app.width/2 - m.width/2, this.app.height/2);
+
+    text = 'Press ENTER to continue';
+    ctx.font = '20px sans-serif';
+    m = ctx.measureText(text);
+    ctx.fillText(text, this.app.width/2 - m.width/2, this.app.height/2 + 50);
   },
 
   keydown(event) {

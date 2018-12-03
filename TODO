@@ -2,7 +2,8 @@
 
 @florent:
 
-- Pause screen
+- New game screen with game rules
+  (press start to begin)
 
 - Animate player movement
 
@@ -64,3 +65,5 @@ Done:
 
 - When the timer reaches 0, the bottom row of pieces falls down, and that row is
   lost forever.  You angried the god.  The play area is shrinked.
+
+- Pause screen
