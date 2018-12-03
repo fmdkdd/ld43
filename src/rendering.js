@@ -75,25 +75,7 @@ class RenderingSystem extends ECS.System
 
     // Ground
 
-    const tileTexture = this.app.textures['assets/tile.png'];
-
-    const tileGeometry = new THREE.BoxGeometry(worldScale, 0.5, worldScale);
-
-    this.tiles = [];
-
-    for (let y = 0; y < 10; ++y)
-      for (let x = 0; x < 7; ++x)
-      {
-        const tileMaterial = new THREE.MeshLambertMaterial({map: tileTexture,
-                                                            emissive: 0xff0000,
-                                                            emissiveIntensity: 0});
-        const tile = new THREE.Mesh(tileGeometry, tileMaterial);
-        tile.position.set(-x * worldScale, -0.25, y * worldScale)
-        tile.receiveShadow = true;
-        this.scene.add(tile);
-
-        this.tiles.push(tile);
-      }
+    this.buildTiles();
 
     // Background
 
@@ -200,6 +182,26 @@ class RenderingSystem extends ECS.System
     this.bgScene.add(this.bgLight);*/
 
     this.sceneBuilt = true;
+  }
+
+  buildTiles() {
+    this.tiles = [];
+    const tileTexture = this.app.textures['assets/tile.png'];
+    const tileGeometry = new THREE.BoxGeometry(worldScale, 0.5, worldScale);
+
+    for (let y = 0; y < 10; ++y)
+      for (let x = 0; x < 7; ++x)
+      {
+        const tileMaterial = new THREE.MeshLambertMaterial({map: tileTexture,
+                                                            emissive: 0xff0000,
+                                                            emissiveIntensity: 0});
+        const tile = new THREE.Mesh(tileGeometry, tileMaterial);
+        tile.position.set(-x * worldScale, -0.25, y * worldScale)
+        tile.receiveShadow = true;
+        this.scene.add(tile);
+
+        this.tiles.push(tile);
+      }
   }
 
   test(entity)
@@ -572,7 +574,7 @@ class RenderingSystem extends ECS.System
         .start(this.t)
         .onComplete(_ => {
           this.scene.remove(tile);
-          delete this.tiles[tileIndex + i];
+          //delete this.tiles[tileIndex + i];
         });
 
       // Also move to the center

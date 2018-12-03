@@ -91,12 +91,16 @@ class GameSystem extends ECS.System {
       return;
     }
 
+    this.emptyBottomRow();
+
+    this.bottomRow++;
+  }
+
+  emptyBottomRow() {
     // Empty all cells, and remove entities of bottom row
     for (let x=0; x < this.gridWidth; ++x) {
       this.removeXY(x, this.bottomRow);
     }
-
-    this.bottomRow++;
   }
 
   test(entity) {

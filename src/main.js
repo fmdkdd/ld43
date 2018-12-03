@@ -134,10 +134,23 @@ STATES.Tuto2 = {
 };
 
 STATES.GameOver = {
+  enter() {
+    // Remove remaining rows
+    this.app.game.emptyBottomRow();
+    this.app.renderingSystem.makeTilesFall(++this.app.game.bottomRow, 1);
+    this.app.game.emptyBottomRow();
+    this.app.renderingSystem.makeTilesFall(++this.app.game.bottomRow, 1);
+    this.app.game.emptyBottomRow();
+    this.app.ecs.removeEntity(this.app.game.player);
+  },
+
   leave() {
     // Remove the previous game system properly
     this.app.game.destroySystem();
     this.app.ecs.removeSystem(this.app.game);
+
+    // Add the tiles back
+    this.app.renderingSystem.buildTiles();
   },
 
   render(dt) {

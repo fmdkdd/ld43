@@ -6,7 +6,6 @@ Florent
 
 - Flash timer when timer nearly out
 - Trigger god animation when timer nearly out
-- Drop all tiles behind game over screen
 - Start screen choose between timed mode and infinite (no timer)
 - Trigger god animation/small shake for combos?
 - Adjust timer/score variables (higher multipliers, faster speed)
@@ -97,3 +96,5 @@ Done
   (press start to begin)
 
 - Set github pages to fetch from master
+
+- Drop all tiles behind game over screen
