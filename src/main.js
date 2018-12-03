@@ -119,6 +119,7 @@ STATES.RemoveBottomRow = {
   },
 
   leave() {
+    this.app.renderingSystem.makeTilesFall(this.app.game.bottomRow, 1);
     this.app.game.removeBottomRow();
     this.app.renderingSystem.fillTimer(this.app.game.timer);
   },
