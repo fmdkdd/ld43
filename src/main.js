@@ -31,6 +31,15 @@ STATES.Main = {
       this.app.renderingSystem.fillTimer(0.1);
     if (event.key === 'u')
       this.app.renderingSystem.fillTimer(0.9);
+
+    if (event.key === 'g')
+      this.app.renderingSystem.animateGod(0);
+    if (event.key === 'h')
+      this.app.renderingSystem.animateGod(1);
+    if (event.key === 'j')
+      this.app.renderingSystem.animateGod(2);
+    if (event.key === 'k')
+      this.app.renderingSystem.animateGod(3);
   }
 };
 

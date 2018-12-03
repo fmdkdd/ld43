@@ -137,16 +137,12 @@ class RenderingSystem extends ECS.System
 
         console.log('animations', model.animations);
 
-        const clips = model.animations;
-        clips.forEach((clip) => {
+        this.godClips = model.animations;
+        this.godClips.forEach((clip) => {
           if (clip.validate()) clip.optimize();
         });
 
-        const animNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
         this.godMixer = new THREE.AnimationMixer(model.scene);
-        var clip = THREE.AnimationClip.findByName( model.animations, animNames[3]);
-        var action = this.godMixer.clipAction( clip );
-        action.play();
       }
     });
 
@@ -336,6 +332,14 @@ class RenderingSystem extends ECS.System
       .to({x: t}, 0.5)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start(this.t);
-    console.log(t, this.timerFill.scale)
+  }
+
+  animateGod(clipIndex, repeat)
+  {
+      const clipNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
+      var clip = THREE.AnimationClip.findByName(this.godClips, clipNames[clipIndex]);
+
+      this.godMixer.stopAllAction();
+      this.godMixer.clipAction(clip).play();
   }
 }
