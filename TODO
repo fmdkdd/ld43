@@ -5,10 +5,8 @@ Florent
 --------
 
 - Flash timer when timer nearly out
-- Trigger god animation when timer nearly out
 - Start screen choose between timed mode and infinite (no timer)
 - Trigger god animation/small shake for combos?
-- Adjust timer/score variables (higher multipliers, faster speed)
 
 - Prepare page with screenshots/gameplay clips
 - SUBMIT to LD!
@@ -20,6 +18,7 @@ Florent
 
 - Fade in/out pause and gameover screens
 - Add 2x, 3x multipliers indicators below runes
+- Playtest
 
 --------
 Merwan
@@ -98,3 +97,5 @@ Done
 - Set github pages to fetch from master
 
 - Drop all tiles behind game over screen
+- Adjust timer/score variables (higher multipliers, faster speed)
+- Trigger god animation when timer nearly out

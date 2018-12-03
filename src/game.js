@@ -51,6 +51,7 @@ class GameSystem extends ECS.System {
     this.timer = 1;
     this.timerSpeed = .04;
     this.timerSpeedMax = .1;
+    this.timer_low_threshold = .25;
 
     this.scoreIntoTimer = .001;
     this.scoreIntoTimerSpeed = .00001;
@@ -74,11 +75,11 @@ class GameSystem extends ECS.System {
   step(dt) {
     if (this.timer === 0) {
       this.app.setState(STATES.WrathOfGod);
-      this.timer = 1;
+      this.setTimer(1);
       return;
     }
 
-    this.timer = Math.max(0, this.timer - this.timerSpeed * dt);
+    this.setTimer(Math.max(0, this.timer - this.timerSpeed * dt));
     if (this.app.renderingSystem.timerFill) {
       this.app.renderingSystem.timerFill.scale.x = this.timer;
     }
@@ -366,7 +367,7 @@ class GameSystem extends ECS.System {
         .start(this.app.renderingSystem.t);
 
       // Refill timer
-      this.timer += matchScore * this.scoreIntoTimer;
+      this.setTimer(this.timer + matchScore * this.scoreIntoTimer);
       this.timer = clamp(this.timer, 0, 1);
       this.app.renderingSystem.fillTimer(this.timer);
 
@@ -375,6 +376,18 @@ class GameSystem extends ECS.System {
       this.timerSpeed = clamp(this.timerSpeed, 0, this.timerSpeedMax);
 
       this.currentMatches = undefined;
+    }
+  }
+
+  setTimer(new_val) {
+    this.timer = new_val;
+
+    if (new_val <= this.timer_low_threshold && !this.timerBarPassed) {
+      this.timerBarPassed = true;
+      this.app.renderingSystem.animateGod(1);
+    }
+    if (new_val > this.timer_low_threshold && this.timerBarPassed) {
+      this.timerBarPassed = false;
     }
   }
 
