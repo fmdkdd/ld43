@@ -1,4 +1,4 @@
-const DEBUG = false;
+let DEBUG = false;
 const STATES = {};
 
 STATES.Main = {
@@ -247,6 +247,12 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.renderingSystem.render(dt);
     },
 
+    keyup(event) {
+      if (event.key === 'f2') {
+        DEBUG = !DEBUG;
+      }
+    },
+
     ready() {
 
       if (!Detector.webgl) {
@@ -256,7 +262,11 @@ window.addEventListener('DOMContentLoaded', function main() {
       }
 
       // Prevent default scrolling
-      window.addEventListener('keydown', ev => ev.preventDefault());
+      window.addEventListener('keydown', ev => {
+        if ([32, 37, 38, 39, 40].indexOf(ev.keyCode) > -1) {
+          ev.preventDefault()
+        }
+      });
 
       // Go to default state
       this.setState(STATES.Main);

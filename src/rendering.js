@@ -226,10 +226,10 @@ class RenderingSystem extends ECS.System
     let {x, y} = entity.components.pos;
 
     if (DEBUG && !entity.components.player) {
-      this.overlay.fillStyle = '#555';
-      this.overlay.font = '20px sans-serif';
-      const px = 70 + x * 56;
-      const py = 585 - y * 56;
+      this.overlay.fillStyle = '#aaa';
+      this.overlay.font = '18px sans-serif';
+      const px = 100 + x * 50;
+      const py = 545 - y * 50;
       const xy = y * this.app.game.gridWidth + x;
       this.overlay.fillText(xy, px, py);
     }

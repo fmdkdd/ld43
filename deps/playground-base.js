@@ -2301,7 +2301,7 @@ PLAYGROUND.Keyboard = function(app) {
   this.keyupEvent = {};
   this.keypressEvent = {};
 
-  this.preventDefault = true;
+  this.preventDefault = false;
 
   this.enabled = true;
 
@@ -2446,8 +2446,8 @@ PLAYGROUND.Keyboard.prototype = {
       if (!bypass) {
         // e.returnValue = false;
         // e.keyCode = 0;
-        e.preventDefault();
-        e.stopPropagation();
+        // e.preventDefault();
+        // e.stopPropagation();
       }
 
     }
@@ -2816,7 +2816,7 @@ PLAYGROUND.Mouse = function(app, element) {
 
   this.element = element;
 
-  this.preventContextMenu = true;
+  this.preventContextMenu = false;
 
   this.enabled = true;
 
@@ -2841,7 +2841,7 @@ PLAYGROUND.Mouse = function(app, element) {
   this.mouseoutlistener = this.mouseout.bind(this);
   this.contextmenulistener = function(e) {
 
-    if (self.preventContextMenu && !e.metaKey) e.preventDefault();
+    // if (self.preventContextMenu && !e.metaKey) e.preventDefault();
 
   };
 
@@ -3890,7 +3890,7 @@ PLAYGROUND.Touch.prototype = {
 
     var prevent = !PLAYGROUND.Utils.classInParents(e.target, "ui");
 
-    if (prevent) e.preventDefault();
+    // if (prevent) e.preventDefault();
 
   },
 
@@ -3922,7 +3922,7 @@ PLAYGROUND.Touch.prototype = {
 
     var prevent = !PLAYGROUND.Utils.classInParents(e.target, "ui");
 
-    if (prevent) e.preventDefault();
+    // if (prevent) e.preventDefault();
 
   },
 
@@ -3949,7 +3949,7 @@ PLAYGROUND.Touch.prototype = {
 
     var prevent = !PLAYGROUND.Utils.classInParents(e.target, "ui");
 
-    if (prevent) e.preventDefault();
+    // if (prevent) e.preventDefault();
 
   }
 
