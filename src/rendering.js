@@ -112,6 +112,11 @@ class RenderingSystem extends ECS.System
 
       this.bgScene.add(model.scene);
 
+      // Timer
+
+      this.timerFill = model.scene.getObjectByName('timer_fill');
+      this.timerFill.material = new THREE.MeshLambertMaterial({emissive: 0xffffff});
+
       if (!this.app.lowGraphics)
       {
         // Eyes
@@ -323,5 +328,14 @@ class RenderingSystem extends ECS.System
       .easing(TWEEN.Easing.Bounce.InOut)
       .chain(new TWEEN.Tween(this.bgCamera.position).to({x: 1000, y: -5}, shakeDur / 2)) // Back to original pos
       .start(this.t);
+  }
+
+  fillTimer(t)
+  {
+    new TWEEN.Tween(this.timerFill.scale)
+      .to({x: t}, 0.5)
+      .easing(TWEEN.Easing.Quadratic.InOut)
+      .start(this.t);
+    console.log(t, this.timerFill.scale)
   }
 }

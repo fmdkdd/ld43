@@ -26,6 +26,11 @@ STATES.Main = {
 
     if (event.key === 't')
       this.app.renderingSystem.shake(0.5, 10, 2);
+
+    if (event.key === 'y')
+      this.app.renderingSystem.fillTimer(0.1);
+    if (event.key === 'u')
+      this.app.renderingSystem.fillTimer(0.9);
   }
 };
 
