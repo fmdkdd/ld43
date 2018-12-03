@@ -243,6 +243,7 @@ class RenderingSystem extends ECS.System
 
         const skinColors = [0x5b452d, 0x7e6620, 0xfed253, 0xfff0d1];
         head.material = new THREE.MeshLambertMaterial({color: skinColors[Math.floor(Math.random()*4)]});
+        head.getObjectByName('nose').material = head.material;
       }
 
       const hair = model.scene.getObjectByName('hair');
