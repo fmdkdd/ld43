@@ -7,6 +7,8 @@ const STATES = {};
 
 STATES.TitleScreen = {
   enter() {
+    this.app.renderingSystem.buildScene();
+    this.app.ecs.addSystem(this.app.particleSystem = new ParticleSystem(this.app));
     // Start loading the game for the tutorial
     this.app.ecs.addSystem(this.app.game = new GameSystem(this.app));
   },
@@ -461,8 +463,8 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.stats.dom.style.bottom = 0;
       document.body.appendChild(this.stats.dom);
 
-      //this.loadData('../assets/box.json');
-      //this.loadData('../assets/guy.json');
+      //this.loadData('/assets/box.json');
+      //this.loadData('/assets/guy.json');
     },
 
     create() {
@@ -479,20 +481,14 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.loadSounds('voice-of-god');
       this.sound.alias('voice-scaled', 'voice-of-god', .4, 1);
 
-      // this.loadSounds('putdown');
-      // this.loadSounds('rotate');
-      // this.loadSounds('level-solved');
-      // this.sound.alias('pickup-scaled', 'pickup', .03, 1);
-      // this.sound.alias('putdown-scaled', 'putdown', .035, 1);
-      // this.sound.alias('rotate-scaled', 'rotate', .02, 1);
-      // this.sound.alias('level-solved-scaled', 'level-solved', .45, 1);
-      // this.loadSounds('happy-clouds');
-
-      // this.textureLoader = new THREE.TextureLoader();
-      // this.textures = {};
-      // this.loadTexture('data/dust.png');
-      // this.loadTexture('data/smoke.png');
-      // this.loadTexture('data/stars.png');
+      // Load textures
+      this.textureLoader = new THREE.TextureLoader();
+      this.textures = {};
+      this.loadTexture('/assets/tile.png');
+      this.loadTexture('/assets/particle.png');
+      this.loadTexture('/assets/bg.png');
+      this.loadTexture('/assets/bg_normal.png');
+      this.loadTexture('/assets/wall_normal.jpg');
 
       const lowGraphicsStorage = localStorage.getItem('lowgraphics');
       this.lowGraphics = lowGraphicsStorage === 'true';
@@ -513,7 +509,6 @@ window.addEventListener('DOMContentLoaded', function main() {
       // this.ecs.addSystem(new PeopleSystem(this));
       this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this));
       this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this));
-      this.ecs.addSystem(this.particleSystem = new ParticleSystem(this));
     },
 
     loadTexture(path) {

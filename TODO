@@ -4,23 +4,23 @@
 Florent
 --------
 
-- Flash timer when nearly out
+- Flash timer when timer nearly out
+- Trigger god animation when timer nearly out
 - Drop all tiles behind game over screen
 - Start screen choose between timed mode and infinite (no timer)
 - Trigger god animation/small shake for combos?
+- Adjust timer/score variables (higher multipliers, faster speed)
 
-- Fade in/out pause and gameover screens
+- Prepare page with screenshots/gameplay clips
+- SUBMIT to LD!
 
-- Add 2x, 3x multipliers indicators below runes
+- Comment out debug code and keybindings
+  remove stray console.log
 
 - Music (Aztec-like... drummy)
 
-- Prepare page with screenshots/gameplay clips
-
-- SUBMIT to LD!
-
-- Set github pages to fetch from master
-- Comment out debug code and keybindings
+- Fade in/out pause and gameover screens
+- Add 2x, 3x multipliers indicators below runes
 
 --------
 Merwan
@@ -95,3 +95,5 @@ Done
 
 - New game screen with game rules
   (press start to begin)
+
+- Set github pages to fetch from master

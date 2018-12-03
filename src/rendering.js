@@ -42,6 +42,10 @@ class RenderingSystem extends ECS.System
     overlay.height = this.app.height * this.app.scale;
     this.overlay = overlay.getContext('2d');
 
+    this.sceneBuilt = false;
+  }
+
+  buildScene() {
     // Init scene
 
     this.scene = new THREE.Scene();
@@ -71,7 +75,7 @@ class RenderingSystem extends ECS.System
 
     // Ground
 
-    const tileTexture = new THREE.TextureLoader().load('../assets/tile.png');
+    const tileTexture = this.app.textures['/assets/tile.png'];
 
     const tileGeometry = new THREE.BoxGeometry(worldScale, 0.5, worldScale);
 
@@ -99,12 +103,12 @@ class RenderingSystem extends ECS.System
     this.bgCamera.position.set(1000, -5, 100);
     this.bgCamera.lookAt(1000, -5, 10);
 
-    const bgTexture = new THREE.TextureLoader().load('../assets/bg.png');
-    const bgNormalTexture = new THREE.TextureLoader().load('../assets/bg_normal.png');
-    const bgNormalTexture2 = new THREE.TextureLoader().load('../assets/wall_normal.jpg');
+    const bgTexture = this.app.textures['/assets/bg.png'];
+    const bgNormalTexture = this.app.textures['/assets/bg_normal.png'];
+    const bgNormalTexture2 = this.app.textures['/assets/wall_normal.jpg'];
 
     const loader = new THREE.GLTFLoader();
-    loader.load('../assets/wall.glb', model =>
+    loader.load('/assets/wall.glb', model =>
     {
       model.scene.position.set(1000, 0, 0);
       model.scene.rotation.x = 90;
@@ -194,6 +198,8 @@ class RenderingSystem extends ECS.System
     this.bgLight.position.set(1000, -100, 10);
     this.bgLight.castShadow = true;
     this.bgScene.add(this.bgLight);*/
+
+    this.sceneBuilt = true;
   }
 
   test(entity)
@@ -204,7 +210,7 @@ class RenderingSystem extends ECS.System
   enter(entity)
   {
     const loader = new THREE.GLTFLoader();
-    loader.load('../assets/guy.glb', model =>
+    loader.load('/assets/guy.glb', model =>
     {
       // Add to scene
 
@@ -371,6 +377,9 @@ class RenderingSystem extends ECS.System
 
   render(dt)
   {
+    if (!this.sceneBuilt)
+      return;
+
     this.t += dt;
 
     TWEEN.update(this.t);
@@ -401,7 +410,9 @@ class RenderingSystem extends ECS.System
         this.godPivot2.rotation.y -= dt * 0.5;
 
       // God anim
-      this.godMixer.update(dt);
+      if (this.godMixer) {
+        this.godMixer.update(dt);
+      }
     }
 
     this.renderer.autoClear = false;
