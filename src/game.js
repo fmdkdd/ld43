@@ -49,11 +49,11 @@ class GameSystem extends ECS.System {
     this.displayScore = 0;
 
     this.timer = 1;
-    this.timerSpeed = .01;
+    this.timerSpeed = .04;
     this.timerSpeedMax = .1;
 
     this.scoreIntoTimer = .001;
-    this.scoreIntoTimerSpeed = .000001;
+    this.scoreIntoTimerSpeed = .00001;
 
     this.bottomRow = 0;
   }
