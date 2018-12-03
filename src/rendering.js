@@ -236,6 +236,11 @@ class RenderingSystem extends ECS.System
       const head = model.scene.getObjectByName('head');
       if (head)
       {
+        // The heads are messed up because three doesn't like nodes attached to bones.
+        // This approximately adjust their position
+        head.rotation.x = Math.PI*2;
+        head.position.y += 0.75;
+
         head.material = new THREE.MeshLambertMaterial({color: 0xf0cd93});
       }
 
