@@ -91,6 +91,7 @@ class RenderingSystem extends ECS.System
 
     this.bgCamera = new THREE.OrthographicCamera(-camw, camw, camh, -camh, 1, 1000);
     this.bgCamera.position.set(1000, -5, 100);
+    this.bgCamera.lookAt(1000, -5, 10);
 
     const bgTexture = new THREE.TextureLoader().load('../assets/bg.png');
     const bgNormalTexture = new THREE.TextureLoader().load('../assets/bg_normal.png');
@@ -106,10 +107,10 @@ class RenderingSystem extends ECS.System
       {
         o.material = new THREE.MeshPhongMaterial( {
           color: 0xFFFFFF,
-          specular: 0xFFFFFF,
+          specular: 0x002dff,
           shininess: 10,
           normalMap: bgNormalTexture2,
-          normalScale: new THREE.Vector2(1, 1)
+          normalScale: new THREE.Vector2(2, 2)
         });
         o.material.skinning = true;
       });
@@ -117,6 +118,9 @@ class RenderingSystem extends ECS.System
       this.bgScene.add(model.scene);
 
       // Timer
+
+      //this.timer = model.scene.getObjectByName('timer');
+      //this.timer.material.emissive = 0.1;
 
       this.timerFill = model.scene.getObjectByName('timer_fill');
       this.timerFill.material = new THREE.MeshLambertMaterial({emissive: 0xffffff});
@@ -131,11 +135,40 @@ class RenderingSystem extends ECS.System
 
         // Runes
         const runeColors  = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
-        for (let i = 1; i <= 4; ++i)
+        for (let i = 0; i < 4; ++i)
         {
-          const light = this['runeLight' + i] = new THREE.PointLight(runeColors[i - 1], 1, 5);
-          model.scene.getObjectByName('rune' + i).add(light);
+          const rune = this['rune' + i] = model.scene.getObjectByName('rune' + i);
+
+          //const light = this['runeLight' + i] = new THREE.PointLight(runeColors[i], 1, 5);
+          //model.scene.getObjectByName('rune' + i).add(light);
+          const runeBottom = model.scene.getObjectByName('rune' + i + '_bottom');
+          if (runeBottom)
+          {
+            runeBottom.material = new THREE.MeshLambertMaterial({
+              emissive: runeColors[i],
+              emissiveIntensity: 0.25
+            });
+          }
+
+          new TWEEN.Tween(rune.position)
+            .to({y: rune.position.y + 2 * Math.random()}, 2 + 5 * Math.random())
+            .repeat(Infinity)
+            .yoyo(true)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .start(this.t);
         }
+
+        // God light
+
+        this.godPivot = model.scene.getObjectByName('head_pivot');
+        const godLight = model.scene.getObjectByName('head_light');
+        godLight.add(new THREE.PointLight(0xffffff, 0.3));
+        godLight.add(new THREE.AxesHelper());
+
+        this.godPivot2 = model.scene.getObjectByName('head_pivot2');
+        const godLight2 = model.scene.getObjectByName('head_light2');
+        godLight2.add(new THREE.PointLight(0xffffff, 0.3));
+        godLight2.add(new THREE.AxesHelper());
 
         // God anims
 
@@ -150,10 +183,10 @@ class RenderingSystem extends ECS.System
       }
     });
 
-    this.bgLight = new THREE.PointLight(0xffffff, 0.25);
+    /*this.bgLight = new THREE.PointLight(0xffffff, 0.25);
     this.bgLight.position.set(1000, -100, 10);
     this.bgLight.castShadow = true;
-    this.bgScene.add(this.bgLight);
+    this.bgScene.add(this.bgLight);*/
   }
 
   test(entity)
@@ -285,14 +318,23 @@ class RenderingSystem extends ECS.System
         this.playerTorch.intensity = 1 + Math.abs(Math.sin(this.t*3)*Math.cos(this.t))*10;
 
       // BG light
-      this.bgLight.position.setX(1000 + Math.sin(this.t)*10 - 3);
-      this.bgLight.position.setZ(10 + Math.sin(this.t)*10 - 3);
+      if (this.bgLight)
+      {
+        this.bgLight.position.setX(1000 + Math.sin(this.t)*10 - 3);
+        this.bgLight.position.setZ(10 + Math.sin(this.t)*10 - 3);
+      }
 
       // Eyes
       if (this.eyeLight)
-        this.eyeLight.intensity = 0.5 + Math.abs(Math.cos(this.t * 0.25));
+        this.eyeLight.intensity = 1 + Math.abs(Math.cos(this.t * 0.5));
       if (this.eyeLight2)
-        this.eyeLight2.intensity = 0.5 + Math.abs(Math.cos(this.t * 0.3));
+        this.eyeLight2.intensity = 1 + Math.abs(Math.cos(this.t * 0.4));
+
+      // God light
+      if (this.godPivot)
+        this.godPivot.rotation.y += dt * 0.4;
+      if (this.godPivot2)
+        this.godPivot2.rotation.y -= dt * 0.5;
 
       // God anim
       this.godMixer.update(dt);
