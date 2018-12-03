@@ -49,9 +49,9 @@ class RenderingSystem extends ECS.System
     const camw = 24;
     const camh = camw * this.app.height / this.app.width;
     this.camera = new THREE.OrthographicCamera(-camw, camw, camh, -camh, 1, 1000);
-    this.camera.position.set(-20, 10, 5 * worldScale);
+    this.camera.position.set(-17, 10, 5 * worldScale);
     this.camera.up = new THREE.Vector3(0, 0, 1);
-    this.camera.lookAt(new THREE.Vector3(-20, 0, 5*worldScale));
+    this.camera.lookAt(new THREE.Vector3(-17, 0, 5*worldScale));
 
     // Lighting
 
