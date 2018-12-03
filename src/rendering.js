@@ -103,9 +103,9 @@ class RenderingSystem extends ECS.System
         o.material = new THREE.MeshPhongMaterial( {
           color: 0xFFFFFF,
           specular: 0xFFFFFF,
-          shininess: 15,
+          shininess: 10,
           normalMap: bgNormalTexture2,
-          normalScale: new THREE.Vector2(0.5, 0.5)
+          normalScale: new THREE.Vector2(1, 1)
         });
         o.material.skinning = true;
       });
@@ -309,12 +309,19 @@ class RenderingSystem extends ECS.System
                            this.app.height * this.app.scale);
   }
 
-  shake(strength, duration)
+  // Shake the screen a distance of 'offset', 'shakes' times during 'duration' seconds
+  shake(offset, shakes, duration)
   {
+    const shakeDur = duration / shakes;
+
+    //https://sole.github.io/tween.js/examples/03_graphs.html
+
     new TWEEN.Tween(this.bgCamera.position)
-      .to({x: 950}, 1)
-      .to({x: 1000}, 1)
-      .onUpdate(() => console.log(1))
-      .start();
+      .to({x: 1000 + offset, y: -5 - offset}, shakeDur / 2)
+      .to({x: 1000 - offset, y: -5 - offset}, shakeDur / 2)
+      .repeat(shakes)
+      .easing(TWEEN.Easing.Bounce.InOut)
+      .chain(new TWEEN.Tween(this.bgCamera.position).to({x: 1000, y: -5}, shakeDur / 2)) // Back to original pos
+      .start(this.t);
   }
 }
