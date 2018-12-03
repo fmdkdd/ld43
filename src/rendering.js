@@ -251,9 +251,12 @@ class RenderingSystem extends ECS.System
       });
       this.objects[entity.id].clips = clips;
 
-      //console.log(clips);
+      console.log(clips);
       const mixer = new THREE.AnimationMixer(model.scene);
       this.objects[entity.id].mixer = mixer;
+
+      // Play a random looping anim
+      this.animateGuy(entity, Math.floor(Math.random() * 4), THREE.LoopRepeat);
 
       this.objects[entity.id].animSpeed = Math.random() * 0.016;
     });
@@ -386,14 +389,14 @@ class RenderingSystem extends ECS.System
       .start(this.t);
   }
 
-  animateGod(clipIndex, repeat)
+  animateGod(clipIndex, loop = THREE.LoopOnce)
   {
     const clipNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
     var clip = THREE.AnimationClip.findByName(this.godClips, clipNames[clipIndex]);
 
     this.godMixer.stopAllAction();
     const anim = this.godMixer.clipAction(clip);
-    anim.setLoop( THREE.LoopOnce );
+    anim.setLoop(loop);
     anim.clampWhenFinished = true;
     anim.play()
 
@@ -408,7 +411,7 @@ class RenderingSystem extends ECS.System
       .start(this.t);*/
   }
 
-  animateGuy(entity, clipIndex, repeat)
+  animateGuy(entity, clipIndex, loop = THREE.LoopOnce)
   {
     const clips = this.objects[entity.id].clips;
 
@@ -419,7 +422,7 @@ class RenderingSystem extends ECS.System
     mixer.stopAllAction();
 
     const anim = mixer.clipAction(clip);
-    anim.setLoop( THREE.LoopOnce );
+    anim.setLoop(loop);
     anim.clampWhenFinished = true;
     anim.play()
   }
