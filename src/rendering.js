@@ -76,7 +76,9 @@ class RenderingSystem extends ECS.System
     for (let y = 0; y < 10; ++y)
       for (let x = 0; x < 7; ++x)
       {
-        const tileMaterial = new THREE.MeshLambertMaterial({map: tileTexture, emissive: 0xff0000, emissiveIntensity: 0});
+        const tileMaterial = new THREE.MeshLambertMaterial({map: tileTexture,
+                                                            emissive: 0xff0000,
+                                                            emissiveIntensity: 0});
         const tile = new THREE.Mesh(tileGeometry, tileMaterial);
         tile.position.set(-x * worldScale, -0.25, y * worldScale)
         tile.receiveShadow = true;
@@ -206,12 +208,7 @@ class RenderingSystem extends ECS.System
 
       let color = 0;
       if (entity.components.people) {
-        switch (entity.components.people.color) {
-        case RED    : color = 0xFF0000; break;
-        case BLUE   : color = 0x0000FF; break;
-        case YELLOW : color = 0xFFFF00; break;
-        case GREEN  : color = 0x00FF00; break;
-        }
+        color = gameColorToHex(entity.components.people.color);
       }
 
       // Give a torch to the player
@@ -263,14 +260,15 @@ class RenderingSystem extends ECS.System
 
     let {x, y} = entity.components.pos;
 
-    // Rotating people use an interpolated coordinate between
-    // their old place and the new one
+    // Moving people use an interpolated coordinate between their old place and
+    // the new one
     if (entity.components.people && entity.components.people.state === 'moving') {
       const t = this.app.rotationTheta;
+      const ease = this.app.moveEasing;
       const prev_x = entity.components.people.old_x;
-      x = prev_x + (x - prev_x) * t;
+      x = prev_x + (x - prev_x) * ease(t);
       const prev_y = entity.components.people.old_y;
-      y = prev_y + (y - prev_y) * t;
+      y = prev_y + (y - prev_y) * ease(t);
     }
 
     // Offset player who moves between the grid cells
@@ -383,18 +381,31 @@ class RenderingSystem extends ECS.System
       anim.play()
   }
 
-  highlightTile(tileIndex, flashes, duration)
+  highlightTile(tileIndex, flashes, duration, color)
   {
     const tile = this.tiles[tileIndex];
 
     const flashDur = duration / flashes;
 
     const flash = new TWEEN.Tween(tile.material)
-      .to({emissiveIntensity: 1}, flashDur / 2)
-      .yoyo(true)
-      .repeat(flashes)
-      .chain(new TWEEN.Tween(tile.material).to({emissiveIntensity: 0}, flashDur / 2)) // Back to original val
-      //.easing(TWEEN.Easing.Quadratic.InOut)
-      .start(this.t);
+          .to({emissiveIntensity: 1}, flashDur / 2)
+          .yoyo(true)
+          .repeat(flashes)
+          .chain(new TWEEN.Tween(tile.material)
+                 .to({emissiveIntensity: 0}, flashDur / 2)) // Back to original val
+    //.easing(TWEEN.Easing.Quadratic.InOut)
+          .start(this.t)
+          .onStart(_ => {
+            tile.material.emissive = new THREE.Color(color);
+          })
+  }
+}
+
+function gameColorToHex(c) {
+  switch (c) {
+  case RED    : return 0xFF0000;
+  case BLUE   : return 0x0000FF;
+  case YELLOW : return 0xFFFF00;
+  case GREEN  : return 0x00FF00;
   }
 }

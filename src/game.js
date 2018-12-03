@@ -56,6 +56,15 @@ class GameSystem extends ECS.System {
     this.bottomRow = 0;
   }
 
+  highlightMatchCells(duration) {
+    for (let c of this.cellsInMatch) {
+      const id = this.grid[c];
+      const e = this.app.ecs.getEntityById(id);
+      const color = gameColorToHex(e.components.people.color);
+      this.app.renderingSystem.highlightTile(c, 2, duration, color);
+    }
+  }
+
   step(dt) {
     if (this.timer === 0) {
       this.app.setState(STATES.RemoveBottomRow);
@@ -150,6 +159,8 @@ class GameSystem extends ECS.System {
     }
 
     this.app.setState(STATES.Rotating);
+
+    this.app.moveEasing = TWEEN.Easing.Linear.None;
   }
 
   rotateRight(entity) {
@@ -173,6 +184,8 @@ class GameSystem extends ECS.System {
     }
 
     this.app.setState(STATES.Rotating);
+
+    this.app.moveEasing = TWEEN.Easing.Linear.None;
   }
 
   moveEntityTo(entity_id, grid_xy) {
@@ -326,6 +339,8 @@ class GameSystem extends ECS.System {
   }
 
   fillHoles() {
+    this.app.moveEasing = TWEEN.Easing.Linear.None;
+
     for (let c of this.columnsWithHoles) {
       // Find first hole going up
       for (let y=this.bottomRow; y < this.gridHeight; ++y) {

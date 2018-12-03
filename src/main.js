@@ -210,7 +210,8 @@ STATES.PreHighlightMatchCells = {
 
 STATES.HighlightMatchCells = {
   enter() {
-    this.delay = 0.3;
+    this.delay = .3;
+    this.app.game.highlightMatchCells(this.delay);
   },
 
   step(dt) {
@@ -218,10 +219,6 @@ STATES.HighlightMatchCells = {
       this.app.setState(STATES.RemoveMatchCells);
     }
     this.delay = Math.max(0, this.delay - dt);
-  },
-
-  render(dt) {
-    // TODO: highlighting
   },
 };
 
@@ -242,7 +239,7 @@ STATES.RemoveMatchCells = {
 
 STATES.FillHoles = {
   enter() {
-    this.delay = 0.05;
+    this.delay = 0.1;
     this.delay_init = this.delay;
     this.app.rotationTheta = 0;
     this.app.game.fillHoles();
@@ -277,6 +274,8 @@ window.addEventListener('DOMContentLoaded', function main() {
     scale: 1,
 
     smoothing: false,
+
+    moveEasing: TWEEN.Easing.Linear.None,
 
     preload() {
       console.info('-------------------------- Hello there! ---------------------------');
