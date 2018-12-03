@@ -166,22 +166,28 @@ class RenderingSystem extends ECS.System
       this.scene.add(model.scene);
       this.objects[entity.id] = model.scene;
 
+      let color = 0;
       if (entity.components.people) {
-        this.updateColor(entity);
+        switch (entity.components.people.color) {
+        case RED    : color = 0xFF0000; break;
+        case BLUE   : color = 0x0000FF; break;
+        case YELLOW : color = 0xFFFF00; break;
+        case GREEN  : color = 0x00FF00; break;
+        }
       }
 
       // Give a torch to the player
       if (entity.components.player)
       {
-        this.playerTorch = new THREE.PointLight(0xffffff, 5, 5);
-        model.scene.add(this.playerTorch);
-
-        model.scene.traverse(o => {
-          o.material = new THREE.MeshLambertMaterial({color: 0, side: THREE.DoubleSide});
-          o.material.skinning = true;
-          o.castShadow = true;
-        });
+        // this.playerTorch = new THREE.PointLight(0xffffff, 5, 5);
+        // model.scene.add(this.playerTorch);
       }
+
+      model.scene.traverse(o => {
+        o.material = new THREE.MeshLambertMaterial({color: color, side: THREE.DoubleSide});
+        o.material.skinning = true;
+        o.castShadow = true;
+      });
 
       // Setup anims
 
@@ -230,13 +236,11 @@ class RenderingSystem extends ECS.System
 
     // Rotating people use an interpolated coordinate between
     // their old place and the new one
-    if (entity.components.people && entity.components.people.state === 'rotating') {
+    if (entity.components.people && entity.components.people.state === 'moving') {
       const t = this.app.rotationTheta;
       const prev_x = entity.components.people.old_x;
-      const dx = x - prev_x;
       x = prev_x + (x - prev_x) * t;
       const prev_y = entity.components.people.old_y;
-      const dy = y - prev_y;
       y = prev_y + (y - prev_y) * t;
     }
 
@@ -264,23 +268,6 @@ class RenderingSystem extends ECS.System
       this.updateColor(entity);
       entity.components.people.color_changed = false;
     }
-  }
-
-  updateColor(entity) {
-    let rgb = 0;
-    switch (entity.components.people.color) {
-    case RED    : rgb = 0xFF0000; break;
-    case BLUE   : rgb = 0x0000FF; break;
-    case YELLOW : rgb = 0xFFFF00; break;
-    case GREEN  : rgb = 0x00FF00; break;
-    }
-
-    this.objects[entity.id]
-      .traverse(o => {
-        o.material = new THREE.MeshLambertMaterial({color: rgb, side: THREE.DoubleSide});
-        o.material.skinning = true;
-        o.castShadow = true;
-      });
   }
 
   render(dt)

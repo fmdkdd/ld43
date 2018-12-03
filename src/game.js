@@ -131,13 +131,13 @@ class GameSystem extends ECS.System {
     e.components.people.old_y = e.components.pos.y;
     e.components.pos.x = px;
     e.components.pos.y = py;
-    e.components.people.state = 'rotating';
+    e.components.people.state = 'moving';
   }
 
   updatePeople(entity) {
     const {people} = entity.components;
 
-    if (people.state === 'rotating') {
+    if (people.state === 'moving') {
       const t = this.app.rotationTheta;
 
       if (t === 1) {
@@ -330,9 +330,6 @@ class GameSystem extends ECS.System {
 
     if (id !== EMPTY) {
       this.grid[down] = id;
-      //const e = this.app.ecs.getEntityById(id);
-      // e.components.people.color = color;
-      // e.components.people.color_changed = true;
       this.moveEntityTo(id, down);
     }
   }
