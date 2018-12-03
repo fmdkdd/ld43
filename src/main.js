@@ -93,7 +93,7 @@ STATES.Main = {
 
     if (event.key === 'q') {
       this.app.game.removeBottomRow();
-
+    }
     if (event.key === 'n')
     {
       this.app.renderingSystem.highlightTile(0, 1, 2);
