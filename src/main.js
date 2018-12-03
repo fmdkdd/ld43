@@ -482,13 +482,16 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.sound.alias('voice-scaled', 'voice-of-god', .4, 1);
 
       // Load textures
-      this.textureLoader = new THREE.TextureLoader();
-      this.textures = {};
       this.loadTexture('/assets/tile.png');
       this.loadTexture('/assets/particle.png');
       this.loadTexture('/assets/bg.png');
       this.loadTexture('/assets/bg_normal.png');
       this.loadTexture('/assets/wall_normal.jpg');
+
+      // Load models
+      // NOT WORKING: there is only one guy after that
+      // this.loadGLTF('/assets/guy.glb');
+      //this.loadGLTF('/assets/wall.glb');
 
       const lowGraphicsStorage = localStorage.getItem('lowgraphics');
       this.lowGraphics = lowGraphicsStorage === 'true';
@@ -512,6 +515,11 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     loadTexture(path) {
+      if (!this.textureLoader) {
+        this.textureLoader = new THREE.TextureLoader();
+        this.textures = {};
+      }
+
       this.textureLoader.load(
         path,
         texture => {
@@ -520,6 +528,24 @@ window.addEventListener('DOMContentLoaded', function main() {
         function(){},
         function ( xhr ) {
           console.log(`Error loading texture ${path}: ${xhr}`);
+	}
+      );
+    },
+
+    loadGLTF(path) {
+      if (!this.GLTFLoader) {
+        this.GLTFLoader = new THREE.GLTFLoader();
+        this.GLTFModels = {};
+      }
+
+      this.GLTFLoader.load(
+        path,
+        model => {
+          this.GLTFModels[path] = model;
+        },
+        function(){},
+        function ( xhr ) {
+          console.log(`Error loading GLTF model ${path}: ${xhr}`);
 	}
       );
     },
