@@ -23,6 +23,9 @@ STATES.Main = {
     if (event.key === 'enter') {
       this.app.setState(STATES.Pause);
     }
+
+    if (event.key === 't')
+      this.app.renderingSystem.shake(1, 2);
   }
 };
 
@@ -199,6 +202,17 @@ window.addEventListener('DOMContentLoaded', function main() {
       // this.loadTexture('data/smoke.png');
       // this.loadTexture('data/stars.png');
 
+      const lowGraphicsStorage = localStorage.getItem('lowgraphics');
+      this.lowGraphics = lowGraphicsStorage === 'true';
+
+      const lowGraphicsCheckbox = document.getElementById('lowgraphics');
+      lowGraphicsCheckbox.checked = this.lowGraphics;
+
+      lowGraphicsCheckbox.addEventListener('change', (event) =>
+      {
+        this.lowGraphics = event.target.checked;
+        localStorage.setItem('lowgraphics', event.target.checked)
+      })
 
       // Init ECS
       this.ecs = new ECS();

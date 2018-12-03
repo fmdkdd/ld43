@@ -18,8 +18,9 @@ class RenderingSystem extends ECS.System
     this.objectPositions = {};
 
     // Init WebGL renderer
+
     this.renderer = new THREE.WebGLRenderer({
-      //antialias: this.smoothing,
+      antialias: this.smoothing,
       alpha: true,
     });
     this.renderer.setClearColor(0);
@@ -33,6 +34,8 @@ class RenderingSystem extends ECS.System
     this.container.appendChild(this.renderer.domElement);
     this.container.style.width = this.app.width * this.app.scale + 'px';
     this.container.style.height = this.app.height * this.app.scale + 'px';
+
+    // 2D overlay
 
     const overlay = document.getElementById('overlay');
     overlay.width = this.app.width * this.app.scale;
@@ -109,34 +112,37 @@ class RenderingSystem extends ECS.System
 
       this.bgScene.add(model.scene);
 
-      // Eyes
-      this.eyeLight = new THREE.PointLight(0xff0000, 1, 5);
-      model.scene.getObjectByName('eye1').add(this.eyeLight);
-      this.eyeLight2 = new THREE.PointLight(0xff0000, 1, 5);
-      model.scene.getObjectByName('eye2').add(this.eyeLight2);
-
-      // Runes
-      const runeColors  = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
-      for (let i = 1; i <= 4; ++i)
+      if (!this.app.lowGraphics)
       {
-        const light = this['runeLight' + i] = new THREE.PointLight(runeColors[i - 1], 1, 5);
-        model.scene.getObjectByName('rune' + i).add(light);
+        // Eyes
+        this.eyeLight = new THREE.PointLight(0xff0000, 1, 5);
+        model.scene.getObjectByName('eye1').add(this.eyeLight);
+        this.eyeLight2 = new THREE.PointLight(0xff0000, 1, 5);
+        model.scene.getObjectByName('eye2').add(this.eyeLight2);
+
+        // Runes
+        const runeColors  = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
+        for (let i = 1; i <= 4; ++i)
+        {
+          const light = this['runeLight' + i] = new THREE.PointLight(runeColors[i - 1], 1, 5);
+          model.scene.getObjectByName('rune' + i).add(light);
+        }
+
+        // God anims
+
+        console.log('animations', model.animations);
+
+        const clips = model.animations;
+        clips.forEach((clip) => {
+          if (clip.validate()) clip.optimize();
+        });
+
+        const animNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
+        this.godMixer = new THREE.AnimationMixer(model.scene);
+        var clip = THREE.AnimationClip.findByName( model.animations, animNames[3]);
+        var action = this.godMixer.clipAction( clip );
+        action.play();
       }
-
-      // God anims
-
-      console.log('animations', model.animations);
-
-      const clips = model.animations;
-      clips.forEach((clip) => {
-        if (clip.validate()) clip.optimize();
-      });
-
-      const animNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
-      this.godMixer = new THREE.AnimationMixer(model.scene);
-      var clip = THREE.AnimationClip.findByName( model.animations, animNames[3]);
-      var action = this.godMixer.clipAction( clip );
-      action.play();
     });
 
     this.bgLight = new THREE.PointLight(0xffffff, 0.25);
@@ -281,22 +287,27 @@ class RenderingSystem extends ECS.System
   {
     this.t += dt;
 
-    // Player's torch
-    if (this.playerTorch)
-      this.playerTorch.intensity = 1 + Math.abs(Math.sin(this.t*3)*Math.cos(this.t))*10;
+    TWEEN.update(this.t);
 
-    // BG light
-    this.bgLight.position.setX(1000 + Math.sin(this.t)*10 - 3);
-    this.bgLight.position.setZ(10 + Math.sin(this.t)*10 - 3);
+    if (!this.app.lowGraphics)
+    {
+      // Player's torch
+      if (this.playerTorch)
+        this.playerTorch.intensity = 1 + Math.abs(Math.sin(this.t*3)*Math.cos(this.t))*10;
 
-    // Eyes
-    if (this.eyeLight)
-      this.eyeLight.intensity = 0.5 + Math.abs(Math.cos(this.t * 0.25));
-    if (this.eyeLight2)
-      this.eyeLight2.intensity = 0.5 + Math.abs(Math.cos(this.t * 0.3));
+      // BG light
+      this.bgLight.position.setX(1000 + Math.sin(this.t)*10 - 3);
+      this.bgLight.position.setZ(10 + Math.sin(this.t)*10 - 3);
 
-    // God anim
-    this.godMixer.update(dt);
+      // Eyes
+      if (this.eyeLight)
+        this.eyeLight.intensity = 0.5 + Math.abs(Math.cos(this.t * 0.25));
+      if (this.eyeLight2)
+        this.eyeLight2.intensity = 0.5 + Math.abs(Math.cos(this.t * 0.3));
+
+      // God anim
+      this.godMixer.update(dt);
+    }
 
     this.renderer.autoClear = false;
     this.renderer.clear();
@@ -309,5 +320,14 @@ class RenderingSystem extends ECS.System
     this.overlay.clearRect(0, 0,
                            this.app.width * this.app.scale,
                            this.app.height * this.app.scale);
+  }
+
+  shake(strength, duration)
+  {
+    new TWEEN.Tween(this.bgCamera.position)
+      .to({x: 950}, 1)
+      .to({x: 1000}, 1)
+      .onUpdate(() => console.log(1))
+      .start();
   }
 }
