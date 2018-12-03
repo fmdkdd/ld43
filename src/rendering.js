@@ -130,7 +130,7 @@ class RenderingSystem extends ECS.System
       //this.timer.material.emissive = 0.1;
 
       this.timerFill = model.scene.getObjectByName('timer_fill');
-      this.timerFill.material = new THREE.MeshLambertMaterial({emissive: 0xdddddd});
+      this.timerFill.material = new THREE.MeshLambertMaterial({emissive: 0xbbbbbb});
 
       if (!this.app.lowGraphics)
       {

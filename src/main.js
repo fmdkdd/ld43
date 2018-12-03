@@ -442,7 +442,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       // Score
       ctx.font = '30px sans-serif';
       ctx.fillStyle = '#fff';
-      ctx.fillText(Math.floor(this.game.displayScore), 500, 480);
+      ctx.fillText(Math.floor(this.game.displayScore), 600, 500);
     },
 
     keyup(event) {
