@@ -2,6 +2,8 @@
 
 @florent:
 
+- Flash timer when nearly out
+
 - New game screen with game rules
   (press start to begin)
 
@@ -9,11 +11,7 @@
 
 - Fade in/out pause and gameover screens
 
-- Animate player movement
-
 - Drop all tiles behind game over screen
-
-- Flash timer when nearly out
 
 - Add 2x, 3x multipliers indicators below runes
 
@@ -82,3 +80,5 @@ Done:
   - god mouth (idle?  combo?)
 
 - Highlight matches
+
+- Animate player movement

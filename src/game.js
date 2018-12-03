@@ -121,23 +121,45 @@ class GameSystem extends ECS.System {
   }
 
   updatePlayer(entity) {
+    let dx = 0;
+    let dy = 0;
     if (entity.components.player.moveLeft)
-      entity.components.pos.x--;
+      dx = -1;
     if (entity.components.player.moveRight)
-      entity.components.pos.x++;
+      dx = +1;
     if (entity.components.player.moveUp)
-      entity.components.pos.y++;
+      dy = +1;
     if (entity.components.player.moveDown)
-      entity.components.pos.y--;
+      dy = -1;
 
-    // Clamp position
-    entity.components.pos.x = clamp(entity.components.pos.x, 1, this.gridWidth - 1);
-    entity.components.pos.y = clamp(entity.components.pos.y, this.bottomRow + 1, this.gridHeight - 1);
+    if (dx !== 0 || dy !== 0) {
+      this.move(entity, dx, dy);
+      return;
+    }
 
-    if (entity.components.player.rotateLeft)
+    if (entity.components.player.rotateLeft) {
       this.rotateLeft(entity);
-    else if (entity.components.player.rotateRight)
+      return;
+    }
+    if (entity.components.player.rotateRight) {
       this.rotateRight(entity);
+      return
+    }
+  }
+
+  move(entity, dx, dy) {
+    const x = clamp(entity.components.pos.x + dx,
+                    1, this.gridWidth - 1);
+    const y = clamp(entity.components.pos.y + dy,
+                    this.bottomRow + 1, this.gridHeight - 1);
+    this.moveEntityToAbs(entity.id, x, y);
+    this.app.setState(STATES.MovePlayer);
+  }
+
+  stopPlayer() {
+    this.player.components.pos.state = 'idle';
+    this.player.components.pos.old_x = 0;
+    this.player.components.pos.old_y = 0;
   }
 
   rotateLeft(entity) {
@@ -191,26 +213,30 @@ class GameSystem extends ECS.System {
   }
 
   moveEntityTo(entity_id, grid_xy) {
-    const e = this.app.ecs.getEntityById(entity_id);
     const px = grid_xy % this.gridWidth;
     const py = Math.floor(grid_xy / this.gridWidth);
-    e.components.people.old_x = e.components.pos.x;
-    e.components.people.old_y = e.components.pos.y;
-    e.components.pos.x = px;
-    e.components.pos.y = py;
-    e.components.people.state = 'moving';
+    this.moveEntityToAbs(entity_id, px, py);
+  }
+
+  moveEntityToAbs(entity_id, x, y) {
+    const e = this.app.ecs.getEntityById(entity_id);
+    e.components.pos.old_x = e.components.pos.x;
+    e.components.pos.old_y = e.components.pos.y;
+    e.components.pos.x = x;
+    e.components.pos.y = y;
+    e.components.pos.state = 'moving';
   }
 
   updatePeople(entity) {
-    const {people} = entity.components;
+    const {pos} = entity.components;
 
-    if (people.state === 'moving') {
+    if (pos.state === 'moving') {
       const t = this.app.rotationTheta;
 
       if (t === 1) {
-        people.state = 'idle';
-        people.old_x = 0;
-        people.old_y = 0;
+        pos.state = 'idle';
+        pos.old_x = 0;
+        pos.old_y = 0;
       }
     }
   }

@@ -282,12 +282,12 @@ class RenderingSystem extends ECS.System
 
     // Moving people use an interpolated coordinate between their old place and
     // the new one
-    if (entity.components.people && entity.components.people.state === 'moving') {
+    if (entity.components.pos && entity.components.pos.state === 'moving') {
       const t = this.app.rotationTheta;
       const ease = this.app.moveEasing;
-      const prev_x = entity.components.people.old_x;
+      const prev_x = entity.components.pos.old_x;
       x = prev_x + (x - prev_x) * ease(t);
-      const prev_y = entity.components.people.old_y;
+      const prev_y = entity.components.pos.old_y;
       y = prev_y + (y - prev_y) * ease(t);
     }
 

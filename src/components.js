@@ -9,7 +9,12 @@ const Position =
     y: 0,
 
     // useful for particles
-    z: 0
+    z: 0,
+
+    // Used for moving animation
+    old_x: 0,
+    old_y: 0,
+    state: 'idle',
   }
 };
 
@@ -41,12 +46,7 @@ const People =
   defaults:
   {
     color: 0, // 1, 2, 3
-    state: 'idle', // 'arriving', 'idle', 'stepping', fleeing', 'moving'
-    // Used when rotating
-    new_x: 0,
-    new_y: 0,
-    old_x: 0,
-    old_y: 0,
+    state: 'idle', // 'arriving', 'idle', 'stepping', fleeing'
   }
 };
 

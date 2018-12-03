@@ -180,6 +180,26 @@ STATES.Pause = {
   },
 };
 
+STATES.MovePlayer = {
+  enter() {
+    this.delay = .05;
+    this.delay_init = this.delay;
+    this.app.rotationTheta = 0;
+  },
+
+  leave() {
+    this.app.game.stopPlayer();
+  },
+
+  step(dt) {
+    if (this.delay === 0) {
+      this.app.setState(STATES.Main);
+    }
+    this.delay = Math.max(0, this.delay - dt);
+    this.app.rotationTheta = 1 - (this.delay / this.delay_init);
+  },
+};
+
 STATES.Rotating = {
   enter() {
     this.delay = 0.06;
