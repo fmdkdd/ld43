@@ -398,15 +398,6 @@ class RenderingSystem extends ECS.System
             tile.material.emissive = new THREE.Color(color);
           })
   }
-}
-
-function gameColorToHex(c) {
-  switch (c) {
-  case RED    : return 0xFF0000;
-  case BLUE   : return 0x0000FF;
-  case YELLOW : return 0xFFFF00;
-  case GREEN  : return 0x00FF00;
-  }
 
   makeTilesFall(tileRow, duration)
   {
@@ -441,3 +432,13 @@ function gameColorToHex(c) {
     }
   }
 }
+
+function gameColorToHex(c) {
+  switch (c) {
+  case RED    : return 0xFF0000;
+  case BLUE   : return 0x0000FF;
+  case YELLOW : return 0xFFFF00;
+  case GREEN  : return 0x00FF00;
+  }
+}
+
