@@ -42,6 +42,9 @@ class GameSystem extends ECS.System {
 
     this.currentCombo = 0;
     this.columnsWithHoles = [];
+
+    this.score = 0;
+    this.displayScore = 0;
   }
 
   test(entity) {
@@ -236,21 +239,25 @@ class GameSystem extends ECS.System {
       const m = groupSame(this.currentMatches
                           .map(m => m.pattern));
 
-      if (Object.keys(m).length > 1) {
-        console.log("Multi-match!");
-      }
-
+      let matchScore = 0;
       for (let a in m) {
-        switch (m[a]) {
-        case 1: break;
-        case 2: console.log("Double match"); break;
-        case 3: console.log("Triple match!"); break;
-        case 4: console.log("Quadruple match!!"); break;
-        default: console.log("Amazing!!!"); break;
+        if (m[a] > 1) {
+          matchScore += (m[a]-1) * 500;
+        } else {
+          matchScore += 100;
         }
       }
-
+      // Match different patterns is a multiplier
+      matchScore *= Object.keys(m).length;
       this.currentCombo++;
+      matchScore *= this.currentCombo * 3;
+
+      this.score += matchScore;
+
+      new TWEEN.Tween(this)
+        .to({displayScore: this.score}, .5)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start(this.app.renderingSystem.t);
 
       this.currentMatches = undefined;
     }

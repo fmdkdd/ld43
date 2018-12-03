@@ -1,18 +1,9 @@
 @florent:
 
-- detection of matches for scoring
-  - Single match
-  - Double match same pattern, (etc, 2, 3, 4...)
-  - Two patterns, three, ...
-  - Combos
+- Pause screen
 
 - Do a first check for combos on start
   free points!
-
-- Add a couple of rows above grid to see what pieces are coming down
-
-- Allow further rotations before checking combos
-  (add short intermediate state; allows for potentially powerful setups)
 
 Unsure:
 - Timer goes down. (It's the God impatience)
@@ -32,3 +23,20 @@ Unsure:
   - freeze timer
   - restore one row
   - larger rotation
+
+
+Not enough time:
+- Add a couple of rows above grid to see what pieces are coming down
+
+- Allow further rotations before checking combos
+  (add short intermediate state; allows for potentially powerful setups)
+
+- Distinguish cells by shapes and not just colors
+
+
+Done:
+- detection of matches for scoring
+  - Single match
+  - Double match same pattern, (etc, 2, 3, 4...)
+  - Two patterns, three, ...
+  - Combos

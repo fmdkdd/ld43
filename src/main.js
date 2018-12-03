@@ -261,9 +261,8 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.dt = dt;
       this.renderingSystem.render(dt);
 
+      const ctx = this.renderingSystem.overlay;
       if (DEBUG) {
-        const ctx = this.renderingSystem.overlay;
-
         ctx.font = '12px sans-serif';
         ctx.save();
         ctx.translate(100, 545);
@@ -287,28 +286,21 @@ window.addEventListener('DOMContentLoaded', function main() {
             default: ctx.fillStyle = 'white'; break;
             }
             ctx.fillRect(px - 10, py + 20, 10, 10);
-
-            // Position of entity in this cell
-            // const id = this.game.grid[y * this.game.gridWidth + x];
-            // if (id !== EMPTY) {
-            //   const e = this.ecs.getEntityById(id);
-            //   const exy = e.components.pos.y * this.game.gridWidth +
-            //         e.components.pos.x;
-            //   ctx.fillStyle = '#6cc';
-            //   ctx.fillText(exy, px + 20, py);
-            // }
           }
         }
 
         ctx.restore();
       }
+
+      // Score
+      ctx.font = '30px sans-serif';
+      ctx.fillStyle = '#fff';
+      ctx.fillText(Math.floor(this.game.displayScore), 500, 480);
     },
 
     keyup(event) {
       if (event.key === 'f2') {
         DEBUG = !DEBUG;
-        this.renderingSystem.overlay
-          .clearRect(0, 0, this.width * this.scale, this.height * this.scale);
       }
     },
 
