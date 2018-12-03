@@ -78,8 +78,7 @@ const _mesh0 = new THREE.Mesh(
     const light = new THREE.PointLight(0xffffff, 0.5);
     light.position.set(0, -10, 0);
     light.distance = 100;
-    //light.castShadow = true;
-    //light.shadowCameraVisible = true;
+    light.castShadow = true;
     this.scene.add(light);
 
     //const skyLight = new THREE.HemisphereLight( 0x303655, 0x010c41, 1);
@@ -104,24 +103,14 @@ const _mesh0 = new THREE.Mesh(
 
     // Background
 
+    this.bgScene = new THREE.Scene();
+
     this.bgCamera = new THREE.OrthographicCamera(-camw, camw, camh, -camh, 1, 1000);
     this.bgCamera.position.set(1000, -5, 100);
 
     const bgTexture = new THREE.TextureLoader().load('../assets/bg.png');
     const bgNormalTexture = new THREE.TextureLoader().load('../assets/bg_normal.png');
     const bgNormalTexture2 = new THREE.TextureLoader().load('../assets/wall_normal.jpg');
-
-    /*const box = new THREE.BoxGeometry(10, 10, 0.1);
-    const material = new THREE.MeshPhongMaterial( {
-      map: bgTexture,
-      specular: 0xFF00FF,
-      shininess: 5,
-      normalMap: bgNormalTexture
-    });
-    const bg = new THREE.Mesh(box, material);
-    bg.position.set(1000, 0, 0);
-    bg.receiveShadow = true;
-    this.scene.add(bg);*/
 
     const loader = new THREE.GLTFLoader();
     loader.load('../assets/wall.glb', model =>
@@ -133,20 +122,48 @@ const _mesh0 = new THREE.Mesh(
       {
         o.material = new THREE.MeshPhongMaterial( {
           color: 0xFFFFFF,
-          specular: 0xaaaaaa,
-          shininess: 10,
+          specular: 0xFFFFFF,
+          shininess: 15,
           normalMap: bgNormalTexture2,
           normalScale: new THREE.Vector2(0.5, 0.5)
         });
+        o.material.skinning = true;
       });
 
-      this.scene.add(model.scene);
+      this.bgScene.add(model.scene);
+
+      // Eyes
+      this.eyeLight = new THREE.PointLight(0xff0000, 1, 5);
+      model.scene.getObjectByName('eye1').add(this.eyeLight);
+      this.eyeLight2 = new THREE.PointLight(0xff0000, 1, 5);
+      model.scene.getObjectByName('eye2').add(this.eyeLight2);
+
+      // Runes
+      const runeColors  = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
+      for (let i = 1; i <= 4; ++i)
+      {
+        const light = this['runeLight' + i] = new THREE.PointLight(runeColors[i - 1], 1, 5);
+        model.scene.getObjectByName('rune' + i).add(light);
+      }
+
+      // God anims
+
+      const clips = model.animations;
+      clips.forEach((clip) => {
+        if (clip.validate()) clip.optimize();
+      });
+console.log(model.animations);
+    const animNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
+      this.godMixer = new THREE.AnimationMixer(model.scene);
+      var clip = THREE.AnimationClip.findByName( model.animations, animNames[3]);
+      var action = this.godMixer.clipAction( clip );
+      action.play();
     });
 
     this.bgLight = new THREE.PointLight(0xffffff, 0.25);
-    this.bgLight.position.set(1000, 10, 10);
-    //this.bgLight.castShadow = true;
-    this.scene.add(this.bgLight);
+    this.bgLight.position.set(1000, -100, 10);
+    this.bgLight.castShadow = true;
+    this.bgScene.add(this.bgLight);
   }
 
   test(entity)
@@ -238,14 +255,23 @@ const _mesh0 = new THREE.Mesh(
   {
     this.t += dt;
 
-    this.bgLight.position.setX(1000 + Math.sin(this.t)*6 - 3);
-    this.bgLight.position.setY(10);
-    this.bgLight.position.setZ(100);//10 + Math.cos(this.t)*4-2);
+    // BG light
+    this.bgLight.position.setX(1000 + Math.sin(this.t)*10 - 3);
+    this.bgLight.position.setZ(10 + Math.sin(this.t)*10 - 3);
+
+    // Eyes
+    if (this.eyeLight)
+      this.eyeLight.intensity = 0.5 + Math.abs(Math.cos(this.t * 0.25));
+    if (this.eyeLight2)
+      this.eyeLight2.intensity = 0.5 + Math.abs(Math.cos(this.t * 0.3));
+
+    // God anim
+    this.godMixer.update(dt);
 
     this.renderer.autoClear = false;
     this.renderer.clear();
     this.renderer.render(this.scene, this.camera);
     this.renderer.clearDepth();
-    this.renderer.render(this.scene, this.bgCamera);
+    this.renderer.render(this.bgScene, this.bgCamera);
   }
 }
