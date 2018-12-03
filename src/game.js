@@ -137,6 +137,12 @@ class GameSystem extends ECS.System {
       return;
     }
 
+    // Clamp player position
+    entity.components.pos.x = clamp(entity.components.pos.x,
+                                    1, this.gridWidth - 1);
+    entity.components.pos.y = clamp(entity.components.pos.y,
+                                    this.bottomRow + 1, this.gridHeight - 1);
+
     if (entity.components.player.rotateLeft) {
       this.rotateLeft(entity);
       return;
@@ -152,8 +158,12 @@ class GameSystem extends ECS.System {
                     1, this.gridWidth - 1);
     const y = clamp(entity.components.pos.y + dy,
                     this.bottomRow + 1, this.gridHeight - 1);
-    this.moveEntityToAbs(entity.id, x, y);
-    this.app.setState(STATES.MovePlayer);
+
+    if (x !== entity.components.pos.x ||
+        y !== entity.components.pos.y) {
+      this.moveEntityToAbs(entity.id, x, y);
+      this.app.setState(STATES.MovePlayer);
+    }
   }
 
   stopPlayer() {
