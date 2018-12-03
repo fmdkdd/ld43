@@ -259,7 +259,7 @@ class RenderingSystem extends ECS.System
       // Play a random looping anim
       this.animateGuy(entity, Math.floor(Math.random() * 4), THREE.LoopRepeat);
 
-      this.objects[entity.id].animSpeed = Math.random() * 0.016;
+      this.objects[entity.id].animSpeed = 0.25 + Math.random() * 0.75;
     });
   }
 
@@ -303,17 +303,20 @@ class RenderingSystem extends ECS.System
     obj.position.setZ(worldPos.y);
     obj.position.setY(0);
 
-    // Look forward
-    /*if (obj.position.distanceTo(prevPosition) > 0.5)
+    // Look where you moved
+    if (entity.components.player && obj.position.distanceTo(prevPosition) > 0.5)
     {
       const dir = obj.position.clone().sub(prevPosition).normalize();
       obj.lookAt(obj.position.clone().add(dir))
-    }*/
+    }
 
-    // Face the god
-    obj.lookAt(new THREE.Vector3(-50, 0, 30));
+    // Little people face the god
+    else
+    {
+      obj.lookAt(new THREE.Vector3(-50, 0, 30));
+    }
 
-    obj.mixer.update(obj.animSpeed);
+    obj.mixer.update(obj.animSpeed * this.app.dt);
 
     if (DEBUG && entity.components.people) {
       const ctx = this.overlay;
