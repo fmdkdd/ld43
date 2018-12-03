@@ -72,6 +72,10 @@ const Particles =
   defaults:
   {
     type: null,
-    lifetime: 5
+    lifetime: 5,
+    goalx: 0,
+    goaly: 0,
+    velx: 0,
+    vely: 0
   }
 };

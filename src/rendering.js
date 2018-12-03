@@ -115,6 +115,7 @@ class RenderingSystem extends ECS.System
           normalScale: new THREE.Vector2(2, 2)
         });
         o.material.skinning = true;
+        o.castShadow = true;
       });
 
       this.bgScene.add(model.scene);
@@ -125,7 +126,7 @@ class RenderingSystem extends ECS.System
       //this.timer.material.emissive = 0.1;
 
       this.timerFill = model.scene.getObjectByName('timer_fill');
-      this.timerFill.material = new THREE.MeshLambertMaterial({emissive: 0xffffff});
+      this.timerFill.material = new THREE.MeshLambertMaterial({emissive: 0xdddddd});
 
       if (!this.app.lowGraphics)
       {
@@ -136,7 +137,7 @@ class RenderingSystem extends ECS.System
         model.scene.getObjectByName('eye2').add(this.eyeLight2);
 
         // Runes
-        const runeColors  = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
+        const runeColors  = [0xff0000, 0x0000ff, 0xffff00, 0x00ff00];
         for (let i = 0; i < 4; ++i)
         {
           const rune = this['rune' + i] = model.scene.getObjectByName('rune' + i);
@@ -148,7 +149,7 @@ class RenderingSystem extends ECS.System
           {
             runeBottom.material = new THREE.MeshLambertMaterial({
               emissive: runeColors[i],
-              emissiveIntensity: 0.25
+              emissiveIntensity: 0.4
             });
           }
 
@@ -165,12 +166,10 @@ class RenderingSystem extends ECS.System
         this.godPivot = model.scene.getObjectByName('head_pivot');
         const godLight = model.scene.getObjectByName('head_light');
         godLight.add(new THREE.PointLight(0xffffff, 0.3));
-        godLight.add(new THREE.AxesHelper());
 
         this.godPivot2 = model.scene.getObjectByName('head_pivot2');
         const godLight2 = model.scene.getObjectByName('head_light2');
-        godLight2.add(new THREE.PointLight(0xffffff, 0.3));
-        godLight2.add(new THREE.AxesHelper());
+        godLight2.add(new THREE.PointLight(0x7c5d00, 0.3));
 
         // God anims
 
@@ -407,5 +406,38 @@ function gameColorToHex(c) {
   case BLUE   : return 0x0000FF;
   case YELLOW : return 0xFFFF00;
   case GREEN  : return 0x00FF00;
+  }
+
+  makeTilesFall(tileRow, duration)
+  {
+    const tileIndex = tileRow * 7;
+
+    for (let i = 0; i < 7; ++i)
+    {
+      const tile = this.tiles[tileIndex + i];
+
+      const progress = {t: 0};
+      new TWEEN.Tween(progress)
+        .delay(i * duration / 7)
+        .to({t: 1}, duration)
+        .easing(TWEEN.Easing.Quadratic.In)
+        .onUpdate(function()
+        {
+          // Scale down
+          tile.scale.setScalar(1 - progress.t);
+
+          // Make disappear
+          tile.material.transparent = true;
+          tile.material.opacity = 1 - progress.t;
+        })
+        .start(this.t);
+
+      // Also move to the center
+      new TWEEN.Tween(this.tiles[tileIndex + i].position)
+        .delay(i * duration / 7)
+        .to({x: -3.5 * worldScale}, duration)
+        .easing(TWEEN.Easing.Quadratic.In)
+        .start(this.t);
+    }
   }
 }

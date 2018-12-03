@@ -87,11 +87,16 @@ STATES.Main = {
       this.app.renderingSystem.animateGod(3);
 
     if (event.key === 'v')
-      this.app.particleSystem.createParticles('fire', 0, 0, 3);
+      this.app.particleSystem.createFire(-10, 0, 3);
     if (event.key === 'b')
-      this.app.particleSystem.createParticles('soul', 0, 0, 100000);
+    {
+      const goal = this.app.renderingSystem.rune2.position;
+      //this.app.particleSystem.createSoul(900, 10, 5,  goal.x, goal.y);
 
-    if (event.key === 'q') {
+      this.app.particleSystem.createSoulFromTileToRune(5, 1);
+    }
+
+    if (event.key === 'q')
       this.app.game.removeBottomRow();
     }
     if (event.key === 'n')
@@ -100,6 +105,9 @@ STATES.Main = {
       this.app.renderingSystem.highlightTile(1, 3, 2);
       this.app.renderingSystem.highlightTile(2, 10, 2);
     }
+
+    if (event.key === 'm')
+      this.app.renderingSystem.makeTilesFall(0, 1);
   }
 };
 
