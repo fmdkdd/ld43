@@ -215,6 +215,10 @@ class RenderingSystem extends ECS.System
       if (entity.components.people) {
         color = gameColorToHex(entity.components.people.color);
       }
+      else
+      {
+        color = 0xffffff;
+      }
 
       // Give a torch to the player
       if (entity.components.player)
@@ -223,6 +227,21 @@ class RenderingSystem extends ECS.System
          this.playerTorch.castShadow = true;
          this.playerTorch.position.set(1, 5, 0);
          model.scene.add(this.playerTorch);
+
+         const torchAnchor = model.scene.getObjectByName('torch');
+
+         const torchModel = new THREE.Mesh(new THREE.BoxGeometry(0.3,0.3,2), new THREE.MeshLambertMaterial({color: 0x3d2800}));
+         //torchModel.rotation.x = 0.5;
+         torchAnchor.add(torchModel);
+         torchAnchor.position.x -= 0.2; // Hack
+         torchAnchor.position.y += 0;
+         torchAnchor.position.z += 1.5;
+
+         const torchTip = new THREE.Object3D();
+         torchTip.position.set(0,0,1);
+         torchModel.add(torchTip);
+
+         this.app.particleSystem.createTorch(torchTip);
       }
 
       const robe = model.scene.getObjectByName('robe');
@@ -249,14 +268,21 @@ class RenderingSystem extends ECS.System
       const hair = model.scene.getObjectByName('hair');
       if (hair)
       {
-        const hairColors = [0x201600, 0x663F26, 0xffe600, 0xffae00];
-        hair.material = new THREE.MeshLambertMaterial({color: hairColors[Math.floor(Math.random()*4)]});
+        // Player: no hair
+        if (entity.components.player)
+        {
+          hair.parent.remove(hair);
+        }
+        else
+        {
+          const hairColors = [0x201600, 0x663F26, 0xffe600, 0xffae00];
+          hair.material = new THREE.MeshLambertMaterial({color: hairColors[Math.floor(Math.random()*4)]});
+        }
       }
 
       // Setup anims
 
       const clips = model.animations;
-      console.log(clips)
       clips.forEach((clip) => {
         if (clip.validate()) clip.optimize();
       });
@@ -265,8 +291,12 @@ class RenderingSystem extends ECS.System
       const mixer = new THREE.AnimationMixer(model.scene);
       this.objects[entity.id].mixer = mixer;
 
-      // Play a random looping anim
-      this.animateGuy(entity, Math.floor(Math.random() * 4), THREE.LoopRepeat);
+      // Tiny peple: play a random looping anim
+      if (entity.components.people)
+        this.animateGuy(entity, Math.floor(Math.random() * 4), THREE.LoopRepeat);
+      // Player: special anim
+      else if (entity.components.player)
+        this.animateGuy(entity, 4, THREE.LoopRepeat);
 
       this.objects[entity.id].animSpeed = 0.25 + Math.random() * 0.75;
     });
@@ -431,7 +461,7 @@ class RenderingSystem extends ECS.System
   {
     const clips = this.objects[entity.id].clips;
 
-    const clipNames = ['anim_pray', 'anim_offer', 'anim_arms', 'anim_arms2'];
+    const clipNames = ['anim_pray', 'anim_offer', 'anim_arms', 'anim_arms2', 'anim_wololo'];
     var clip = THREE.AnimationClip.findByName(clips, clipNames[clipIndex]);
 
     const mixer = this.objects[entity.id].mixer;

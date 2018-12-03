@@ -102,7 +102,30 @@ class ParticleSystem extends ECS.System
       emitter.p.z = position.z;
       emitter.emit();
 
-console.log(entity.components, emitter);
+      this.engine.addEmitter(emitter);
+
+      this.emitters[entity.id] = emitter;
+    }
+    if (particles.type === 'torch')
+    {
+      const material = new THREE.SpriteMaterial({
+          map: new THREE.TextureLoader().load("../assets/particle.png"),
+          color: 0xff0000,
+          blending: THREE.AdditiveBlending,
+          fog: true
+      });
+      const body = new THREE.Sprite(material);
+
+      const emitter = new Proton.Emitter();
+      emitter.rate = new Proton.Rate(new Proton.Span(5, 5), new Proton.Span(.1, .25));
+      emitter.addInitialize(new Proton.Body(body));
+      emitter.addInitialize(new Proton.Radius(1));
+      emitter.addInitialize(new Proton.Life(0.5, 1));
+      emitter.addInitialize(new Proton.Velocity(10, new Proton.Vector3D(0, 1, 0), 10));
+      emitter.addBehaviour(new Proton.Scale(1, 0.1));
+      emitter.addBehaviour(new Proton.Color('#FF0026', ['#ffff00', '#ffff11'], Infinity, Proton.easeOutSine));
+      emitter.emit();
+
       this.engine.addEmitter(emitter);
 
       this.emitters[entity.id] = emitter;
@@ -144,6 +167,16 @@ console.log(entity.components, emitter);
       emitter.p.z += vel2.y * 0.3;
 
       //console.log(emitter.p.x, emitter.p.y)
+    }
+    // Torch: move the emitter on the torch
+    else if (entity.components.particles.type === 'torch')
+    {
+      const posAbsolute = new THREE.Vector3();
+      this.torchObject.getWorldPosition(posAbsolute);
+
+      emitter.p.x = posAbsolute.x;
+      emitter.p.y = posAbsolute.y;
+      emitter.p.z = posAbsolute.z;
     }
 
     // Decrease lifetime
@@ -195,5 +228,11 @@ console.log(entity.components, emitter);
   createRuneParticles(x, y, z)
   {
     //this.app.ecs.addEntity(createParticles('rune', x, y, z, 3));
+  }
+
+  createTorch(torchObject)
+  {
+    this.torchObject = torchObject; // lol hack again
+    this.app.ecs.addEntity(createParticles('torch', 0, 0, 0, 10000000));
   }
 }
