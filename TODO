@@ -5,9 +5,9 @@
 - New game screen with game rules
   (press start to begin)
 
-- Animate player movement
+- Fade in/out pause and gameover screens
 
-- Animate bottom row crashing
+- Animate player movement
 
 - Sound effects
   - rotate
@@ -16,6 +16,8 @@
   - fill runes
   - shake
   - god mouth (idle?  combo?)
+
+- Add 2x, 3x multipliers indicators below runes
 
 - Music (Aztec-like... drummy)
 
