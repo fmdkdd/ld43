@@ -256,9 +256,15 @@ class RenderingSystem extends ECS.System
 
     obj.mixer.update(obj.animSpeed);
 
-    if (entity.components.people && entity.components.people.color_changed) {
-      this.updateColor(entity);
-      entity.components.people.color_changed = false;
+    if (DEBUG && entity.components.people) {
+      const ctx = this.overlay;
+      ctx.fillStyle = '#aaa';
+      ctx.font = '12px sans-serif';
+      const px = 100 + x * 50;
+      const py = 545 - y * 50;
+      const xy = entity.components.pos.y * this.app.game.gridWidth +
+            entity.components.pos.x;
+      ctx.fillText(xy, px + 20, py);
     }
   }
 

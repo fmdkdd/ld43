@@ -4,6 +4,8 @@ const YELLOW = 2;
 const GREEN  = 3;
 const EMPTY  = 4;
 
+const NO_ID = -1;
+
 class GameSystem extends ECS.System {
   constructor(app) {
     super();
@@ -285,20 +287,16 @@ class GameSystem extends ECS.System {
   }
 
   pushDown(x, y) {
-    const out = this.getXY(x, y);
-
     for (; y < this.gridHeight - 1; ++y) {
       this.moveXYDown(x, y + 1);
     }
     this.addXY(x, y, randomColor());
-
-    return out;
   }
 
   getXY(x, y) {
     const id = this.grid[y * this.gridWidth + x];
     const e = this.app.ecs.getEntityById(id);
-    if (id === EMPTY) {
+    if (id === NO_ID) {
       return EMPTY;
     } else {
       return e.components.people.color;
@@ -309,7 +307,7 @@ class GameSystem extends ECS.System {
     const xy = y * this.gridWidth + x;
     const id = this.grid[xy];
     this.app.ecs.removeEntityById(id);
-    this.grid[xy] = EMPTY;
+    this.grid[xy] = NO_ID;
   }
 
   addXY(x, y, color) {
@@ -325,11 +323,12 @@ class GameSystem extends ECS.System {
     // const up = this.grid[from];
 
     const xy = y * this.gridWidth + x;
-    const down = xy - this.gridWidth;
     const id = this.grid[xy];
 
-    if (id !== EMPTY) {
+    if (id !== NO_ID) {
+      const down = xy - this.gridWidth;
       this.grid[down] = id;
+      this.grid[xy] = NO_ID;
       this.moveEntityTo(id, down);
     }
   }

@@ -251,6 +251,9 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     step(dt) {
+      this.renderingSystem.overlay
+        .clearRect(0, 0, this.width * this.scale, this.height * this.scale);
+
       this.ecs.update();
     },
 
@@ -258,23 +261,42 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.dt = dt;
       this.renderingSystem.render(dt);
 
-
-
       if (DEBUG) {
         const ctx = this.renderingSystem.overlay;
-        ctx.clearRect(0, 0, this.width * this.scale, this.height * this.scale);
 
-        ctx.fillStyle = '#aaa';
-        ctx.font = '18px sans-serif';
+        ctx.font = '12px sans-serif';
         ctx.save();
         ctx.translate(100, 545);
 
         for (let y=0; y < this.game.gridHeight; ++y) {
           for (let x=0; x < this.game.gridWidth; ++x) {
+            // Cell coordinate
             const px =  x * 50;
             const py = -y * 50;
             const xy = y * this.game.gridWidth + x;
+            ctx.fillStyle = '#aaa';
             ctx.fillText(xy, px, py);
+
+            // Cell color
+            const c = this.game.getXY(x, y);
+            switch (c) {
+            case RED: ctx.fillStyle = 'red'; break;
+            case BLUE: ctx.fillStyle = 'blue'; break;
+            case YELLOW: ctx.fillStyle = 'yellow'; break;
+            case GREEN: ctx.fillStyle = 'green'; break;
+            default: ctx.fillStyle = 'white'; break;
+            }
+            ctx.fillRect(px - 10, py + 20, 10, 10);
+
+            // Position of entity in this cell
+            // const id = this.game.grid[y * this.game.gridWidth + x];
+            // if (id !== EMPTY) {
+            //   const e = this.ecs.getEntityById(id);
+            //   const exy = e.components.pos.y * this.game.gridWidth +
+            //         e.components.pos.x;
+            //   ctx.fillStyle = '#6cc';
+            //   ctx.fillText(exy, px + 20, py);
+            // }
           }
         }
 
