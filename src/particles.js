@@ -70,7 +70,8 @@ class ParticleSystem extends ECS.System
       emitter.addBehaviour(new Proton.Scale(1, 0.1));
       emitter.addBehaviour(new Proton.RandomDrift(0.1, 0.1, 0.1, .05));
       emitter.p.x = position.x;
-      emitter.p.y = position.y;
+      emitter.p.y = position.z;
+      emitter.p.z = position.y;
       emitter.emit();
 
       entity.components.particles.velx = -Math.random() * 5;
@@ -208,9 +209,13 @@ class ParticleSystem extends ECS.System
   {
     // HACKY STUFF
 
-//    const from = this.app.renderingSystem.tiles[tileIndex].position;
-//    const to = this.app.renderingSystem['rune' + runeIndex].position;
+    const from = this.app.renderingSystem.tiles[tileIndex].position.clone();
 
+    const to = new THREE.Vector3();
+    this.app.renderingSystem['rune' + runeIndex].getWorldPosition(to);
+
+console.log(from, to)
+from.x = 1000; from.y = 10;
     // Convert 'from' from world-space to the background camera space
 
     //const from_sceneCam = from.copy().sub(this.app.renderingSystem.camera);
@@ -223,7 +228,7 @@ class ParticleSystem extends ECS.System
 
     console.log(p, vector);*/
 
-  //  this.createSoul(from.x, from.y, 10, to.x, to.y);
+    this.createSoul(from.x, from.y, 10, to.x, to.y);
   }
 
   createRuneParticles(x, y, z)

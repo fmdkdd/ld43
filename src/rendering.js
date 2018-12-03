@@ -223,7 +223,7 @@ class RenderingSystem extends ECS.System
       }
       else
       {
-        color = 0xffffff;
+        color = 0x000000;
       }
 
       // Give a torch to the player
@@ -234,7 +234,7 @@ class RenderingSystem extends ECS.System
          this.playerTorch.position.set(1, 5, 0);
          model.scene.add(this.playerTorch);
 
-         const torchAnchor = model.scene.getObjectByName('torch');
+         /*const torchAnchor = model.scene.getObjectByName('torch');
 
          const torchModel = new THREE.Mesh(new THREE.BoxGeometry(0.3,0.3,2), new THREE.MeshLambertMaterial({color: 0x3d2800}));
          //torchModel.rotation.x = 0.5;
@@ -247,7 +247,7 @@ class RenderingSystem extends ECS.System
          torchTip.position.set(0,0,1);
          torchModel.add(torchTip);
 
-         this.app.particleSystem.createTorch(torchTip);
+         this.app.particleSystem.createTorch(torchTip);*/
       }
 
       const robe = model.scene.getObjectByName('robe');
@@ -266,8 +266,8 @@ class RenderingSystem extends ECS.System
         head.rotation.x = Math.PI*2;
         head.position.y += 0.75;
 
-        const skinColors = [0x5b452d, 0x7e6620, 0xfed253, 0xfff0d1];
-        head.material = new THREE.MeshLambertMaterial({color: skinColors[Math.floor(Math.random()*4)]});
+        const skinColors = [0xf0cd93, 0x5b452d, 0x7e6620, 0xfed253, 0xfff0d1];
+        head.material = new THREE.MeshLambertMaterial({color: skinColors[0/*Math.floor(Math.random()*4)*/]});
         head.getObjectByName('nose').material = head.material;
       }
 
@@ -282,7 +282,7 @@ class RenderingSystem extends ECS.System
         else
         {
           const hairColors = [0x201600, 0x663F26, 0xffe600, 0xffae00];
-          hair.material = new THREE.MeshLambertMaterial({color: hairColors[Math.floor(Math.random()*4)]});
+          hair.material = new THREE.MeshLambertMaterial({color: hairColors[1/*Math.floor(Math.random()*4)*/]});
         }
       }
 
