@@ -64,6 +64,7 @@ class GameSystem extends ECS.System {
       const e = this.app.ecs.getEntityById(id);
       const color = gameColorToHex(e.components.people.color);
       this.app.renderingSystem.highlightTile(c, 2, duration, color);
+      this.app.renderingSystem.highlightRune(e.components.people.color);
     }
   }
 

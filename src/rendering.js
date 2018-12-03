@@ -476,7 +476,7 @@ class RenderingSystem extends ECS.System
     //runeBottom.material.emissiveIntensity = 1;
 
     new TWEEN.Tween(runeBottom.material)
-      .to({emissiveIntensity: 1}, 0.25)
+      .to({emissiveIntensity: 1}, 0.5)
       .easing(TWEEN.Easing.Back.InOut)
       .repeat(1)
       .yoyo(true)
@@ -488,7 +488,7 @@ class RenderingSystem extends ECS.System
 
     const s = 1.25;
     new TWEEN.Tween(rune.scale)
-      .to({x: s, y: s, z: s}, 0.2)
+      .to({x: s, y: s, z: s}, 0.5)
       .easing(TWEEN.Easing.Back.InOut)
       .repeat(1)
       .yoyo(true)
@@ -496,7 +496,7 @@ class RenderingSystem extends ECS.System
 
     const r = Math.random() * 0.8 - 0.4;
     new TWEEN.Tween(rune.rotation)
-      .to({y: r}, 0.2)
+      .to({y: r}, 0.5)
       .repeat(1)
       .yoyo(true)
       .start(this.t);
