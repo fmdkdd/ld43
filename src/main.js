@@ -5,13 +5,130 @@ let DEBUG = false;
 
 const STATES = {};
 
-STATES.NewGame = {
+STATES.TitleScreen = {
   enter() {
-    // Start by checking for matches as the random grid may have some
-    // Free points!
+    // Start loading the game for the tutorial
     this.app.ecs.addSystem(this.app.game = new GameSystem(this.app));
-    this.app.setState(STATES.CheckMatches);
-  }
+  },
+
+  keydown(event) {
+    if (event.key === 'space') {
+      this.app.setState(STATES.Tuto);
+    }
+  },
+
+  render(dt) {
+    const ctx = this.app.renderingSystem.overlay;
+    const w = this.app.width * this.app.scale;
+    const h = this.app.height * this.app.scale;
+
+    // Fill overlay background
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = '50px sans-serif';
+    ctx.fillStyle = '#fff';
+
+    let text = 'QUELTRIS';
+    let m = ctx.measureText(text);
+    ctx.fillText(text, w/2 - m.width/2, h/2);
+
+    text = 'Press SPACE';
+    ctx.font = '20px sans-serif';
+    m = ctx.measureText(text);
+    ctx.fillText(text, w/2 - m.width/2, h/2 + 50);
+  },
+};
+
+STATES.Tuto = {
+
+  keydown(event) {
+    if (event.key === 'space') {
+      this.app.setState(STATES.Tuto2);
+    }
+  },
+
+  render(dt) {
+    const ctx = this.app.renderingSystem.overlay;
+    const w = this.app.width * this.app.scale;
+    const h = this.app.height * this.app.scale;
+
+    // Fill overlay background
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(0,0,0,.8)';
+    ctx.fillRect(0, 0, w, h);
+
+    // Show gameplay elements
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = '#fff';
+
+    ctx.beginPath();
+    ctx.arc(241, 320, 50, 0, Math.PI*2);
+    ctx.fill();
+
+    // Tutorial text
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.font = '25px sans-serif';
+
+    let text ='Arrows move this';
+    ctx.fillText(text, 160, 250);
+
+    text ='Z or X to rotate';
+    ctx.fillText(text, 170, 410);
+
+    const t = this.app.renderingSystem.t
+    text = 'Press SPACE to continue';
+    let m = ctx.measureText(text);
+    ctx.fillText(text, w/2 - m.width/2, 50 + Math.sin(t) * 6);
+  },
+};
+
+STATES.Tuto2 = {
+
+  keydown(event) {
+    if (event.key === 'space') {
+      // Start by checking for matches as the random grid may have some
+      // Free points!
+      this.app.setState(STATES.CheckMatches);
+    }
+  },
+
+  render(dt) {
+    const ctx = this.app.renderingSystem.overlay;
+    const w = this.app.width * this.app.scale;
+    const h = this.app.height * this.app.scale;
+
+    // Fill overlay background
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(0,0,0,.8)';
+    ctx.fillRect(0, 0, w, h);
+
+    // Show gameplay elements
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = '#fff';
+
+    ctx.fillRect(480, 300, 300, 200);
+
+    ctx.fillRect(480, 500, 300, 100);
+
+    // Tutorial text
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.font = '25px sans-serif';
+
+    text = 'Match these shapes...';
+    ctx.fillText(text, 480, 280);
+
+    text = "... to fill this bar ...";
+    ctx.fillText(text, 540, 500);
+
+    text = "... and score points!";
+    ctx.fillText(text, 250, 555);
+
+    const t = this.app.renderingSystem.t
+    text = 'Press SPACE to start';
+    let m = ctx.measureText(text);
+    ctx.fillText(text, w/2 - m.width/2, 50 + Math.sin(t) * 6);
+  },
 };
 
 STATES.GameOver = {
@@ -37,16 +154,23 @@ STATES.GameOver = {
     let m = ctx.measureText(text);
     ctx.fillText(text, w/2 - m.width/2, h/2);
 
-    text = 'Press ENTER for a new game';
+    text = 'Press SPACE for a new game';
     ctx.font = '20px sans-serif';
     m = ctx.measureText(text);
     ctx.fillText(text, w/2 - m.width/2, h/2 + 50);
   },
 
   keydown(event) {
-    if (event.key === 'enter') {
+    if (event.key === 'space') {
       this.app.setState(STATES.NewGame);
     }
+  },
+};
+
+STATES.NewGame = {
+  enter() {
+    this.app.ecs.addSystem(this.app.game = new GameSystem(this.app));
+    this.app.setState(STATES.CheckMatches);
   },
 };
 
@@ -459,10 +583,12 @@ window.addEventListener('DOMContentLoaded', function main() {
         ctx.fillText('bottom row: ' + this.game.bottomRow, 10, 10);
       }
 
-      // Score
-      ctx.font = '30px sans-serif';
-      ctx.fillStyle = '#fff';
-      ctx.fillText(Math.floor(this.game.displayScore), 600, 500);
+      if (this.game) {
+        // Score
+        ctx.font = '30px sans-serif';
+        ctx.fillStyle = '#fff';
+        ctx.fillText(Math.floor(this.game.displayScore), 600, 500);
+      }
     },
 
     keyup(event) {
@@ -487,7 +613,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       });
 
       // Start by checking for matches
-      this.setState(STATES.NewGame);
+      this.setState(STATES.TitleScreen);
     },
 
     // Record FPS through the prerender and postrender events

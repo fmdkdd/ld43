@@ -1,32 +1,32 @@
 - Proper colors
 
-@florent:
+--------
+Florent
+--------
 
 - Flash timer when nearly out
-
-- New game screen with game rules
-  (press start to begin)
-
+- Drop all tiles behind game over screen
 - Start screen choose between timed mode and infinite (no timer)
+- Trigger god animation/small shake for combos?
 
 - Fade in/out pause and gameover screens
-
-- Drop all tiles behind game over screen
 
 - Add 2x, 3x multipliers indicators below runes
 
 - Music (Aztec-like... drummy)
 
-- Trigger god animation/small shake for combos?
-
 - Prepare page with screenshots/gameplay clips
 
 - SUBMIT to LD!
 
-@merwan:
+--------
+Merwan
+--------
 
+-------
+Unsure
+-------
 
-Unsure:
 - Filling runes unlock power-ups.
 
   Fill runes by matching them.  Combos and multiple matches fill them faster.
@@ -36,8 +36,10 @@ Unsure:
   - restore one row
   - larger rotation
 
+-----------------
+Not enough time
+-----------------
 
-Not enough time:
 - Add a couple of rows above grid to see what pieces are coming down
 
 - Allow further rotations before checking combos
@@ -49,8 +51,10 @@ Not enough time:
 
 - Particle system for matches
 
+-----
+Done
+-----
 
-Done:
 - detection of matches for scoring
   - Single match
   - Double match same pattern, (etc, 2, 3, 4...)
@@ -82,3 +86,6 @@ Done:
 - Highlight matches
 
 - Animate player movement
+
+- New game screen with game rules
+  (press start to begin)
