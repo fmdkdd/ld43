@@ -26,7 +26,7 @@ class ParticleSystem extends ECS.System
     if (particles.type === 'fire')
     {
       const material = new THREE.SpriteMaterial({
-          map: this.app.textures["/assets/particle.png"],
+          map: this.app.textures["assets/particle.png"],
           color: 0xff0000,
           blending: THREE.AdditiveBlending,
           fog: true
@@ -54,7 +54,7 @@ class ParticleSystem extends ECS.System
     else if (particles.type === 'soul')
     {
       const material = new THREE.SpriteMaterial({
-        map: this.app.textures["/assets/particle.png"],
+        map: this.app.textures["assets/particle.png"],
         color: 0xffffff,
         blending: THREE.AdditiveBlending,
         fog: true
@@ -83,7 +83,7 @@ class ParticleSystem extends ECS.System
     else if (particles.type === 'rune')
     {
       const material = new THREE.SpriteMaterial({
-        map: this.app.textures["/assets/particle.png"],
+        map: this.app.textures["assets/particle.png"],
           color: 0xffffff,
           blending: THREE.AdditiveBlending,
           fog: true
@@ -110,7 +110,7 @@ class ParticleSystem extends ECS.System
     else if (particles.type === 'torch')
     {
       const material = new THREE.SpriteMaterial({
-          map: this.app.textures["/assets/particle.png"],
+          map: this.app.textures["assets/particle.png"],
           color: 0xff0000,
           blending: THREE.AdditiveBlending,
           fog: true

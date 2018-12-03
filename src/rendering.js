@@ -75,7 +75,7 @@ class RenderingSystem extends ECS.System
 
     // Ground
 
-    const tileTexture = this.app.textures['/assets/tile.png'];
+    const tileTexture = this.app.textures['assets/tile.png'];
 
     const tileGeometry = new THREE.BoxGeometry(worldScale, 0.5, worldScale);
 
@@ -103,12 +103,12 @@ class RenderingSystem extends ECS.System
     this.bgCamera.position.set(1000, -5, 100);
     this.bgCamera.lookAt(1000, -5, 10);
 
-    const bgTexture = this.app.textures['/assets/bg.png'];
-    const bgNormalTexture = this.app.textures['/assets/bg_normal.png'];
-    const bgNormalTexture2 = this.app.textures['/assets/wall_normal.jpg'];
+    const bgTexture = this.app.textures['assets/bg.png'];
+    const bgNormalTexture = this.app.textures['assets/bg_normal.png'];
+    const bgNormalTexture2 = this.app.textures['assets/wall_normal.jpg'];
 
     const loader = new THREE.GLTFLoader();
-    loader.load('/assets/wall.glb', model =>
+    loader.load('assets/wall.glb', model =>
     {
       model.scene.position.set(1000, 0, 0);
       model.scene.rotation.x = 90;
@@ -210,7 +210,7 @@ class RenderingSystem extends ECS.System
   enter(entity)
   {
     const loader = new THREE.GLTFLoader();
-    loader.load('/assets/guy.glb', model =>
+    loader.load('assets/guy.glb', model =>
     {
       // Add to scene
 

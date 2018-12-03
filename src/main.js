@@ -463,8 +463,8 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.stats.dom.style.bottom = 0;
       document.body.appendChild(this.stats.dom);
 
-      //this.loadData('/assets/box.json');
-      //this.loadData('/assets/guy.json');
+      //this.loadData('assets/box.json');
+      //this.loadData('assets/guy.json');
     },
 
     create() {
@@ -482,16 +482,16 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.sound.alias('voice-scaled', 'voice-of-god', .4, 1);
 
       // Load textures
-      this.loadTexture('/assets/tile.png');
-      this.loadTexture('/assets/particle.png');
-      this.loadTexture('/assets/bg.png');
-      this.loadTexture('/assets/bg_normal.png');
-      this.loadTexture('/assets/wall_normal.jpg');
+      this.loadTexture('assets/tile.png');
+      this.loadTexture('assets/particle.png');
+      this.loadTexture('assets/bg.png');
+      this.loadTexture('assets/bg_normal.png');
+      this.loadTexture('assets/wall_normal.jpg');
 
       // Load models
       // NOT WORKING: there is only one guy after that
-      // this.loadGLTF('/assets/guy.glb');
-      //this.loadGLTF('/assets/wall.glb');
+      // this.loadGLTF('assets/guy.glb');
+      // this.loadGLTF('assets/wall.glb');
 
       const lowGraphicsStorage = localStorage.getItem('lowgraphics');
       this.lowGraphics = lowGraphicsStorage === 'true';
