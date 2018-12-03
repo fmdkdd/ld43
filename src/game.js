@@ -11,8 +11,8 @@ class GameSystem extends ECS.System {
     super();
     this.app = app;
 
-    const player = createPlayer(1,1);
-    this.app.ecs.addEntity(player);
+    this.player = createPlayer(1,1);
+    this.app.ecs.addEntity(this.player);
 
     this.gridHeight = 10;
     this.gridWidth = 7;
@@ -52,13 +52,36 @@ class GameSystem extends ECS.System {
 
     this.scoreIntoTimer = .001;
     this.scoreIntoTimerSpeed = .000001;
+
+    this.bottomRow = 0;
   }
 
   step(dt) {
+    if (this.timer === 0) {
+      this.removeBottomRow();
+      this.timer = 1;
+    }
+
     this.timer = Math.max(0, this.timer - this.timerSpeed * dt);
     if (this.app.renderingSystem.timerFill) {
       this.app.renderingSystem.timerFill.scale.x = this.timer;
     }
+  }
+
+  removeBottomRow() {
+    // If there are fewer than 3 lines, you lose
+    console.log(this.gridHeight - this.bottomRow);
+    if (this.gridHeight - this.bottomRow <= 3) {
+      this.app.setState(STATES.GameOver);
+      return;
+    }
+
+    // Empty all cells, and remove entities of bottom row
+    for (let x=0; x < this.gridWidth; ++x) {
+      this.removeXY(x, this.bottomRow);
+    }
+
+    this.bottomRow++;
   }
 
   test(entity) {
@@ -66,6 +89,16 @@ class GameSystem extends ECS.System {
   }
 
   enter(entity) {
+  }
+
+  destroySystem() {
+    for (let y=0; y < this.gridHeight; ++y) {
+      for (let x=0; x < this.gridWidth; ++x) {
+        this.removeXY(x, y);
+      }
+    }
+
+    this.app.ecs.removeEntity(this.player);
   }
 
   update(entity) {
@@ -88,7 +121,7 @@ class GameSystem extends ECS.System {
 
     // Clamp position
     entity.components.pos.x = clamp(entity.components.pos.x, 1, this.gridWidth - 1);
-    entity.components.pos.y = clamp(entity.components.pos.y, 1, this.gridHeight - 1);
+    entity.components.pos.y = clamp(entity.components.pos.y, this.bottomRow + 1, this.gridHeight - 1);
 
     if (entity.components.player.rotateLeft)
       this.rotateLeft(entity);
@@ -179,7 +212,7 @@ class GameSystem extends ECS.System {
   findMatches() {
     const matches = [];
 
-    for (let y=0; y < this.gridHeight; ++y) {
+    for (let y=this.bottomRow; y < this.gridHeight; ++y) {
       for (let x=0; x < this.gridWidth; ++x) {
         for (let p=0; p < this.patterns.length; ++p) {
           const m = this.matchPatternAt(this.patterns[p], x, y);
@@ -295,7 +328,7 @@ class GameSystem extends ECS.System {
   fillHoles() {
     for (let c of this.columnsWithHoles) {
       // Find first hole going up
-      for (let y=0; y < this.gridHeight; ++y) {
+      for (let y=this.bottomRow; y < this.gridHeight; ++y) {
         if (this.getXY(c, y) === EMPTY) {
           this.pushDown(c, y);
           break;
@@ -307,7 +340,7 @@ class GameSystem extends ECS.System {
     this.columnsWithHoles =
       this.columnsWithHoles
       .filter(c => {
-        for (let y=0; y < this.gridHeight; ++y) {
+        for (let y=this.bottomRow; y < this.gridHeight; ++y) {
           if (this.getXY(c, y) === EMPTY) {
             return true;
           }
@@ -336,8 +369,11 @@ class GameSystem extends ECS.System {
   removeXY(x, y) {
     const xy = y * this.gridWidth + x;
     const id = this.grid[xy];
-    this.app.ecs.removeEntityById(id);
-    this.grid[xy] = NO_ID;
+
+    if (id !== NO_ID) {
+      this.app.ecs.removeEntityById(id);
+      this.grid[xy] = NO_ID;
+    }
   }
 
   addXY(x, y, color) {

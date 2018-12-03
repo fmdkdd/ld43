@@ -8,7 +8,43 @@ STATES.NewGame = {
     this.app.ecs.addSystem(this.app.game = new GameSystem(this.app));
     this.app.setState(STATES.CheckMatches);
   }
-}
+};
+
+STATES.GameOver = {
+  leave() {
+    // Remove the previous game system properly
+    this.app.game.destroySystem();
+    this.app.ecs.removeSystem(this.app.game);
+  },
+
+  render(dt) {
+    const ctx = this.app.renderingSystem.overlay;
+    const w = this.app.width * this.app.scale;
+    const h = this.app.height * this.app.scale;
+
+    // Fill overlay background
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = '46px sans-serif';
+    ctx.fillStyle = '#fff';
+
+    let text = 'Game Over';
+    let m = ctx.measureText(text);
+    ctx.fillText(text, this.app.width/2 - m.width/2, this.app.height/2);
+
+    text = 'Press ENTER for a new game';
+    ctx.font = '20px sans-serif';
+    m = ctx.measureText(text);
+    ctx.fillText(text, this.app.width/2 - m.width/2, this.app.height/2 + 50);
+  },
+
+  keydown(event) {
+    if (event.key === 'enter') {
+      this.app.setState(STATES.NewGame);
+    }
+  },
+};
 
 STATES.Main = {
   enter() {
@@ -56,6 +92,10 @@ STATES.Main = {
       this.app.particleSystem.createParticles('fire', 0, 0, 3);
     if (event.key === 'b')
       this.app.particleSystem.createParticles('soul', 0, 0, 100000);
+
+    if (event.key === 'q') {
+      this.app.game.removeBottomRow();
+    }
   }
 };
 
@@ -312,6 +352,9 @@ window.addEventListener('DOMContentLoaded', function main() {
         // Timer speed
         ctx.fillStyle = '#aaa';
         ctx.fillText('speed: ' + this.game.timerSpeed, 450, 520);
+
+        // Bottom row
+        ctx.fillText('bottom row: ' + this.game.bottomRow, 10, 10);
       }
 
       // Score
