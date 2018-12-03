@@ -169,6 +169,7 @@ STATES.Rotating = {
     this.delay = 0.06;
     this.delay_init = this.delay;
     this.app.rotationTheta = 0;
+    this.app.playSound('move-scaled');
   },
 
   step(dt) {
@@ -220,6 +221,9 @@ STATES.HighlightMatchCells = {
   enter() {
     this.delay = .3;
     this.app.game.highlightMatchCells(this.delay);
+    let sound = this.app.game.currentCombo + 1;
+    sound = clamp(sound, 1, 6);
+    this.app.playSound(`match-${sound}-scaled`);
   },
 
   step(dt) {
@@ -304,7 +308,14 @@ window.addEventListener('DOMContentLoaded', function main() {
     create() {
       // MODELS.forEach(asset => this.loadData(asset));
 
-      // this.loadSounds('pickup');
+      this.loadSounds('move');
+      this.sound.alias('move-scaled', 'move', .05, 1);
+
+      for (let i=1; i <= 6; ++i) {
+        this.loadSounds('match-' + i);
+        this.sound.alias('match-' + i + '-scaled', 'match-' + i, .1, 1);
+      }
+
       // this.loadSounds('putdown');
       // this.loadSounds('rotate');
       // this.loadSounds('level-solved');
