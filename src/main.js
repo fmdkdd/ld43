@@ -99,6 +99,26 @@ STATES.Main = {
   }
 };
 
+STATES.RemoveBottomRow = {
+  enter() {
+    this.app.renderingSystem.shake(0.5, 10, 2);
+    this.app.renderingSystem.animateGod(3);
+    this.delay = 1;
+  },
+
+  leave() {
+    this.app.game.removeBottomRow();
+    this.app.renderingSystem.fillTimer(this.app.game.timer);
+  },
+
+  step(dt) {
+    if (this.delay === 0) {
+      this.app.setState(STATES.Main);
+    }
+    this.delay = Math.max(0, this.delay - dt);
+  },
+};
+
 STATES.Pause = {
   render(dt) {
     const ctx = this.app.renderingSystem.overlay;

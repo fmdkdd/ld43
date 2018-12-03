@@ -58,8 +58,9 @@ class GameSystem extends ECS.System {
 
   step(dt) {
     if (this.timer === 0) {
-      this.removeBottomRow();
+      this.app.setState(STATES.RemoveBottomRow);
       this.timer = 1;
+      return;
     }
 
     this.timer = Math.max(0, this.timer - this.timerSpeed * dt);
@@ -70,7 +71,6 @@ class GameSystem extends ECS.System {
 
   removeBottomRow() {
     // If there are fewer than 3 lines, you lose
-    console.log(this.gridHeight - this.bottomRow);
     if (this.gridHeight - this.bottomRow <= 3) {
       this.app.setState(STATES.GameOver);
       return;
