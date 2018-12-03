@@ -38,34 +38,6 @@ class RenderingSystem extends ECS.System
 
     this.scene = new THREE.Scene();
 
-    //var axes = new THREE.AxesHelper();
-    //this.scene.add( axes );
-
-/*
-const _mesh0 = new THREE.Mesh(
-     new THREE.BoxGeometry(4, 4, 4),
-     new THREE.MeshLambertMaterial({color: 0xffffff}));
-   _mesh0.position.set(0,0,0);
-   this.scene.add(_mesh0);
-
-   const _mesh1 = new THREE.Mesh(
-     new THREE.BoxGeometry(4, 4, 4),
-     new THREE.MeshLambertMaterial({color: 0xff0000}));
-   _mesh1.position.set(5,0,0);
-   this.scene.add(_mesh1);
-
-   const _mesh2 = new THREE.Mesh(
-     new THREE.BoxGeometry(4, 4, 4),
-     new THREE.MeshLambertMaterial({color: 0x00ff00}));
-   _mesh2.position.set(0,-5,0);
-   this.scene.add(_mesh2);
-
-   const _mesh3 = new THREE.Mesh(
-     new THREE.BoxGeometry(4, 4, 4),
-     new THREE.MeshLambertMaterial({color: 0xff}));
-   _mesh3.position.set(0,0,5);
-   this.scene.add(_mesh3);
-*/
     const camw = 24;
     const camh = camw * this.app.height / this.app.width;
     this.camera = new THREE.OrthographicCamera(-camw, camw, camh, -camh, 1, 1000);
@@ -82,7 +54,7 @@ const _mesh0 = new THREE.Mesh(
     this.scene.add(light);
 
     //const skyLight = new THREE.HemisphereLight( 0x303655, 0x010c41, 1);
-    const skyLight = new THREE.HemisphereLight( 0xFFFFFF, 0x333333, 1);
+    const skyLight = new THREE.HemisphereLight( 0xFFFFFF, 0x333333, 0.75);
     this.scene.add(skyLight);
 
     // Ground
@@ -148,12 +120,14 @@ const _mesh0 = new THREE.Mesh(
 
       // God anims
 
+      console.log('animations', model.animations);
+
       const clips = model.animations;
       clips.forEach((clip) => {
         if (clip.validate()) clip.optimize();
       });
-console.log(model.animations);
-    const animNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
+
+      const animNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
       this.godMixer = new THREE.AnimationMixer(model.scene);
       var clip = THREE.AnimationClip.findByName( model.animations, animNames[3]);
       var action = this.godMixer.clipAction( clip );
@@ -189,6 +163,13 @@ console.log(model.animations);
         case 2: color = 0x0000FF; break;
         case 3: color = 0xFFFF00; break;
         }
+      }
+
+      // Give a torch to the player
+      if (entity.components.player)
+      {
+        this.playerTorch = new THREE.PointLight(0xffffff, 5, 5);
+        model.scene.add(this.playerTorch);
       }
 
       model.scene.traverse(o =>
@@ -254,6 +235,10 @@ console.log(model.animations);
   render(dt)
   {
     this.t += dt;
+
+    // Player's torch
+    if (this.playerTorch)
+      this.playerTorch.intensity = 1 + Math.abs(Math.sin(this.t*3)*Math.cos(this.t))*10;
 
     // BG light
     this.bgLight.position.setX(1000 + Math.sin(this.t)*10 - 3);
