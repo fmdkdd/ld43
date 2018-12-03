@@ -55,15 +55,19 @@ class RenderingSystem extends ECS.System
 
     // Lighting
 
-    const light = new THREE.PointLight(0xffffff, 0.5);
-    light.position.set(0, -10, 0);
-    light.distance = 100;
-    light.castShadow = true;
+    const light = new THREE.PointLight(0x70bbf8, 1);
+    light.position.set(0, -20, 0);
     this.scene.add(light);
 
+    /*const light2 = new THREE.PointLight(0xffe9a8, 1);
+    light2.position.set(-20, -20, 20);
+    this.scene.add(light2);*/
+
     //const skyLight = new THREE.HemisphereLight( 0x303655, 0x010c41, 1);
-    const skyLight = new THREE.HemisphereLight( 0xFFFFFF, 0x333333, 0.75);
-    this.scene.add(skyLight);
+    //const skyLight = new THREE.HemisphereLight( 0xaaaaaa, 0x333333, 0.75);
+    //this.scene.add(skyLight);
+    const ambientLight = new THREE.AmbientLight( 0xa0a0a0 ); // soft white light
+    this.scene.add( ambientLight );
 
     // Ground
 
@@ -213,8 +217,10 @@ class RenderingSystem extends ECS.System
       // Give a torch to the player
       if (entity.components.player)
       {
-        // this.playerTorch = new THREE.PointLight(0xffffff, 5, 5);
-        // model.scene.add(this.playerTorch);
+         this.playerTorch = new THREE.PointLight(0x666666, 1, 10);
+         this.playerTorch.castShadow = true;
+         this.playerTorch.position.set(1, 5, 0);
+         model.scene.add(this.playerTorch);
       }
 
       const robe = model.scene.getObjectByName('robe');
@@ -324,7 +330,7 @@ class RenderingSystem extends ECS.System
     {
       // Player's torch
       if (this.playerTorch)
-        this.playerTorch.intensity = 1 + Math.abs(Math.sin(this.t*3)*Math.cos(this.t))*10;
+        this.playerTorch.intensity = 1 + Math.abs(Math.sin(this.t))*1;
 
       // BG light
       if (this.bgLight)
