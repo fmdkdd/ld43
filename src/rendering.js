@@ -144,12 +144,12 @@ class RenderingSystem extends ECS.System
 
           //const light = this['runeLight' + i] = new THREE.PointLight(runeColors[i], 1, 5);
           //model.scene.getObjectByName('rune' + i).add(light);
-          const runeBottom = model.scene.getObjectByName('rune' + i + '_bottom');
+          const runeBottom = this['runeBottom' + i] =  model.scene.getObjectByName('rune' + i + '_bottom');
           if (runeBottom)
           {
             runeBottom.material = new THREE.MeshLambertMaterial({
               emissive: runeColors[i],
-              emissiveIntensity: 0.4
+              emissiveIntensity: 0.2
             });
           }
 
@@ -173,7 +173,7 @@ class RenderingSystem extends ECS.System
 
         // God anims
 
-        console.log('animations', model.animations);
+        //console.log('animations', model.animations);
 
         this.godClips = model.animations;
         this.godClips.forEach((clip) => {
@@ -217,11 +217,25 @@ class RenderingSystem extends ECS.System
         // model.scene.add(this.playerTorch);
       }
 
-      model.scene.traverse(o => {
-        o.material = new THREE.MeshLambertMaterial({color: color, side: THREE.DoubleSide});
-        o.material.skinning = true;
-        o.castShadow = true;
-      });
+      const robe = model.scene.getObjectByName('robe');
+      if (robe)
+      {
+        robe.material = new THREE.MeshLambertMaterial({color: color});
+        robe.material.skinning = true;
+        robe.castShadow = true;
+      }
+
+      const head = model.scene.getObjectByName('head');
+      if (head)
+      {
+        head.material = new THREE.MeshLambertMaterial({color: 0xf0cd93});
+      }
+
+      const hair = model.scene.getObjectByName('hair');
+      if (hair)
+      {
+        hair.material = new THREE.MeshLambertMaterial({color: 0x663F26});
+      }
 
       // Setup anims
 
@@ -229,13 +243,11 @@ class RenderingSystem extends ECS.System
       clips.forEach((clip) => {
         if (clip.validate()) clip.optimize();
       });
+      this.objects[entity.id].clips = clips;
 
-      const mixer = new THREE.AnimationMixer( model.scene );
+      //console.log(clips);
+      const mixer = new THREE.AnimationMixer(model.scene);
       this.objects[entity.id].mixer = mixer;
-
-      //var clip = THREE.AnimationClip.findByName( model.animations, 'idle' );
-      //var action = mixer.clipAction( clip );
-      //action.play();
 
       this.objects[entity.id].animSpeed = Math.random() * 0.016;
     });
@@ -370,14 +382,40 @@ class RenderingSystem extends ECS.System
 
   animateGod(clipIndex, repeat)
   {
-      const clipNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
-      var clip = THREE.AnimationClip.findByName(this.godClips, clipNames[clipIndex]);
+    const clipNames = ['anim_talk', 'anim_teeth', 'anim_nod', 'anim_shout'];
+    var clip = THREE.AnimationClip.findByName(this.godClips, clipNames[clipIndex]);
 
-      this.godMixer.stopAllAction();
-      const anim = this.godMixer.clipAction(clip);
-      anim.setLoop( THREE.LoopOnce );
-      anim.clampWhenFinished = true;
-      anim.play()
+    this.godMixer.stopAllAction();
+    const anim = this.godMixer.clipAction(clip);
+    anim.setLoop( THREE.LoopOnce );
+    anim.clampWhenFinished = true;
+    anim.play()
+
+    /*const s = 1.25;
+    let a = this.scene.getObjectByName('Armature002')
+    console.log(a);
+    new TWEEN.Tween(a.scale)
+      .to({x: s, y: s, z: s}, 0.2)
+      .easing(TWEEN.Easing.Back.InOut)
+      .repeat(1)
+      .yoyo(true)
+      .start(this.t);*/
+  }
+
+  animateGuy(entity, clipIndex, repeat)
+  {
+    const clips = this.objects[entity.id].clips;
+
+    const clipNames = ['anim_pray', 'anim_offer', 'anim_arms', 'anim_arms2'];
+    var clip = THREE.AnimationClip.findByName(clips, clipNames[clipIndex]);
+
+    const mixer = this.objects[entity.id].mixer;
+    mixer.stopAllAction();
+
+    const anim = mixer.clipAction(clip);
+    anim.setLoop( THREE.LoopOnce );
+    anim.clampWhenFinished = true;
+    anim.play()
   }
 
   highlightTile(tileIndex, flashes, duration, color)
@@ -397,6 +435,40 @@ class RenderingSystem extends ECS.System
           .onStart(_ => {
             tile.material.emissive = new THREE.Color(color);
           })
+  }
+
+  highlightRune(runeIndex)
+  {
+    const rune = this['rune' + runeIndex];
+    const runeBottom = this['runeBottom' + runeIndex];
+
+    //runeBottom.material.emissiveIntensity = 1;
+
+    new TWEEN.Tween(runeBottom.material)
+      .to({emissiveIntensity: 1}, 0.2)
+      .easing(TWEEN.Easing.Back.InOut)
+      .repeat(1)
+      .yoyo(true)
+      .start(this.t);
+
+    const s = 1.25;
+    new TWEEN.Tween(rune.scale)
+      .to({x: s, y: s, z: s}, 0.2)
+      .easing(TWEEN.Easing.Back.InOut)
+      .repeat(1)
+      .yoyo(true)
+      .start(this.t);
+
+    const r = Math.random() * 0.8 - 0.4;
+    new TWEEN.Tween(rune.rotation)
+      .to({y: r}, 0.2)
+      .repeat(1)
+      .yoyo(true)
+      .start(this.t);
+
+    /*const pos = new THREE.Vector3();
+    rune.getWorldPosition(pos);
+    this.app.particleSystem.createRuneParticles(pos.x, pos.y, pos.z);*/
   }
 
   makeTilesFall(tileRow, duration)

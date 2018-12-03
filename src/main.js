@@ -108,6 +108,9 @@ STATES.Main = {
 
     if (event.key === 'm')
       this.app.renderingSystem.makeTilesFall(0, 1);
+
+    if (event.key === '1')
+      this.app.renderingSystem.highlightRune(1);
   }
 };
 

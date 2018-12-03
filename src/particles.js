@@ -21,6 +21,7 @@ class ParticleSystem extends ECS.System
   enter(entity)
   {
     const particles = entity.components.particles;
+    const position = entity.components.pos;
 
     if (particles.type === 'fire')
     {
@@ -41,8 +42,8 @@ class ParticleSystem extends ECS.System
       emitter.addInitialize(new Proton.Velocity(20, new Proton.Vector3D(0, 1, 0), 10));
       emitter.addBehaviour(new Proton.Scale(1, 0.1));
       emitter.addBehaviour(new Proton.Color('#FF0026', ['#ffff00', '#ffff11'], Infinity, Proton.easeOutSine));
-      emitter.p.x = 0;
-      emitter.p.y = 0;
+      emitter.p.x = position.x;
+      emitter.p.y = position.y;
       emitter.emit();
 
       this.engine.addEmitter(emitter);
@@ -67,13 +68,41 @@ class ParticleSystem extends ECS.System
       emitter.addInitialize(new Proton.Life(0.5, 2));
       emitter.addBehaviour(new Proton.Scale(1, 0.1));
       emitter.addBehaviour(new Proton.RandomDrift(0.1, 0.1, 0.1, .05));
-      emitter.p.x = 0;
-      emitter.p.y = 0;
+      emitter.p.x = position.x;
+      emitter.p.y = position.y;
       emitter.emit();
 
       entity.components.particles.velx = -Math.random() * 5;
       entity.components.particles.vely = Math.random() * 10 - 5;
 
+      this.engine.addEmitter(emitter);
+
+      this.emitters[entity.id] = emitter;
+    }
+    else if (particles.type === 'rune')
+    {
+      const material = new THREE.SpriteMaterial({
+          map: new THREE.TextureLoader().load("../assets/particle.png"),
+          color: 0xffffff,
+          blending: THREE.AdditiveBlending,
+          fog: true
+      });
+      const body = new THREE.Sprite(material);
+
+      const emitter = new Proton.Emitter();
+      emitter.rate = new Proton.Rate(new Proton.Span(1, 10), new Proton.Span(.1, .25));
+      emitter.addInitialize(new Proton.Body(body));
+      emitter.addInitialize(new Proton.Mass(1));
+      emitter.addInitialize(new Proton.Radius(new Proton.Span(10, 20)));
+      emitter.addInitialize(new Proton.Life(0.5, 2));
+      emitter.addBehaviour(new Proton.Scale(1, 0.1));
+      emitter.addBehaviour(new Proton.RandomDrift(0.1, 0.1, 0.1, .05));
+      emitter.p.x = position.x;
+      emitter.p.y = position.y;
+      emitter.p.z = position.z;
+      emitter.emit();
+
+console.log(entity.components, emitter);
       this.engine.addEmitter(emitter);
 
       this.emitters[entity.id] = emitter;
@@ -133,12 +162,12 @@ class ParticleSystem extends ECS.System
 
   createFire(x, y, lifetime)
   {
-    this.app.ecs.addEntity(createParticles('fire', x, y, lifetime));
+    this.app.ecs.addEntity(createParticles('fire', x, y, 0, lifetime));
   }
 
   createSoul(x, y, lifetime, gx, gy)
   {
-    this.app.ecs.addEntity(createParticles('soul', x, y, lifetime, gx, gy));
+    this.app.ecs.addEntity(createParticles('soul', x, y, 0, lifetime, gx, gy));
   }
 
   createSoulFromTileToRune(tileIndex, runeIndex)
@@ -161,5 +190,10 @@ class ParticleSystem extends ECS.System
     console.log(p, vector);*/
 
   //  this.createSoul(from.x, from.y, 10, to.x, to.y);
+  }
+
+  createRuneParticles(x, y, z)
+  {
+    //this.app.ecs.addEntity(createParticles('rune', x, y, z, 3));
   }
 }

@@ -7,6 +7,9 @@ const Position =
   {
     x: 0,
     y: 0,
+
+    // useful for particles
+    z: 0
   }
 };
 
