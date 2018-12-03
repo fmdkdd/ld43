@@ -4,13 +4,7 @@
 
 - Pause screen
 
-- Timer goes down. (It's the God impatience)
-  TImer goes down faster on higher "levels" (like Tetris)
-  (level is determined by score?)  The god wants more and more
-
-  Timer fills by matching patterns.  Combos and multiple matches fills it more.
-
-  When the timer reaches 0, the bottom row of pieces falls down, and that row is
+- When the timer reaches 0, the bottom row of pieces falls down, and that row is
   lost forever.  You angried the god.  The play area is shrinked.
 
 - Movement animation
@@ -60,3 +54,9 @@ Done:
 
 - Do a first check for combos on start
   free points!
+
+- Timer goes down. (It's the God impatience)
+  TImer goes down faster on higher "levels" (like Tetris)
+  (level is determined by score?)  The god wants more and more
+
+  Timer fills by matching patterns.  Combos and multiple matches fills it more.

@@ -320,7 +320,7 @@ class RenderingSystem extends ECS.System
   fillTimer(t)
   {
     new TWEEN.Tween(this.timerFill.scale)
-      .to({x: t}, 0.5)
+      .to({x: t}, 0.2)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start(this.t);
   }

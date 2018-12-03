@@ -16,6 +16,10 @@ STATES.Main = {
     // this.app.music.setVolume(music, 0.2);
   },
 
+  step(dt) {
+    this.app.game.step(dt);
+  },
+
   render(dt) {
   },
 
@@ -304,6 +308,10 @@ window.addEventListener('DOMContentLoaded', function main() {
         }
 
         ctx.restore();
+
+        // Timer speed
+        ctx.fillStyle = '#aaa';
+        ctx.fillText('speed: ' + this.game.timerSpeed, 450, 520);
       }
 
       // Score

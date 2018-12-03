@@ -45,6 +45,20 @@ class GameSystem extends ECS.System {
 
     this.score = 0;
     this.displayScore = 0;
+
+    this.timer = 1;
+    this.timerSpeed = .01;
+    this.timerSpeedMax = .1;
+
+    this.scoreIntoTimer = .001;
+    this.scoreIntoTimerSpeed = .000001;
+  }
+
+  step(dt) {
+    this.timer = Math.max(0, this.timer - this.timerSpeed * dt);
+    if (this.app.renderingSystem.timerFill) {
+      this.app.renderingSystem.timerFill.scale.x = this.timer;
+    }
   }
 
   test(entity) {
@@ -258,6 +272,15 @@ class GameSystem extends ECS.System {
         .to({displayScore: this.score}, .5)
         .easing(TWEEN.Easing.Quadratic.Out)
         .start(this.app.renderingSystem.t);
+
+      // Refill timer
+      this.timer += matchScore * this.scoreIntoTimer;
+      this.timer = clamp(this.timer, 0, 1);
+      this.app.renderingSystem.fillTimer(this.timer);
+
+      // And increase speed of timer!
+      this.timerSpeed += matchScore * this.scoreIntoTimerSpeed;
+      this.timerSpeed = clamp(this.timerSpeed, 0, this.timerSpeedMax);
 
       this.currentMatches = undefined;
     }
