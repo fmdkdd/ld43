@@ -367,12 +367,12 @@ STATES.CheckMatches = {
     // us in the highlighting animation if there is any match)
     this.app.setState(STATES.Main);
 
-    switch (this.app.game.currentCombo) {
-    case 0: case 1: break;
-    case 2: console.log("Combo"); break;
-    case 3: console.log("Double combo!"); break;
-    case 4: console.log("Triple combo!!"); break;
-    default: console.log("Combo master!!!"); break;
+    if (this.app.game.currentCombo > 1) {
+      this.app.renderingSystem.animateGod(2);
+    }
+
+    if (this.app.game.currentCombo > 3) {
+      this.app.renderingSystem.shake(0.2, 3, .5);
     }
 
     this.app.game.currentCombo = 0;
