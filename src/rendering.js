@@ -421,7 +421,11 @@ class RenderingSystem extends ECS.System
           tile.material.transparent = true;
           tile.material.opacity = 1 - progress.t;
         })
-        .start(this.t);
+        .start(this.t)
+        .onComplete(_ => {
+          this.scene.remove(tile);
+          delete this.tiles[tileIndex + i];
+        });
 
       // Also move to the center
       new TWEEN.Tween(this.tiles[tileIndex + i].position)
