@@ -104,6 +104,7 @@ STATES.Pause = {
     const ctx = this.app.renderingSystem.overlay;
     const w = this.app.width * this.app.scale;
     const h = this.app.height * this.app.scale;
+    const t = this.app.renderingSystem.t
 
     // Fill overlay background
     ctx.fillStyle = 'rgba(0,0,0,0.8)';
@@ -114,7 +115,9 @@ STATES.Pause = {
 
     let text = 'PAUSE';
     let m = ctx.measureText(text);
-    ctx.fillText(text, this.app.width/2 - m.width/2, this.app.height/2);
+    ctx.fillText(text,
+                 this.app.width/2 - m.width/2,
+                 this.app.height/2 + Math.sin(2*t) * 10);
 
     text = 'Press ENTER to continue';
     ctx.font = '20px sans-serif';
