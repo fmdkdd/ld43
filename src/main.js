@@ -251,19 +251,42 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     step(dt) {
-      this.renderingSystem.clearOverlay();
-
       this.ecs.update();
     },
 
     render(dt) {
       this.dt = dt;
       this.renderingSystem.render(dt);
+
+
+
+      if (DEBUG) {
+        const ctx = this.renderingSystem.overlay;
+        ctx.clearRect(0, 0, this.width * this.scale, this.height * this.scale);
+
+        ctx.fillStyle = '#aaa';
+        ctx.font = '18px sans-serif';
+        ctx.save();
+        ctx.translate(100, 545);
+
+        for (let y=0; y < this.game.gridHeight; ++y) {
+          for (let x=0; x < this.game.gridWidth; ++x) {
+            const px =  x * 50;
+            const py = -y * 50;
+            const xy = y * this.game.gridWidth + x;
+            ctx.fillText(xy, px, py);
+          }
+        }
+
+        ctx.restore();
+      }
     },
 
     keyup(event) {
       if (event.key === 'f2') {
         DEBUG = !DEBUG;
+        this.renderingSystem.overlay
+          .clearRect(0, 0, this.width * this.scale, this.height * this.scale);
       }
     },
 

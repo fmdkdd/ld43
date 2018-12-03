@@ -226,15 +226,6 @@ class RenderingSystem extends ECS.System
 
     let {x, y} = entity.components.pos;
 
-    if (DEBUG && !entity.components.player) {
-      this.overlay.fillStyle = '#aaa';
-      this.overlay.font = '18px sans-serif';
-      const px = 100 + x * 50;
-      const py = 545 - y * 50;
-      const xy = y * this.app.game.gridWidth + x;
-      this.overlay.fillText(xy, px, py);
-    }
-
     // Rotating people use an interpolated coordinate between
     // their old place and the new one
     if (entity.components.people && entity.components.people.state === 'moving') {
@@ -302,12 +293,6 @@ class RenderingSystem extends ECS.System
     this.renderer.render(this.scene, this.camera);
     this.renderer.clearDepth();
     this.renderer.render(this.bgScene, this.bgCamera);
-  }
-
-  clearOverlay() {
-    this.overlay.clearRect(0, 0,
-                           this.app.width * this.app.scale,
-                           this.app.height * this.app.scale);
   }
 
   // Shake the screen a distance of 'offset', 'shakes' times during 'duration' seconds
