@@ -88,13 +88,17 @@ STATES.Main = {
 
     if (event.key === 'v')
       this.app.particleSystem.createParticles('fire', 0, 0, 3);
-    if (event.key === 'n')
-      this.app.particleSystem.createParticles('fire', 0, 0, 3);
     if (event.key === 'b')
       this.app.particleSystem.createParticles('soul', 0, 0, 100000);
 
     if (event.key === 'q') {
       this.app.game.removeBottomRow();
+
+    if (event.key === 'n')
+    {
+      this.app.renderingSystem.highlightTile(0, 1, 2);
+      this.app.renderingSystem.highlightTile(1, 3, 2);
+      this.app.renderingSystem.highlightTile(2, 10, 2);
     }
   }
 };

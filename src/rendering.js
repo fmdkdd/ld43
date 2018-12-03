@@ -69,16 +69,20 @@ class RenderingSystem extends ECS.System
 
     const tileTexture = new THREE.TextureLoader().load('../assets/tile.png');
 
-    const size = 5;
+    const tileGeometry = new THREE.BoxGeometry(worldScale, 0.5, worldScale);
+
+    this.tiles = [];
+
     for (let y = 0; y < 10; ++y)
       for (let x = 0; x < 7; ++x)
       {
-        const box = new THREE.BoxGeometry(3, 0.5, 3);
-        const material = new THREE.MeshLambertMaterial({map: tileTexture});
-        const tile = new THREE.Mesh(box, material);
-        tile.position.set(-x * 3, -0.25, y * 3)
+        const tileMaterial = new THREE.MeshLambertMaterial({map: tileTexture, emissive: 0xff0000, emissiveIntensity: 0});
+        const tile = new THREE.Mesh(tileGeometry, tileMaterial);
+        tile.position.set(-x * worldScale, -0.25, y * worldScale)
         tile.receiveShadow = true;
         this.scene.add(tile);
+
+        this.tiles.push(tile);
       }
 
     // Background
@@ -332,5 +336,20 @@ class RenderingSystem extends ECS.System
 
       this.godMixer.stopAllAction();
       this.godMixer.clipAction(clip).play();
+  }
+
+  highlightTile(tileIndex, flashes, duration)
+  {
+    const tile = this.tiles[tileIndex];
+
+    const flashDur = duration / flashes;
+
+    const flash = new TWEEN.Tween(tile.material)
+      .to({emissiveIntensity: 1}, flashDur / 2)
+      .yoyo(true)
+      .repeat(flashes)
+      .chain(new TWEEN.Tween(tile.material).to({emissiveIntensity: 0}, flashDur / 2)) // Back to original val
+      //.easing(TWEEN.Easing.Quadratic.InOut)
+      .start(this.t);
   }
 }
