@@ -31,12 +31,12 @@ STATES.GameOver = {
 
     let text = 'Game Over';
     let m = ctx.measureText(text);
-    ctx.fillText(text, this.app.width/2 - m.width/2, this.app.height/2);
+    ctx.fillText(text, w/2 - m.width/2, h/2);
 
     text = 'Press ENTER for a new game';
     ctx.font = '20px sans-serif';
     m = ctx.measureText(text);
-    ctx.fillText(text, this.app.width/2 - m.width/2, this.app.height/2 + 50);
+    ctx.fillText(text, w/2 - m.width/2, h/2 + 50);
   },
 
   keydown(event) {
@@ -152,14 +152,12 @@ STATES.Pause = {
 
     let text = 'PAUSE';
     let m = ctx.measureText(text);
-    ctx.fillText(text,
-                 this.app.width/2 - m.width/2,
-                 this.app.height/2 + Math.sin(2*t) * 10);
+    ctx.fillText(text, w/2 - m.width/2, h/2 + Math.sin(2*t) * 10);
 
     text = 'Press ENTER to continue';
     ctx.font = '20px sans-serif';
     m = ctx.measureText(text);
-    ctx.fillText(text, this.app.width/2 - m.width/2, this.app.height/2 + 50);
+    ctx.fillText(text, w/2 - m.width/2, h/2 + 50);
   },
 
   keydown(event) {
@@ -416,9 +414,13 @@ window.addEventListener('DOMContentLoaded', function main() {
 
         ctx.restore();
 
-        // Timer speed
         ctx.fillStyle = '#aaa';
+
+        // Timer speed
         ctx.fillText('speed: ' + this.game.timerSpeed, 450, 520);
+
+        // Timere value
+        ctx.fillText('timer: ' + this.game.timer, 450, 535);
 
         // Bottom row
         ctx.fillText('bottom row: ' + this.game.bottomRow, 10, 10);

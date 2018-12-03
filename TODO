@@ -11,14 +11,6 @@
 
 - Flash timer when nearly out
 
-- Sound effects
-  - rotate
-  - move
-  - match
-  - fill runes
-  - shake
-  - god mouth (idle?  combo?)
-
 - Add 2x, 3x multipliers indicators below runes
 
 - Music (Aztec-like... drummy)
@@ -31,9 +23,6 @@
 
 @merwan:
 
-- Highlight matches
-
-- Particle system for matches
 
 Unsure:
 - Filling runes unlock power-ups.
@@ -56,6 +45,8 @@ Not enough time:
 
 - Chains: making a match in one move just after a match
 
+- Particle system for matches
+
 
 Done:
 - detection of matches for scoring
@@ -77,3 +68,13 @@ Done:
   lost forever.  You angried the god.  The play area is shrinked.
 
 - Pause screen
+
+- Sound effects
+  - rotate
+  - move
+  - match
+  - fill runes
+  - shake
+  - god mouth (idle?  combo?)
+
+- Highlight matches
