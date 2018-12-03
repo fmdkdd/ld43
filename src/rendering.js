@@ -377,7 +377,10 @@ class RenderingSystem extends ECS.System
       var clip = THREE.AnimationClip.findByName(this.godClips, clipNames[clipIndex]);
 
       this.godMixer.stopAllAction();
-      this.godMixer.clipAction(clip).play();
+      const anim = this.godMixer.clipAction(clip);
+      anim.setLoop( THREE.LoopOnce );
+      anim.clampWhenFinished = true;
+      anim.play()
   }
 
   highlightTile(tileIndex, flashes, duration)
