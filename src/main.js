@@ -1,11 +1,16 @@
 let DEBUG = false;
 const STATES = {};
 
-STATES.Main = {
-  create() {
+STATES.NewGame = {
+  enter() {
+    // Start by checking for matches as the random grid may have some
+    // Free points!
     this.app.ecs.addSystem(this.app.game = new GameSystem(this.app));
-  },
+    this.app.setState(STATES.CheckMatches);
+  }
+}
 
+STATES.Main = {
   enter() {
     // let music = this.app.music.play('happy-clouds', true);
     // this.app.music.setVolume(music, 0.2);
@@ -319,8 +324,8 @@ window.addEventListener('DOMContentLoaded', function main() {
         }
       });
 
-      // Go to default state
-      this.setState(STATES.Main);
+      // Start by checking for matches
+      this.setState(STATES.NewGame);
     },
 
     // Record FPS through the prerender and postrender events

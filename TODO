@@ -2,10 +2,6 @@
 
 - Pause screen
 
-- Do a first check for combos on start
-  free points!
-
-Unsure:
 - Timer goes down. (It's the God impatience)
   TImer goes down faster on higher "levels" (like Tetris)
   (level is determined by score?)  The god wants more and more
@@ -15,6 +11,7 @@ Unsure:
   When the timer reaches 0, the bottom row of pieces falls down, and that row is
   lost forever.  You angried the god.  The play area is shrinked.
 
+Unsure:
 - Filling runes unlock power-ups.
 
   Fill runes by matching them.  Combos and multiple matches fill them faster.
@@ -40,3 +37,6 @@ Done:
   - Double match same pattern, (etc, 2, 3, 4...)
   - Two patterns, three, ...
   - Combos
+
+- Do a first check for combos on start
+  free points!
