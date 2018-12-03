@@ -3,7 +3,7 @@ const worldScale = 3;
 function gridtoWorld(gridCoord)
 {
   // Right: minus X!
-  return {x: -worldScale * gridCoord.x, y: worldScale * gridCoord.y};
+  return {x: -worldScale * gridCoord.x, y: worldScale * gridCoord.y, z: 0};
 }
 
 class RenderingSystem extends ECS.System

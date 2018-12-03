@@ -65,6 +65,9 @@ class GameSystem extends ECS.System {
       const color = gameColorToHex(e.components.people.color);
       this.app.renderingSystem.highlightTile(c, 2, duration, color);
       this.app.renderingSystem.highlightRune(e.components.people.color);
+
+      const worldPos = gridtoWorld(e.components.pos);
+      this.app.particleSystem.createFire(worldPos.x, worldPos.y, worldPos.z, 0.75);
     }
   }
 

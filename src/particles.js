@@ -34,7 +34,7 @@ class ParticleSystem extends ECS.System
       const body = new THREE.Sprite(material);
 
       const emitter = new Proton.Emitter();
-      emitter.rate = new Proton.Rate(new Proton.Span(5, 10), new Proton.Span(.1, .25));
+      emitter.rate = new Proton.Rate(new Proton.Span(10, 20), new Proton.Span(.1, .25));
       emitter.addInitialize(new Proton.Body(body));
       emitter.addInitialize(new Proton.Mass(1));
       emitter.addInitialize(new Proton.Radius(1));
@@ -43,7 +43,8 @@ class ParticleSystem extends ECS.System
       emitter.addBehaviour(new Proton.Scale(1, 0.1));
       emitter.addBehaviour(new Proton.Color('#FF0026', ['#ffff00', '#ffff11'], Infinity, Proton.easeOutSine));
       emitter.p.x = position.x;
-      emitter.p.y = position.y;
+      emitter.p.y = position.z;
+      emitter.p.z = position.y;
       emitter.emit();
 
       this.engine.addEmitter(emitter);
@@ -98,15 +99,15 @@ class ParticleSystem extends ECS.System
       emitter.addBehaviour(new Proton.Scale(1, 0.1));
       emitter.addBehaviour(new Proton.RandomDrift(0.1, 0.1, 0.1, .05));
       emitter.p.x = position.x;
-      emitter.p.y = position.y;
-      emitter.p.z = position.z;
+      emitter.p.y = position.z;
+      emitter.p.z = position.y;
       emitter.emit();
 
       this.engine.addEmitter(emitter);
 
       this.emitters[entity.id] = emitter;
     }
-    if (particles.type === 'torch')
+    else if (particles.type === 'torch')
     {
       const material = new THREE.SpriteMaterial({
           map: this.app.textures["/assets/particle.png"],
@@ -193,9 +194,9 @@ class ParticleSystem extends ECS.System
     this.engine.update();
   }
 
-  createFire(x, y, lifetime)
+  createFire(x, y, z, lifetime)
   {
-    this.app.ecs.addEntity(createParticles('fire', x, y, 0, lifetime));
+    this.app.ecs.addEntity(createParticles('fire', x, y, z, lifetime));
   }
 
   createSoul(x, y, lifetime, gx, gy)
