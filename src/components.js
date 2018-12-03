@@ -65,3 +65,13 @@ const CrowdObstacle =
     size: 1
   }
 };
+
+const Particles =
+{
+  name: 'particles',
+  defaults:
+  {
+    type: null,
+    lifetime: 5
+  }
+};

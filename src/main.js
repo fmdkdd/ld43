@@ -45,6 +45,13 @@ STATES.Main = {
       this.app.renderingSystem.animateGod(2);
     if (event.key === 'k')
       this.app.renderingSystem.animateGod(3);
+
+    if (event.key === 'v')
+      this.app.particleSystem.createParticles('fire', 0, 0, 3);
+    if (event.key === 'n')
+      this.app.particleSystem.createParticles('fire', 0, 0, 3);
+    if (event.key === 'b')
+      this.app.particleSystem.createParticles('soul', 0, 0, 100000);
   }
 };
 
@@ -240,6 +247,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       // this.ecs.addSystem(new PeopleSystem(this));
       this.ecs.addSystem(this.controlsSystem = new ControlsSystem(this));
       this.ecs.addSystem(this.renderingSystem = new RenderingSystem(this));
+      this.ecs.addSystem(this.particleSystem = new ParticleSystem(this));
     },
 
     loadTexture(path) {
@@ -264,6 +272,7 @@ window.addEventListener('DOMContentLoaded', function main() {
 
     render(dt) {
       this.dt = dt;
+      this.particleSystem.render(dt);
       this.renderingSystem.render(dt);
 
       const ctx = this.renderingSystem.overlay;

@@ -36,3 +36,16 @@ function createPlayer(x, y)
 
   return e;
 }
+
+function createParticles(type, x, y, lifetime)
+{
+  const e = new ECS.Entity(null, [Position, Particles]);
+
+  e.components.pos.x = x;
+  e.components.pos.y = y;
+
+  e.components.particles.type = type;
+  e.components.particles.lifetime = lifetime;
+
+  return e;
+}
