@@ -115,6 +115,7 @@ STATES.RemoveBottomRow = {
   enter() {
     this.app.renderingSystem.shake(0.5, 10, 2);
     this.app.renderingSystem.animateGod(3);
+    this.app.playSound(`voice-scaled`);
     this.delay = 1;
   },
 
@@ -316,6 +317,9 @@ window.addEventListener('DOMContentLoaded', function main() {
         this.loadSounds('match-' + i);
         this.sound.alias('match-' + i + '-scaled', 'match-' + i, .1, 1);
       }
+
+      this.loadSounds('voice-of-god');
+      this.sound.alias('voice-scaled', 'voice-of-god', .4, 1);
 
       // this.loadSounds('putdown');
       // this.loadSounds('rotate');

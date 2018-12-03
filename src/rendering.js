@@ -441,4 +441,3 @@ function gameColorToHex(c) {
   case GREEN  : return 0x00FF00;
   }
 }
-
