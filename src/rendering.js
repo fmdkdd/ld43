@@ -442,13 +442,23 @@ class RenderingSystem extends ECS.System
     const rune = this['rune' + runeIndex];
     const runeBottom = this['runeBottom' + runeIndex];
 
+    // Ghetto way to avoid multiple anims
+    if (this['runeAnimInProgress' + runeIndex])
+      return;
+
+    this['runeAnimInProgress' + runeIndex] = true;
+
     //runeBottom.material.emissiveIntensity = 1;
 
     new TWEEN.Tween(runeBottom.material)
-      .to({emissiveIntensity: 1}, 0.2)
+      .to({emissiveIntensity: 1}, 0.25)
       .easing(TWEEN.Easing.Back.InOut)
       .repeat(1)
       .yoyo(true)
+      .onComplete(() =>
+      {
+        this['runeAnimInProgress' + runeIndex] = false;
+      })
       .start(this.t);
 
     const s = 1.25;
