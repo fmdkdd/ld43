@@ -1,4 +1,8 @@
 let DEBUG = false;
+
+// @Warning: Never NEVER call setState in a leave() function.  This totally
+// confuses Playground and leads to blowing the stack.
+
 const STATES = {};
 
 STATES.NewGame = {
@@ -114,7 +118,7 @@ STATES.Main = {
   }
 };
 
-STATES.RemoveBottomRow = {
+STATES.WrathOfGod = {
   enter() {
     this.app.renderingSystem.shake(0.5, 10, 2);
     this.app.renderingSystem.animateGod(3);
@@ -124,15 +128,24 @@ STATES.RemoveBottomRow = {
 
   leave() {
     this.app.renderingSystem.makeTilesFall(this.app.game.bottomRow, 1);
-    this.app.game.removeBottomRow();
     this.app.renderingSystem.fillTimer(this.app.game.timer);
   },
 
   step(dt) {
     if (this.delay === 0) {
-      this.app.setState(STATES.Main);
+      this.app.setState(STATES.RemoveBottomRow);
     }
     this.delay = Math.max(0, this.delay - dt);
+  },
+};
+
+STATES.RemoveBottomRow = {
+  enter() {
+    this.app.game.removeBottomRow();
+  },
+
+  step(dt) {
+    this.app.setState(STATES.Main);
   },
 };
 
