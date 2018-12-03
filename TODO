@@ -1,3 +1,5 @@
+- Proper colors
+
 @florent:
 
 - Pause screen
@@ -10,6 +12,24 @@
 
   When the timer reaches 0, the bottom row of pieces falls down, and that row is
   lost forever.  You angried the god.  The play area is shrinked.
+
+- Movement animation
+
+- Sound effects
+  - rotate
+  - move
+  - match
+  - fill runes
+  - shake
+  - god mouth (idle?  combo?)
+
+- Music (Aztec-like... drummy)
+
+@merwan:
+
+- Highlight matches
+
+- Particle system for matches
 
 Unsure:
 - Filling runes unlock power-ups.
