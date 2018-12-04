@@ -116,7 +116,10 @@ class RenderingSystem extends ECS.System
       //this.timer.material.emissive = 0.1;
 
       this.timerFill = model.scene.getObjectByName('timer_fill');
-      this.timerFill.material = new THREE.MeshLambertMaterial({emissive: 0xbbbbbb});
+      this.timerFill.material = new THREE.MeshLambertMaterial({
+        emissiveMap: this.app.textures['assets/timer.png'],
+        emissive: 0x666666
+      });
 
       if (!this.app.lowGraphics)
       {
@@ -139,7 +142,7 @@ class RenderingSystem extends ECS.System
           {
             runeBottom.material = new THREE.MeshLambertMaterial({
               emissive: runeColors[i],
-              emissiveIntensity: 0.2
+              emissiveIntensity: 0.3
             });
           }
 
@@ -446,6 +449,29 @@ class RenderingSystem extends ECS.System
       .to({x: t}, 0.2)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start(this.t);
+  }
+
+  flashTimer(on)
+  {
+    if (!on && this.timerFlashTween)
+    {
+      this.timerFlashTween.stop();
+      this.timerFlashTween = null;
+    }
+    else if (on && !this.timerFlashTween)
+    {
+      const mat = this.timerFill.material;
+      const originalInt = mat.emissiveIntensity;
+
+      this.timerFlashTween = new TWEEN.Tween(mat)
+        .to({emissiveIntensity: 0.25}, 0.5)
+        .repeat(Infinity)
+        .yoyo(true)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onComplete(() => mat.emissiveIntensity = originalInt) // Reset
+        .onStop(() => mat.emissiveIntensity = originalInt) // Reset
+        .start(this.t);
+    }
   }
 
   animateGod(clipIndex, loop = THREE.LoopOnce)

@@ -254,6 +254,10 @@ STATES.Main = {
 
     if (event.key === '1')
       this.app.renderingSystem.highlightRune(1);
+    if (event.key === '2')
+      this.app.renderingSystem.flashTimer(true);
+    if (event.key === '3')
+      this.app.renderingSystem.flashTimer(false);
   }
 };
 
@@ -500,6 +504,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.loadTexture('assets/bg.png');
       this.loadTexture('assets/bg_normal.png');
       this.loadTexture('assets/wall_normal.jpg');
+      this.loadTexture('assets/timer.png');
 
       // Load models
       // NOT WORKING: there is only one guy after that
@@ -621,7 +626,7 @@ window.addEventListener('DOMContentLoaded', function main() {
         // Score
         ctx.font = '30px sans-serif';
         ctx.fillStyle = '#fff';
-        ctx.fillText(Math.floor(this.game.displayScore), 600, 500);
+        ctx.fillText(Math.floor(this.game.displayScore), 620, 500);
       }
     },
 
