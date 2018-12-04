@@ -51,7 +51,7 @@ class GameSystem extends ECS.System {
     this.timer = 1;
     this.timerSpeed = .04;
     this.timerSpeedMax = .1;
-    this.timer_low_threshold = .25;
+    this.timer_low_threshold = .3;
 
     this.scoreIntoTimer = .001;
     this.scoreIntoTimerSpeed = .00001;
@@ -385,9 +385,11 @@ class GameSystem extends ECS.System {
     if (new_val <= this.timer_low_threshold && !this.timerBarPassed) {
       this.timerBarPassed = true;
       this.app.renderingSystem.animateGod(1);
+      this.app.renderingSystem.flashTimer(true);
     }
     if (new_val > this.timer_low_threshold && this.timerBarPassed) {
       this.timerBarPassed = false;
+      this.app.renderingSystem.flashTimer(false);
     }
   }
 

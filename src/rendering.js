@@ -464,7 +464,7 @@ class RenderingSystem extends ECS.System
       const originalInt = mat.emissiveIntensity;
 
       this.timerFlashTween = new TWEEN.Tween(mat)
-        .to({emissiveIntensity: 0.25}, 0.5)
+        .to({emissiveIntensity: 0.25}, .2)
         .repeat(Infinity)
         .yoyo(true)
         .easing(TWEEN.Easing.Quadratic.InOut)
@@ -544,16 +544,17 @@ class RenderingSystem extends ECS.System
 
     //runeBottom.material.emissiveIntensity = 1;
 
-    new TWEEN.Tween(runeBottom.material)
-      .to({emissiveIntensity: 1}, 0.5)
-      .easing(TWEEN.Easing.Back.InOut)
-      .repeat(1)
-      .yoyo(true)
-      .onComplete(() =>
-      {
-        this['runeAnimInProgress' + runeIndex] = false;
-      })
-      .start(this.t);
+    if (runeBottom) {
+      new TWEEN.Tween(runeBottom.material)
+        .to({emissiveIntensity: 1}, 0.5)
+        .easing(TWEEN.Easing.Back.InOut)
+        .repeat(1)
+        .yoyo(true)
+        .onComplete(() => {
+          this['runeAnimInProgress' + runeIndex] = false;
+        })
+        .start(this.t);
+    }
 
     const s = 1.25;
     new TWEEN.Tween(rune.scale)

@@ -251,10 +251,10 @@ STATES.Main = {
 
     // if (event.key === '1')
     //   this.app.renderingSystem.highlightRune(1);
-    if (event.key === '2')
-      this.app.renderingSystem.flashTimer(true);
-    if (event.key === '3')
-      this.app.renderingSystem.flashTimer(false);
+    // if (event.key === '2')
+    //   this.app.renderingSystem.flashTimer(true);
+    // if (event.key === '3')
+    //   this.app.renderingSystem.flashTimer(false);
   }
 };
 
