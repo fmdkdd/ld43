@@ -11,6 +11,9 @@ STATES.TitleScreen = {
     this.app.ecs.addSystem(this.app.particleSystem = new ParticleSystem(this.app));
     // Start loading the game for the tutorial
     this.app.ecs.addSystem(this.app.game = new GameSystem(this.app));
+
+    this.app.bgm = this.app.music.play('bg-abstraction', true);
+    this.app.music.setVolume(this.app.bgm, 0.1);
   },
 
   keydown(event) {
@@ -93,6 +96,10 @@ STATES.Tuto2 = {
       // Free points!
       this.app.setState(STATES.CheckMatches);
     }
+  },
+
+  leave() {
+    this.app.music.setVolume(this.app.bgm, 0.2);
   },
 
   render(dt) {
@@ -485,15 +492,19 @@ window.addEventListener('DOMContentLoaded', function main() {
       // MODELS.forEach(asset => this.loadData(asset));
 
       this.loadSounds('move');
-      this.sound.alias('move-scaled', 'move', .05, 1);
+      this.sound.alias('move-scaled', 'move', .2, 1);
 
       for (let i=1; i <= 6; ++i) {
         this.loadSounds('match-' + i);
-        this.sound.alias('match-' + i + '-scaled', 'match-' + i, .1, 1);
+        this.sound.alias('match-' + i + '-scaled', 'match-' + i, .2, 1);
       }
 
       this.loadSounds('voice-of-god');
-      this.sound.alias('voice-scaled', 'voice-of-god', .4, 1);
+      this.sound.alias('voice-scaled', 'voice-of-god', .8, 1);
+
+      this.loadSounds('bg-tuto');
+      this.loadSounds('bg-abstraction');
+
 
       // Load textures
       this.loadTexture('assets/tile.png');

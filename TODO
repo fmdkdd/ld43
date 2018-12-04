@@ -2,11 +2,7 @@
 Florent
 --------
 
-- Flash timer when timer nearly out
-
 - SUBMIT to LD!
-
-- Music (Aztec-like... drummy)
 
 - Playtest
 - remove stray console.log
@@ -102,3 +98,6 @@ Done
   remove stray console.log
 
 - Prepare page with screenshots/gameplay clips
+
+- Flash timer when timer nearly out
+- Music (Aztec-like... drummy)

@@ -568,20 +568,22 @@ class RenderingSystem extends ECS.System
         .start(this.t);
     }
 
-    const s = 1.25;
-    new TWEEN.Tween(rune.scale)
-      .to({x: s, y: s, z: s}, 0.5)
-      .easing(TWEEN.Easing.Back.InOut)
-      .repeat(1)
-      .yoyo(true)
-      .start(this.t);
+    if (rune) {
+      const s = 1.25;
+      new TWEEN.Tween(rune.scale)
+        .to({x: s, y: s, z: s}, 0.5)
+        .easing(TWEEN.Easing.Back.InOut)
+        .repeat(1)
+        .yoyo(true)
+        .start(this.t);
 
-    const r = Math.random() * 0.8 - 0.4;
-    new TWEEN.Tween(rune.rotation)
-      .to({y: r}, 0.5)
-      .repeat(1)
-      .yoyo(true)
-      .start(this.t);
+      const r = Math.random() * 0.8 - 0.4;
+      new TWEEN.Tween(rune.rotation)
+        .to({y: r}, 0.5)
+        .repeat(1)
+        .yoyo(true)
+        .start(this.t);
+    }
 
     /*const pos = new THREE.Vector3();
     rune.getWorldPosition(pos);
