@@ -1,29 +1,21 @@
-- Proper colors
-
 --------
 Florent
 --------
 
 - Flash timer when timer nearly out
-- Start screen choose between timed mode and infinite (no timer)
 
-
-- Prepare page with screenshots/gameplay clips
 - SUBMIT to LD!
-
-- Comment out debug code and keybindings
-  remove stray console.log
 
 - Music (Aztec-like... drummy)
 
-- Fade in/out pause and gameover screens
-- Add 2x, 3x multipliers indicators below runes
 - Playtest
+- remove stray console.log
 
 --------
 Merwan
 --------
 
+- Capture gifs for LD page
 - Change colors?
 - Polish timer (texture? color?)
 
@@ -43,6 +35,11 @@ Unsure
 -----------------
 Not enough time
 -----------------
+
+- Start screen choose between timed mode and infinite (no timer)
+- Add 2x, 3x multipliers indicators below runes
+
+- Fade in/out pause and gameover screens
 
 - Add a couple of rows above grid to see what pieces are coming down
 
@@ -100,3 +97,8 @@ Done
 - Adjust timer/score variables (higher multipliers, faster speed)
 - Trigger god animation when timer nearly out
 - Trigger god animation/small shake for combos?
+
+- Comment out debug code and keybindings
+  remove stray console.log
+
+- Prepare page with screenshots/gameplay clips

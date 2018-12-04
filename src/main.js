@@ -208,52 +208,49 @@ STATES.Main = {
       this.app.controlsSystem.input(event.original.code);
     }
 
-    if (event.key === 'enter') {
+    if (event.key === 'enter' || event.key === 'space') {
       this.app.setState(STATES.Pause);
     }
 
-    if (event.key === 't')
-      this.app.renderingSystem.shake(0.5, 10, 2);
+    // if (event.key === 't')
+    //   this.app.renderingSystem.shake(0.5, 10, 2);
 
-    if (event.key === 'y')
-      this.app.renderingSystem.fillTimer(0.1);
-    if (event.key === 'u')
-      this.app.renderingSystem.fillTimer(0.9);
+    // if (event.key === 'y')
+    //   this.app.renderingSystem.fillTimer(0.1);
+    // if (event.key === 'u')
+    //   this.app.renderingSystem.fillTimer(0.9);
 
-    if (event.key === 'g')
-      this.app.renderingSystem.animateGod(0);
-    if (event.key === 'h')
-      this.app.renderingSystem.animateGod(1);
-    if (event.key === 'j')
-      this.app.renderingSystem.animateGod(2);
-    if (event.key === 'k')
-      this.app.renderingSystem.animateGod(3);
+    // if (event.key === 'g')
+    //   this.app.renderingSystem.animateGod(0);
+    // if (event.key === 'h')
+    //   this.app.renderingSystem.animateGod(1);
+    // if (event.key === 'j')
+    //   this.app.renderingSystem.animateGod(2);
+    // if (event.key === 'k')
+    //   this.app.renderingSystem.animateGod(3);
 
-    if (event.key === 'v')
-      this.app.particleSystem.createFire(-10, 0, 3);
-    if (event.key === 'b')
-    {
-      const goal = this.app.renderingSystem.rune2.position;
-      //this.app.particleSystem.createSoul(900, 10, 5,  goal.x, goal.y);
+    // if (event.key === 'v')
+    //   this.app.particleSystem.createFire(-10, 0, 3);
+    // if (event.key === 'b')
+    // {
+    //   const goal = this.app.renderingSystem.rune2.position;
+    //   //this.app.particleSystem.createSoul(900, 10, 5,  goal.x, goal.y);
 
-      this.app.particleSystem.createSoulFromTileToRune(5, 1);
-    }
+    //   this.app.particleSystem.createSoulFromTileToRune(5, 1);
+    // }
 
-    if (event.key === 'q')
-      this.app.game.removeBottomRow();
+    // if (event.key === 'n')
+    // {
+    //   this.app.renderingSystem.highlightTile(0, 1, 2);
+    //   this.app.renderingSystem.highlightTile(1, 3, 2);
+    //   this.app.renderingSystem.highlightTile(2, 10, 2);
+    // }
 
-    if (event.key === 'n')
-    {
-      this.app.renderingSystem.highlightTile(0, 1, 2);
-      this.app.renderingSystem.highlightTile(1, 3, 2);
-      this.app.renderingSystem.highlightTile(2, 10, 2);
-    }
+    // if (event.key === 'm')
+    //   this.app.renderingSystem.makeTilesFall(0, 1);
 
-    if (event.key === 'm')
-      this.app.renderingSystem.makeTilesFall(0, 1);
-
-    if (event.key === '1')
-      this.app.renderingSystem.highlightRune(1);
+    // if (event.key === '1')
+    //   this.app.renderingSystem.highlightRune(1);
     if (event.key === '2')
       this.app.renderingSystem.flashTimer(true);
     if (event.key === '3')
@@ -310,14 +307,14 @@ STATES.Pause = {
     let m = ctx.measureText(text);
     ctx.fillText(text, w/2 - m.width/2, h/2 + Math.sin(2*t) * 10);
 
-    text = 'Press ENTER to continue';
+    text = 'Press SPACE to resume';
     ctx.font = '20px sans-serif';
     m = ctx.measureText(text);
     ctx.fillText(text, w/2 - m.width/2, h/2 + 50);
   },
 
   keydown(event) {
-    if (event.key === 'enter') {
+    if (event.key === 'space' || event.key === 'enter') {
       this.app.setState(STATES.Main);
     }
   },
