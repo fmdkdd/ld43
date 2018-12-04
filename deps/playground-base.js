@@ -4793,6 +4793,8 @@ PLAYGROUND.LoadingScreen = {
 
     this.width = window.innerWidth * 0.6 | 0;
     this.height = window.innerHeight * 0.1 | 0;
+    this.width = 300;
+    this.height = 25;
 
     this.wrapper = document.createElement("div");
     this.wrapper.style.width = this.width + "px";
@@ -4801,7 +4803,7 @@ PLAYGROUND.LoadingScreen = {
     this.wrapper.style.border = "4px solid #fff";
     this.wrapper.style.position = "absolute";
     this.wrapper.style.left = (window.innerWidth / 2 - this.width / 2 | 0) + "px";
-    this.wrapper.style.top = (window.innerHeight / 2 - this.height / 2 | 0) + "px";
+    this.wrapper.style.top = "300px";
     this.wrapper.style.zIndex = 100;
 
     this.app.container.appendChild(this.wrapper);

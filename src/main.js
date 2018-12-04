@@ -458,7 +458,7 @@ STATES.FillHoles = {
 
 // Skip the loading screen.  It always lasts at least 500ms, even without
 // assets.
-delete PLAYGROUND.LoadingScreen
+//delete PLAYGROUND.LoadingScreen
 
 window.addEventListener('DOMContentLoaded', function main() {
   new PLAYGROUND.Application({
