@@ -502,7 +502,6 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.loadSounds('voice-of-god');
       this.sound.alias('voice-scaled', 'voice-of-god', .8, 1);
 
-      this.loadSounds('bg-tuto');
       this.loadSounds('bg-abstraction');
 
 
