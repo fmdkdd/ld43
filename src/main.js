@@ -482,6 +482,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.stats.dom.style.top = '';
       this.stats.dom.style.right = 0;
       this.stats.dom.style.bottom = 0;
+      this.stats.dom.style.display = 'none';
       document.body.appendChild(this.stats.dom);
 
       //this.loadData('assets/box.json');
@@ -640,6 +641,7 @@ window.addEventListener('DOMContentLoaded', function main() {
     keyup(event) {
       if (event.key === 'f2') {
         DEBUG = !DEBUG;
+        this.stats.dom.style.display = DEBUG ? 'block' : 'none';
       }
     },
 
