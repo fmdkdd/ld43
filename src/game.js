@@ -69,6 +69,7 @@ class GameSystem extends ECS.System {
 
       const worldPos = gridtoWorld(e.components.pos);
       this.app.particleSystem.createFire(worldPos.x, worldPos.y, worldPos.z, 0.75);
+      this.app.particleSystem.createSoulFromTileToTimer(c);
     }
   }
 

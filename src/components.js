@@ -78,7 +78,9 @@ const Particles =
     lifetime: 5,
     goalx: 0,
     goaly: 0,
+    goalz: 0,
     velx: 0,
-    vely: 0
+    vely: 0,
+    velz: 0
   }
 };

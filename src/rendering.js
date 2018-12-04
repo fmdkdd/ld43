@@ -184,6 +184,18 @@ class RenderingSystem extends ECS.System
     this.bgLight.castShadow = true;
     this.bgScene.add(this.bgLight);*/
 
+    /*const ttt = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshBasicMaterial());
+    ttt.position.set(1000-17,-20,0);
+    this.bgScene.add(ttt);
+    const ttt2 = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshBasicMaterial());
+    ttt2.position.set(1000+1,7,0);
+    this.bgScene.add(ttt2);*/
+
+    /*this.bgLight = new THREE.PointLight(0xffffff, 0.25);
+    this.bgLight.position.set(1000, -100, 10);
+    this.bgLight.castShadow = true;
+    this.bgScene.add(this.bgLight);*/
+
     this.sceneBuilt = true;
   }
 
@@ -422,9 +434,9 @@ class RenderingSystem extends ECS.System
 
     this.renderer.autoClear = false;
     this.renderer.clear();
-    this.renderer.render(this.scene, this.camera);
-    this.renderer.clearDepth();
     this.renderer.render(this.bgScene, this.bgCamera);
+    this.renderer.clearDepth();
+    this.renderer.render(this.scene, this.camera);
   }
 
   // Shake the screen a distance of 'offset', 'shakes' times during 'duration' seconds
